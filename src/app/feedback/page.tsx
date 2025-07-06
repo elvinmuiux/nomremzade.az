@@ -1,8 +1,52 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
 import styles from './page.module.css';
 
+interface FeedbackData {
+  name: string;
+  email: string;
+  phone: string;
+  rating: string;
+  feedbackType: string;
+  subject: string;
+  message: string;
+  date: string;
+}
+
 export default function FeedbackPage() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.currentTarget);
+    const feedbackData: FeedbackData = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('phone') as string || '',
+      rating: formData.get('rating') as string || '',
+      feedbackType: formData.get('feedback_type') as string,
+      subject: formData.get('subject') as string,
+      message: formData.get('message') as string,
+      date: new Date().toLocaleDateString('az-AZ')
+    };
+
+    // Save to localStorage for now (in production, this would be saved to a database)
+    const existingFeedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+    existingFeedbacks.push(feedbackData);
+    localStorage.setItem('feedbacks', JSON.stringify(existingFeedbacks));
+
+    setIsSubmitted(true);
+    
+    // Redirect to evaluation page after 2 seconds
+    setTimeout(() => {
+      router.push('/evaluation');
+    }, 2000);
+  };
   return (
     <PageTemplate showTopNav={false}>
       <div className={styles.feedbackPage}>
@@ -36,7 +80,14 @@ export default function FeedbackPage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Feedback Formu</h2>
           <div className={styles.formContainer}>
-            <form className={styles.feedbackForm}>
+            {isSubmitted ? (
+              <div className={styles.successMessage}>
+                <div className={styles.successIcon}>✅</div>
+                <h3>Feedback uğurla göndərildi!</h3>
+                <p>Təşəkkür edirik! Feedback-iniz qeydə alındı və ümumi qiymətləndirmə səhifəsində göstəriləcək. Sayt qiymətləndirmə səhifəsinə yönləndiriləcəksiniz...</p>
+              </div>
+            ) : (
+              <form className={styles.feedbackForm} onSubmit={handleSubmit}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label htmlFor="name" className={styles.label}>
@@ -163,6 +214,7 @@ export default function FeedbackPage() {
                 Feedback Göndər
               </button>
             </form>
+            )}
           </div>
         </section>
 

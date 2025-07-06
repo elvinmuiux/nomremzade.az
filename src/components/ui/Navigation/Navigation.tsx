@@ -14,7 +14,8 @@ import {
   HelpCircle,
   ChevronDown,
   Menu,
-  X
+  X,
+  BarChart3
 } from 'lucide-react';
 
 export interface NavigationProps {
@@ -71,11 +72,17 @@ const navigationItems: NavigationItem[] = [
     href: '/qa',
     icon: HelpCircle
   },
-    {
+  {
     id: 'feedback',
     label: 'İrad və təkliflər',
     href: '/feedback',
     icon: MessageSquare
+  },
+  {
+    id: 'evaluation',
+    label: 'Sayt Qiymətləndirməsi',
+    href: '/evaluation',
+    icon: BarChart3
   },
 ];
 

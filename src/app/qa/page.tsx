@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
 import styles from './page.module.css';
@@ -74,7 +76,7 @@ export default function QAPage() {
             <div className={styles.faqItem}>
               <h3 className={styles.question}>Hansı operatorlarla işləyirsiniz?</h3>
               <p className={styles.answer}>
-                Azərcell (050, 051, 055), Bakcell (070, 077), Nar Mobile (099) və Naxtel (012) 
+                Azərcell (050, 051, 010), Bakcell (055, 099,), Nar Mobile (070, 077) və Naxtel (060) 
                 operatorlarının bütün nömrələri saytımızda mövcuddur.
               </p>
             </div>
@@ -82,7 +84,7 @@ export default function QAPage() {
             <div className={styles.faqItem}>
               <h3 className={styles.question}>Dəstək xidməti necə əlaqə saxlayım?</h3>
               <p className={styles.answer}>
-                WhatsApp: +994 50 123 45 67, Telefon: +994 70 123 45 67, E-poçt: info@nomrezade.az 
+                WhatsApp: +994 50 444 44 22, Telefon: +994 50 444 44 22, E-poçt: info@nomrezade.az 
                 vasitəsilə 24/7 dəstək xidməti ilə əlaqə saxlaya bilərsiniz.
               </p>
             </div>
@@ -96,6 +98,8 @@ export default function QAPage() {
             </div>
           </div>
         </section>
+
+
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Sualınız var?</h2>

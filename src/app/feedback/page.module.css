@@ -96,6 +96,32 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+.successMessage {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: var(--color-secondary);
+  border-radius: 12px;
+  border: 2px solid var(--color-accent);
+}
+
+.successIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.successMessage h3 {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.successMessage p {
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
 .feedbackForm {
   width: 100%;
 }
