@@ -19,6 +19,7 @@ export default function EvaluationPage() {
   const [feedbacks, setFeedbacks] = useState<FeedbackData[]>([]);
   const [averageRating, setAverageRating] = useState(0);
   const [totalFeedbacks, setTotalFeedbacks] = useState(0);
+  const [isAdminMode, setIsAdminMode] = useState(false);
 
   const loadFeedbacks = () => {
     // Load feedbacks from localStorage
@@ -201,32 +202,20 @@ export default function EvaluationPage() {
         </section>
 
         <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Son Feedback-lər</h2>
-          <div className={styles.recentFeedbacks}>
-            {feedbacks.slice(-5).reverse().map((feedback, index) => {
-              // Calculate the actual index in the original array
-              const actualIndex = feedbacks.length - 1 - index;
-              
-              return (
+          <h2 className={styles.sectionTitle}>Bütün İstifadəçi Rəyləri</h2>
+          <div className={styles.allFeedbacks}>
+            {feedbacks.length > 0 ? (
+              feedbacks.map((feedback, index) => (
                 <div key={index} className={styles.feedbackCard}>
                   <div className={styles.feedbackHeader}>
                     <h4>{feedback.subject}</h4>
-                    <div className={styles.feedbackActions}>
-                      <div className={styles.feedbackMeta}>
-                        <span className={styles.feedbackType}>{getTypeLabel(feedback.feedbackType)}</span>
-                        {feedback.rating && (
-                          <span className={styles.feedbackRating}>
-                            {'⭐'.repeat(parseInt(feedback.rating))}
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => deleteFeedback(actualIndex)}
-                        className={styles.deleteButton}
-                        title="Bu rəyi sil"
-                      >
-                        🗑️
-                      </button>
+                    <div className={styles.feedbackMeta}>
+                      <span className={styles.feedbackType}>{getTypeLabel(feedback.feedbackType)}</span>
+                      {feedback.rating && (
+                        <span className={styles.feedbackRating}>
+                          {'⭐'.repeat(parseInt(feedback.rating))}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <p className={styles.feedbackMessage}>{feedback.message}</p>
@@ -235,59 +224,76 @@ export default function EvaluationPage() {
                     <span>{feedback.date}</span>
                   </div>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <div className={styles.noFeedbacks}>
+                <p>Hələ ki heç bir rəy yazılmayıb. İlk rəyi siz yazın!</p>
+                <a href="/feedback" className={styles.feedbackLink}>Rəy yaz</a>
+              </div>
+            )}
           </div>
         </section>
 
-        {feedbacks.length > 5 && (
+        {/* Admin Giriş Düyməsi */}
+        <section className={styles.section}>
+          <div className={styles.adminToggle}>
+            <button 
+              onClick={() => setIsAdminMode(!isAdminMode)}
+              className={styles.adminButton}
+            >
+              {isAdminMode ? '🔓 Admin Paneldən Çıx' : '🔐 Admin Panel'}
+            </button>
+          </div>
+        </section>
+
+        {isAdminMode && (
           <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Bütün Feedback-lər</h2>
-            <div className={styles.allFeedbacks}>
-              {feedbacks.map((feedback, index) => (
-                <div key={index} className={styles.feedbackCard}>
-                  <div className={styles.feedbackHeader}>
-                    <h4>{feedback.subject}</h4>
-                    <div className={styles.feedbackActions}>
-                      <div className={styles.feedbackMeta}>
-                        <span className={styles.feedbackType}>{getTypeLabel(feedback.feedbackType)}</span>
-                        {feedback.rating && (
-                          <span className={styles.feedbackRating}>
-                            {'⭐'.repeat(parseInt(feedback.rating))}
-                          </span>
-                        )}
+            <h2 className={styles.sectionTitle}>Admin Panel - Rəy İdarəetməsi</h2>
+            <div className={styles.adminPanel}>
+              <div className={styles.adminStats}>
+                <p>Cəmi {totalFeedbacks} rəy mövcuddur.</p>
+                <button 
+                  onClick={clearAllFeedbacks}
+                  className={styles.clearButton}
+                >
+                  🗑️ Bütün Rəyləri Sil
+                </button>
+              </div>
+              
+              {totalFeedbacks > 0 && (
+                <div className={styles.adminFeedbackList}>
+                  <h3 className={styles.adminSubtitle}>Fərdi Rəy Silmə</h3>
+                  <div className={styles.adminFeedbacks}>
+                    {feedbacks.map((feedback, index) => (
+                      <div key={index} className={styles.adminFeedbackCard}>
+                        <div className={styles.adminFeedbackHeader}>
+                          <h4>{feedback.subject}</h4>
+                          <div className={styles.adminFeedbackMeta}>
+                            <span className={styles.feedbackType}>{getTypeLabel(feedback.feedbackType)}</span>
+                            {feedback.rating && (
+                              <span className={styles.feedbackRating}>
+                                {'⭐'.repeat(parseInt(feedback.rating))}
+                              </span>
+                            )}
+                            <button
+                              onClick={() => deleteFeedback(index)}
+                              className={styles.deleteButton}
+                              title="Bu rəyi sil"
+                            >
+                              🗑️ Sil
+                            </button>
+                          </div>
+                        </div>
+                        <p className={styles.adminFeedbackMessage}>{feedback.message}</p>
+                        <div className={styles.adminFeedbackFooter}>
+                          <span>- {feedback.name}</span>
+                          <span>{feedback.date}</span>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => deleteFeedback(index)}
-                        className={styles.deleteButton}
-                        title="Bu rəyi sil"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-                  <p className={styles.feedbackMessage}>{feedback.message}</p>
-                  <div className={styles.feedbackFooter}>
-                    <span>- {feedback.name}</span>
-                    <span>{feedback.date}</span>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {totalFeedbacks > 0 && (
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Admin Bölməsi</h2>
-            <div className={styles.adminSection}>
-              <p>Cəmi {totalFeedbacks} rəy mövcuddur.</p>
-              <button 
-                onClick={clearAllFeedbacks}
-                className={styles.clearButton}
-              >
-                🗑️ Bütün Rəyləri Sil
-              </button>
+              )}
             </div>
           </section>
         )}
