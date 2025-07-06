@@ -14,7 +14,7 @@ export default function NumbersPage() {
     // Load premium ads from secure database
     const loadPremiumAds = () => {
       try {
-        const ads = SecureDatabase.getActiveAds();
+        const ads = SecureDatabase.getActivePremiumAds();
         setPremiumAds(ads);
       } catch (error) {
         console.error('Failed to load premium ads:', error);

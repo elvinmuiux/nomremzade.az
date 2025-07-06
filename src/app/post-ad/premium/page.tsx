@@ -28,184 +28,176 @@ function PremiumAdPageContent() {
     // Check if user is logged in
     const userData = localStorage.getItem('currentUser');
     if (userData) {
-      setCurrentUser(JSON.parse(userData));
+      const user = JSON.parse(userData);
+      setCurrentUser(user);
+    } else {
+      // Redirect to registration if not logged in
+      router.push('/register?from=premium');
+      return;
     }
 
-    // Show success message if user just registered/logged in
-    if (searchParams.get('registered') === 'true') {
-      setSuccessMessage('Qeydiyyat uğurla tamamlandı! İndi premium elanınızı yerləşdirə bilərsiniz.');
-    } else if (searchParams.get('loggedIn') === 'true') {
-      setSuccessMessage('Giriş uğurla həyata keçirildi! Premium elanınızı yerləşdirin.');
+    // Check if user just registered
+    const registered = searchParams.get('registered');
+    if (registered === 'true') {
+      setSuccessMessage('Qeydiyyat uğurludur! İndi premium elanınızı yerləşdirə bilərsiniz.');
     }
-
-    // Listen for storage changes (when user logs in)
-    const handleStorageChange = () => {
-      const userData = localStorage.getItem('currentUser');
-      if (userData) {
-        setCurrentUser(JSON.parse(userData));
-      } else {
-        setCurrentUser(null);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [searchParams]);
+  }, [router, searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handlePremiumSubmit = (e: React.FormEvent) => {
+  const validateForm = (): boolean => {
+    if (!formData.phoneNumber.trim()) {
+      alert('Telefon nömrəsi daxil edin');
+      return false;
+    }
+    if (!formData.operator) {
+      alert('Operator seçin');
+      return false;
+    }
+    if (!formData.price.trim()) {
+      alert('Qiymət daxil edin');
+      return false;
+    }
+    if (!formData.contactPhone.trim()) {
+      alert('Əlaqə telefonu daxil edin');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!currentUser) {
-      // Show authentication options
+    if (!validateForm() || !currentUser) {
       return;
     }
 
     setIsLoading(true);
 
-    // Simulate processing
+    // Simulate processing time
     setTimeout(() => {
-      const newAd: PremiumAd = {
-        id: `ad_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        userId: currentUser.id,
-        phoneNumber: formData.phoneNumber,
-        operator: formData.operator,
-        description: formData.description || undefined,
-        price: formData.price ? parseInt(formData.price) : undefined,
-        createdAt: new Date().toISOString(),
-        isActive: true,
-        paymentId: 'temp_payment_id' // This would be set after successful payment
-      };
+      try {
+        // Create premium ad
+        const newAd: PremiumAd = {
+          id: `premium_${Date.now()}`,
+          userId: currentUser.id,
+          phoneNumber: formData.phoneNumber,
+          operator: formData.operator,
+          price: parseFloat(formData.price),
+          contactPhone: formData.contactPhone,
+          whatsappNumber: formData.whatsappNumber,
+          description: formData.description,
+          adType: 'premium',
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+          views: 0,
+          featured: true
+        };
 
-      // Save ad data using SecureDatabase
-      SecureDatabase.savePremiumAd(newAd);
+        // Save ad
+        SecureDatabase.savePremiumAd(newAd);
 
-      setIsLoading(false);
-      setSuccessMessage('Premium elanınız uğurla yerləşdirildi! 30 gün aktiv olacaq.');
-      
-      // Reset form
-      setFormData({
-        phoneNumber: '',
-        operator: '',
-        price: '',
-        contactPhone: '',
-        whatsappNumber: '',
-        description: ''
-      });
+        setSuccessMessage('Premium elanınız uğurla yerləşdirildi! 30 gün aktiv olacaq.');
+        
+        // Reset form
+        setFormData({
+          phoneNumber: '',
+          operator: '',
+          price: '',
+          contactPhone: '',
+          whatsappNumber: '',
+          description: ''
+        });
 
-      // Redirect to ads display page after 3 seconds
-      setTimeout(() => {
-        router.push('/numbers?showPremium=true');
-      }, 3000);
+        // Redirect to numbers page after 3 seconds
+        setTimeout(() => {
+          router.push('/numbers');
+        }, 3000);
+
+      } catch (error) {
+        console.error('Error creating ad:', error);
+        alert('Elan yerləşdirmə zamanı xəta baş verdi');
+      } finally {
+        setIsLoading(false);
+      }
     }, 2000);
   };
 
   if (!currentUser) {
     return (
-      <PageTemplate showTopNav={false}>
-        <div className={styles.adFormPage}>
-          <section className={styles.section}>
-            <h1 className={styles.pageTitle}>Premium Elan Yerləşdir</h1>
-            <p className={styles.pageDescription}>
-              Premium elan yerləşdirmək üçün qeydiyyatdan keçməlisiniz və ya giriş etməlisiniz.
-            </p>
-          </section>
-
-          <section className={styles.section}>
-            <div className={styles.authRequired}>
-              <div className={styles.authCard}>
-                <h3>🔐 Üzv Girişi Tələb Olunur</h3>
-                <p>Premium elan yerləşdirmək üçün hesabınız olmalıdır.</p>
-                
-                <div className={styles.authButtons}>
-                  <button 
-                    onClick={() => router.push('/register')} 
-                    className={styles.registerButton}
-                  >
-                    Qeydiyyatdan Keç
-                  </button>
-                  <button 
-                    onClick={() => router.push('/login')} 
-                    className={styles.loginButton}
-                  >
-                    Giriş Et
-                  </button>
-                </div>
-
-                <div className={styles.benefits}>
-                  <h4>Premium Elan Üstünlükləri:</h4>
-                  <ul>
-                    <li>30 gün aktiv elan</li>
-                    <li>Səhifə yuxarısında göstərilir</li>
-                    <li>Əlavə rəng vurğusu</li>
-                    <li>WhatsApp dəstəyi</li>
-                    <li>Sosial media paylaşımı</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </section>
+      <PageTemplate>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Yönləndirilir...</p>
         </div>
       </PageTemplate>
     );
   }
-  
+
   return (
-    <PageTemplate showTopNav={false}>
-      <div className={styles.adFormPage}>
-        <section className={styles.section}>
-          <h1 className={styles.pageTitle}>Premium Elan Yerləşdir</h1>
-          <p className={styles.pageDescription}>
-            Premium elanınızla nömrənizi ən yaxşı şəkildə təqdim edin.
-          </p>
-          <div className={styles.userInfo}>
-            Xoş gəlmisiniz, <strong>{currentUser.fullName}</strong>!
+    <PageTemplate>
+      <div className={styles.premiumAdPage}>
+        <section className={styles.header}>
+          <div className={styles.headerContent}>
+            <h1 className={styles.pageTitle}>Premium Elan</h1>
+            <p className={styles.pageDescription}>
+              Premium elanınız 30 gün aktiv olacaq və xüsusi vurğulanacaq
+            </p>
+            <div className={styles.comingSoon}>
+              <span className={styles.comingSoonText}>TEZLİKLƏ</span>
+              <p className={styles.comingSoonMessage}>Bu xidmət tezliklə aktiv olacaq</p>
+            </div>
           </div>
         </section>
 
         {successMessage && (
-          <div className={styles.successAlert}>
-            {successMessage}
+          <div className={styles.successBanner}>
+            <div className={styles.successIcon}>✅</div>
+            <div className={styles.successText}>
+              {successMessage}
+            </div>
           </div>
         )}
 
-        <section className={styles.section}>
+        <section className={styles.formSection}>
           <div className={styles.formContainer}>
-            <form onSubmit={handlePremiumSubmit} className={styles.adForm}>
+            <form onSubmit={handleSubmit} className={styles.adForm}>
               <div className={styles.formGroup}>
                 <label htmlFor="phoneNumber" className={styles.label}>
-                  Telefon Nömrəsi *
+                  Telefon Nömrəsi
                 </label>
                 <input
-                  type="tel"
+                  type="text"
                   id="phoneNumber"
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  placeholder="050-444-44-22"
                   className={styles.input}
+                  placeholder="055 123 45 67"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="operator" className={styles.label}>
-                  Operator *
+                  Operator
                 </label>
-                <select 
-                  id="operator" 
-                  name="operator" 
+                <select
+                  id="operator"
+                  name="operator"
                   value={formData.operator}
                   onChange={handleInputChange}
-                  className={styles.select} 
+                  className={styles.select}
                   required
+                  disabled={isLoading}
                 >
                   <option value="">Operator seçin</option>
-                  <option value="azercell">Azərcell</option>
+                  <option value="azercell">Azercell</option>
                   <option value="bakcell">Bakcell</option>
                   <option value="nar-mobile">Nar Mobile</option>
                   <option value="naxtel">Naxtel</option>
@@ -214,7 +206,7 @@ function PremiumAdPageContent() {
 
               <div className={styles.formGroup}>
                 <label htmlFor="price" className={styles.label}>
-                  Qiymət (AZN) *
+                  Qiymət (AZN)
                 </label>
                 <input
                   type="number"
@@ -222,76 +214,77 @@ function PremiumAdPageContent() {
                   name="price"
                   value={formData.price}
                   onChange={handleInputChange}
-                  placeholder="500"
                   className={styles.input}
+                  placeholder="100"
                   min="1"
+                  step="0.01"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="contactPhone" className={styles.label}>
-                  Əlaqə Nömrəsi *
+                  Əlaqə Telefonu
                 </label>
                 <input
-                  type="tel"
+                  type="text"
                   id="contactPhone"
                   name="contactPhone"
                   value={formData.contactPhone}
                   onChange={handleInputChange}
-                  placeholder="050-266-63-66"
                   className={styles.input}
+                  placeholder="050 123 45 67"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="whatsappNumber" className={styles.label}>
-                  WhatsApp Nömrəsi
+                  WhatsApp Nömrəsi (İstəyə görə)
                 </label>
                 <input
-                  type="tel"
+                  type="text"
                   id="whatsappNumber"
                   name="whatsappNumber"
                   value={formData.whatsappNumber}
                   onChange={handleInputChange}
-                  placeholder="050-444-44-22"
                   className={styles.input}
+                  placeholder="050 123 45 67"
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="description" className={styles.label}>
-                  Təsvir
+                  Əlavə Məlumat (İstəyə görə)
                 </label>
                 <textarea
                   id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  placeholder="Nömrəniz haqqında əlavə məlumat..."
                   className={styles.textarea}
+                  placeholder="Nömrə haqqında əlavə məlumatlar..."
                   rows={4}
-                ></textarea>
+                  disabled={isLoading}
+                />
               </div>
 
-              <div className={styles.priceInfo}>
-                <h3>Premium Elan - 5 AZN</h3>
-                <ul>
-                  <li>30 gün aktiv</li>
-                  <li>Səhifə yuxarısında göstərilir</li>
-                  <li>Əlavə rəng vurğusu</li>
-                  <li>Sosial media paylaşımı</li>
-                  <li>WhatsApp dəstəyi</li>
-                </ul>
-              </div>
-
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className={styles.submitButton}
                 disabled={isLoading}
               >
-                {isLoading ? 'Elan yerləşdirilir...' : 'Premium Elan Yerləşdir'}
+                {isLoading ? (
+                  <>
+                    <span className={styles.spinner}></span>
+                    Elan yerləşdirilir...
+                  </>
+                ) : (
+                  'Premium Elan Yerləşdir'
+                )}
               </button>
             </form>
           </div>
@@ -303,7 +296,7 @@ function PremiumAdPageContent() {
 
 export default function PremiumAdPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Yüklənir...</div>}>
       <PremiumAdPageContent />
     </Suspense>
   );

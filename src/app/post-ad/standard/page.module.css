@@ -155,26 +155,48 @@
   padding: 2rem 0;
 }
 
-.authIcon {
-  font-size: 48px;
-  margin-bottom: 16px;
-  display: block;
+.authCard {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  color: white;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
-.authRequired h3 {
+.authCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="authPattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.08)"/></pattern></defs><rect width="100" height="100" fill="url(%23authPattern)"/></svg>');
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.authCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.authCard h3 {
   font-size: 24px;
   margin: 0 0 16px 0;
   font-weight: 700;
-  color: var(--color-primary);
-  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.authRequired p {
+.authCard p {
   font-size: 16px;
   margin: 0 0 32px 0;
   line-height: 1.6;
-  color: #666;
-  text-align: center;
+  opacity: 0.9;
 }
 
 .authButtons {
@@ -185,7 +207,7 @@
   justify-content: center;
 }
 
-.registerBtn, .loginBtn {
+.registerButton, .loginButton {
   flex: 1;
   min-width: 140px;
   padding: 14px 24px;
@@ -199,29 +221,28 @@
   letter-spacing: 0.5px;
 }
 
-.registerBtn {
-  background: var(--color-primary);
+.registerButton {
+  background: rgba(255,255,255,0.2);
   color: white;
-  border: 2px solid var(--color-primary);
+  border: 2px solid rgba(255,255,255,0.3);
 }
 
-.registerBtn:hover {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
+.registerButton:hover {
+  background: rgba(255,255,255,0.3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(197, 159, 50, 0.3);
+  box-shadow: 0 4px 12px rgba(255,255,255,0.2);
 }
 
-.loginBtn {
+.loginButton {
   background: white;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
+  color: #667eea;
+  border: 2px solid white;
 }
 
-.loginBtn:hover {
-  background: var(--color-secondary);
+.loginButton:hover {
+  background: #f8f9ff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 4px 12px rgba(255,255,255,0.3);
 }
 
 .benefits {
@@ -285,80 +306,37 @@
   box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
 }
 
-/* Welcome Message Styles */
-.welcomeMessage {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  color: white;
-  padding: 16px 24px;
-  border-radius: 12px;
+/* Coming Soon Styles */
+.comingSoon {
   text-align: center;
-  margin-bottom: 24px;
-  font-size: 16px;
-  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.welcomeIcon {
-  font-size: 18px;
+.comingSoonText {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
 }
 
-.premiumBadge {
-  background: rgba(255, 215, 0, 0.9);
-  color: #333;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-left: 8px;
+.comingSoonMessage {
+  font-size: 1.1rem;
+  color: #f0f0f0;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.pendingBadge {
-  background: rgba(255, 165, 0, 0.9);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-left: 8px;
-}
-
-.successMessage {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  color: white;
-  padding: 16px 24px;
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 24px;
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.successIcon {
-  font-size: 18px;
-}
-
-/* Spinner animation */
-.spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
-  margin-right: 8px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+/* Hide form section when coming soon is active */
+.formSection {
+  display: none;
 }
 
 /* Responsive design */

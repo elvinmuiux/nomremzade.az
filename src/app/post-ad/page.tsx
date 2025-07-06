@@ -19,49 +19,49 @@ export default function PostAdPage() {
             <div className={styles.adTypeCard}>
               <div className={styles.adTypeHeader}>
                 <h3>Premium Elan</h3>
-                <span className={styles.price}>5 AZN</span>
+                <span className={styles.comingSoon}>TEZLİKLƏ</span>
               </div>
               <ul className={styles.featuresList}>
-                <li>30 gün aktiv</li>
-                <li>Səhifə yuxarısında göstərilir</li>
+                <li>30 gün aktiv olacaq</li>
+                <li>Səhifə yuxarısında göstəriləcək</li>
                 <li>Əlavə rəng vurğusu</li>
                 <li>Sosial media paylaşımı</li>
                 <li>WhatsApp dəstəyi</li>
               </ul>
-              <a href="/post-ad/premium" className={styles.selectButton}>
-                Premium Seç
-              </a>
+              <button className={styles.disabledButton} disabled>
+                TEZLİKLƏ
+              </button>
             </div>
 
             <div className={styles.adTypeCard}>
               <div className={styles.adTypeHeader}>
                 <h3>Gold Elan</h3>
-                <span className={styles.price}>2 AZN</span>
+                <span className={styles.comingSoon}>TEZLİKLƏ</span>
               </div>
               <ul className={styles.featuresList}>
-                <li>20 gün aktiv</li>
-                <li>Orta hissədə göstərilir</li>
+                <li>20 gün aktiv olacaq</li>
+                <li>Orta hissədə göstəriləcək</li>
                 <li>Gold vurğu</li>
                 <li>WhatsApp dəstəyi</li>
               </ul>
-              <a href="/post-ad/gold" className={styles.selectButton}>
-                Gold Seç
-              </a>
+              <button className={styles.disabledButton} disabled>
+                TEZLİKLƏ
+              </button>
             </div>
 
             <div className={styles.adTypeCard}>
               <div className={styles.adTypeHeader}>
                 <h3>Standart Elan</h3>
-                <span className={styles.price}>1 AZN</span>
+                <span className={styles.comingSoon}>TEZLİKLƏ</span>
               </div>
               <ul className={styles.featuresList}>
-                <li>10 gün aktiv</li>
+                <li>10 gün aktiv olacaq</li>
                 <li>Standart göstərim</li>
                 <li>Əsas xüsusiyyətlər</li>
               </ul>
-              <a href="/post-ad/standard" className={styles.selectButton}>
-                Standart Seç
-              </a>
+              <button className={styles.disabledButton} disabled>
+                TEZLİKLƏ
+              </button>
             </div>
           </div>
         </section>

@@ -1,26 +1,14 @@
-// Secure database operations for user data and payments
+// Secure database operations for user data and ads
 // This file handles all sensitive data operations
 
 export interface User {
   id: string;
+  name: string;
   email: string;
   phone: string;
-  fullName: string;
-  registeredAt: string;
+  password: string;
   isPremium: boolean;
-  paymentHistory: Payment[];
-}
-
-export interface Payment {
-  id: string;
-  userId: string;
-  amount: number;
-  currency: string;
-  cardLast4: string;
-  status: 'pending' | 'completed' | 'failed';
   createdAt: string;
-  processedAt?: string;
-  transactionId?: string;
 }
 
 export interface PremiumAd {
@@ -28,26 +16,22 @@ export interface PremiumAd {
   userId: string;
   phoneNumber: string;
   operator: string;
+  price: number;
+  contactPhone: string;
+  whatsappNumber?: string;
   description?: string;
-  price?: number;
+  adType: 'premium' | 'gold' | 'standard';
+  status: 'active' | 'expired' | 'deleted';
   createdAt: string;
-  isActive: boolean;
-  paymentId: string;
+  expiresAt: string;
+  views: number;
+  featured: boolean;
 }
 
-// Secure storage keys (in production, these would be environment variables)
+// Secure storage keys
 const STORAGE_KEYS = {
   USERS: 'secure_users_db',
-  PAYMENTS: 'secure_payments_db',
-  PREMIUM_ADS: 'secure_premium_ads_db',
-  PAYMENT_CONFIG: 'payment_config'
-};
-
-// Payment configuration (kept secure)
-const PAYMENT_CONFIG = {
-  MERCHANT_CARD: '4169738829007545', // Your specified card number
-  PREMIUM_AD_PRICE: 5.00, // 5 AZN for premium ad
-  CURRENCY: 'AZN'
+  PREMIUM_ADS: 'secure_premium_ads_db'
 };
 
 // Utility functions for secure storage
@@ -98,35 +82,15 @@ class SecureDatabase {
     return users.find(u => u.email === email) || null;
   }
 
-  // Payment operations
-  static savePayment(payment: Payment): void {
-    const payments = this.getAllPayments();
-    const existingIndex = payments.findIndex(p => p.id === payment.id);
-    
-    if (existingIndex >= 0) {
-      payments[existingIndex] = payment;
-    } else {
-      payments.push(payment);
+  static authenticateUser(email: string, password: string): User | null {
+    const user = this.getUserByEmail(email);
+    if (user && user.password === password) {
+      return user;
     }
-    
-    const encrypted = this.encryptData(payments);
-    localStorage.setItem(STORAGE_KEYS.PAYMENTS, encrypted);
+    return null;
   }
 
-  static getAllPayments(): Payment[] {
-    const encrypted = localStorage.getItem(STORAGE_KEYS.PAYMENTS);
-    if (!encrypted) return [];
-    
-    const decrypted = this.decryptData(encrypted) as Payment[];
-    return Array.isArray(decrypted) ? decrypted : [];
-  }
-
-  static getPaymentsByUserId(userId: string): Payment[] {
-    const payments = this.getAllPayments();
-    return payments.filter(p => p.userId === userId);
-  }
-
-  // Premium ads operations
+  // Premium ad operations
   static savePremiumAd(ad: PremiumAd): void {
     const ads = this.getAllPremiumAds();
     const existingIndex = ads.findIndex(a => a.id === ad.id);
@@ -149,85 +113,96 @@ class SecureDatabase {
     return Array.isArray(decrypted) ? decrypted : [];
   }
 
-  static getAdsByUserId(userId: string): PremiumAd[] {
-    const ads = this.getAllPremiumAds();
-    return ads.filter(a => a.userId === userId);
+  static getActivePremiumAds(): PremiumAd[] {
+    const allAds = this.getAllPremiumAds();
+    const now = new Date();
+    
+    return allAds.filter(ad => {
+      const expiryDate = new Date(ad.expiresAt);
+      return ad.status === 'active' && expiryDate > now;
+    }).sort((a, b) => {
+      // Sort by priority: featured first, then by creation date
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
   }
 
-  static getActiveAds(): PremiumAd[] {
+  static getPremiumAdById(id: string): PremiumAd | null {
     const ads = this.getAllPremiumAds();
-    return ads.filter(a => a.isActive);
+    return ads.find(a => a.id === id) || null;
   }
 
-  // Payment processing
-  static async processPayment(
-    userId: string,
-    cardNumber: string
-  ): Promise<{ success: boolean; paymentId?: string; error?: string }> {
-    try {
-      // Generate unique payment ID
-      const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      // Create payment record
-      const payment: Payment = {
-        id: paymentId,
-        userId,
-        amount: PAYMENT_CONFIG.PREMIUM_AD_PRICE,
-        currency: PAYMENT_CONFIG.CURRENCY,
-        cardLast4: cardNumber.slice(-4),
-        status: 'pending',
-        createdAt: new Date().toISOString()
-      };
+  static getUserAds(userId: string): PremiumAd[] {
+    const allAds = this.getAllPremiumAds();
+    return allAds.filter(ad => ad.userId === userId);
+  }
 
-      // Save payment
-      this.savePayment(payment);
-
-      // Simulate payment processing (in production, integrate with real payment gateway)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Update payment status
-      payment.status = 'completed';
-      payment.processedAt = new Date().toISOString();
-      payment.transactionId = `txn_${Date.now()}`;
-      
-      this.savePayment(payment);
-
-      // Update user premium status
-      const user = this.getUserById(userId);
-      if (user) {
-        user.isPremium = true;
-        user.paymentHistory.push(payment);
-        this.saveUser(user);
-      }
-
-      return { success: true, paymentId };
-    } catch {
-      return { success: false, error: 'Payment processing failed' };
+  static incrementAdViews(adId: string): void {
+    const ad = this.getPremiumAdById(adId);
+    if (ad) {
+      ad.views = (ad.views || 0) + 1;
+      this.savePremiumAd(ad);
     }
   }
 
-  // Get payment configuration
-  static getPaymentConfig() {
-    return PAYMENT_CONFIG;
+  static deleteAd(adId: string): boolean {
+    const ads = this.getAllPremiumAds();
+    const adIndex = ads.findIndex(a => a.id === adId);
+    
+    if (adIndex >= 0) {
+      ads.splice(adIndex, 1); // Completely remove the ad from array
+      const encrypted = this.encryptData(ads);
+      localStorage.setItem(STORAGE_KEYS.PREMIUM_ADS, encrypted);
+      return true;
+    }
+    
+    return false;
   }
 
-  // Clear all data (for development/testing)
+  static deleteUser(userId: string): boolean {
+    const users = this.getAllUsers();
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex >= 0) {
+      users.splice(userIndex, 1);
+      const encrypted = this.encryptData(users);
+      localStorage.setItem(STORAGE_KEYS.USERS, encrypted);
+      return true;
+    }
+    
+    return false;
+  }
+
+  static getAllAds(): PremiumAd[] {
+    return this.getAllPremiumAds();
+  }
+
+  // Utility methods
   static clearAllData(): void {
     Object.values(STORAGE_KEYS).forEach(key => {
       localStorage.removeItem(key);
     });
   }
 
-  // Export data for admin (encrypted)
-  static exportData(): string {
-    const data = {
-      users: this.getAllUsers(),
-      payments: this.getAllPayments(),
-      premiumAds: this.getAllPremiumAds(),
-      exportedAt: new Date().toISOString()
-    };
-    
-    return this.encryptData(data);
+  static exportData(): object {
+    const data: Record<string, unknown> = {};
+    Object.entries(STORAGE_KEYS).forEach(([name, key]) => {
+      const encrypted = localStorage.getItem(key);
+      if (encrypted) {
+        data[name] = this.decryptData(encrypted);
+      }
+    });
+    return data;
+  }
+
+  static importData(data: Record<string, unknown>): void {
+    Object.entries(STORAGE_KEYS).forEach(([name, key]) => {
+      if (data[name]) {
+        const encrypted = this.encryptData(data[name]);
+        localStorage.setItem(key, encrypted);
+      }
+    });
   }
 }
 

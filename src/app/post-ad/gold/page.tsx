@@ -1,42 +1,203 @@
-import React from 'react';
-import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
-import styles from '../premium/page.module.css';
+'use client';
 
-export default function GoldAdPage() {
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
+import SecureDatabase, { User, PremiumAd } from '@/lib/database';
+import styles from './page.module.css';
+
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
+function GoldAdPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [formData, setFormData] = useState({
+    phoneNumber: '',
+    operator: '',
+    price: '',
+    contactPhone: '',
+    whatsappNumber: '',
+    description: ''
+  });
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      const user = JSON.parse(userData);
+      setCurrentUser(user);
+    } else {
+      // Redirect to registration if not logged in
+      router.push('/register?from=gold');
+      return;
+    }
+
+    // Check if user just registered
+    const registered = searchParams.get('registered');
+    if (registered === 'true') {
+      setSuccessMessage('Qeydiyyat uğurludur! İndi gold elanınızı yerləşdirə bilərsiniz.');
+    }
+  }, [router, searchParams]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = (): boolean => {
+    if (!formData.phoneNumber.trim()) {
+      alert('Telefon nömrəsi daxil edin');
+      return false;
+    }
+    if (!formData.operator) {
+      alert('Operator seçin');
+      return false;
+    }
+    if (!formData.price.trim()) {
+      alert('Qiymət daxil edin');
+      return false;
+    }
+    if (!formData.contactPhone.trim()) {
+      alert('Əlaqə telefonu daxil edin');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm() || !currentUser) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Simulate processing time
+    setTimeout(() => {
+      try {
+        // Create gold ad
+        const newAd: PremiumAd = {
+          id: `gold_${Date.now()}`,
+          userId: currentUser.id,
+          phoneNumber: formData.phoneNumber,
+          operator: formData.operator,
+          price: parseFloat(formData.price),
+          contactPhone: formData.contactPhone,
+          whatsappNumber: formData.whatsappNumber,
+          description: formData.description,
+          adType: 'gold',
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days
+          views: 0,
+          featured: true
+        };
+
+        // Save ad
+        SecureDatabase.savePremiumAd(newAd);
+
+        setSuccessMessage('Gold elanınız uğurla yerləşdirildi! 20 gün aktiv olacaq.');
+        
+        // Reset form
+        setFormData({
+          phoneNumber: '',
+          operator: '',
+          price: '',
+          contactPhone: '',
+          whatsappNumber: '',
+          description: ''
+        });
+
+        // Redirect to numbers page after 3 seconds
+        setTimeout(() => {
+          router.push('/numbers');
+        }, 3000);
+
+      } catch (error) {
+        console.error('Error creating ad:', error);
+        alert('Elan yerləşdirmə zamanı xəta baş verdi');
+      } finally {
+        setIsLoading(false);
+      }
+    }, 2000);
+  };
+
+  if (!currentUser) {
+    return (
+      <PageTemplate>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Yönləndirilir...</p>
+        </div>
+      </PageTemplate>
+    );
+  }
+
   return (
-    <PageTemplate showTopNav={false}>
-      <div className={styles.adFormPage}>
-        <section className={styles.section}>
-          <h1 className={styles.pageTitle}>Gold Elan Yerləşdir</h1>
-          <p className={styles.pageDescription}>
-            Gold elanınızla nömrənizi fərqləndirin və daha çox diqqət çəkin.
-          </p>
+    <PageTemplate>
+      <div className={styles.goldAdPage}>
+        <section className={styles.header}>
+          <div className={styles.headerContent}>
+            <h1 className={styles.pageTitle}>Gold Elan</h1>
+            <p className={styles.pageDescription}>
+              Gold elanınız 20 gün aktiv olacaq və öncelikli göstəriləcək
+            </p>
+            <div className={styles.comingSoon}>
+              <span className={styles.comingSoonText}>TEZLİKLƏ</span>
+              <p className={styles.comingSoonMessage}>Bu xidmət tezliklə aktiv olacaq</p>
+            </div>
+          </div>
         </section>
 
-        <section className={styles.section}>
+        {successMessage && (
+          <div className={styles.successBanner}>
+            <div className={styles.successIcon}>✅</div>
+            <div className={styles.successText}>
+              {successMessage}
+            </div>
+          </div>
+        )}
+
+        <section className={styles.formSection}>
           <div className={styles.formContainer}>
-            <form className={styles.adForm}>
+            <form onSubmit={handleSubmit} className={styles.adForm}>
               <div className={styles.formGroup}>
-                <label htmlFor="number" className={styles.label}>
-                  Telefon Nömrəsi *
+                <label htmlFor="phoneNumber" className={styles.label}>
+                  Telefon Nömrəsi
                 </label>
                 <input
-                  type="tel"
-                  id="number"
-                  name="number"
-                  placeholder="050-444-44-22"
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
                   className={styles.input}
+                  placeholder="055 123 45 67"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="operator" className={styles.label}>
-                  Operator *
+                  Operator
                 </label>
-                <select id="operator" name="operator" className={styles.select} required>
+                <select
+                  id="operator"
+                  name="operator"
+                  value={formData.operator}
+                  onChange={handleInputChange}
+                  className={styles.select}
+                  required
+                  disabled={isLoading}
+                >
                   <option value="">Operator seçin</option>
-                  <option value="azercell">Azərcell</option>
+                  <option value="azercell">Azercell</option>
                   <option value="bakcell">Bakcell</option>
                   <option value="nar-mobile">Nar Mobile</option>
                   <option value="naxtel">Naxtel</option>
@@ -45,89 +206,98 @@ export default function GoldAdPage() {
 
               <div className={styles.formGroup}>
                 <label htmlFor="price" className={styles.label}>
-                  Qiymət (AZN) *
+                  Qiymət (AZN)
                 </label>
                 <input
                   type="number"
                   id="price"
                   name="price"
-                  placeholder="300"
+                  value={formData.price}
+                  onChange={handleInputChange}
                   className={styles.input}
+                  placeholder="100"
                   min="1"
+                  step="0.01"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="contact" className={styles.label}>
-                  Əlaqə Nömrəsi *
+                <label htmlFor="contactPhone" className={styles.label}>
+                  Əlaqə Telefonu
                 </label>
                 <input
-                  type="tel"
-                  id="contact"
-                  name="contact"
-                  placeholder="050-266-63-66"
+                  type="text"
+                  id="contactPhone"
+                  name="contactPhone"
+                  value={formData.contactPhone}
+                  onChange={handleInputChange}
                   className={styles.input}
+                  placeholder="050 123 45 67"
                   required
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label htmlFor="whatsapp" className={styles.label}>
-                  WhatsApp Nömrəsi
+                <label htmlFor="whatsappNumber" className={styles.label}>
+                  WhatsApp Nömrəsi (İstəyə görə)
                 </label>
                 <input
-                  type="tel"
-                  id="whatsapp"
-                  name="whatsapp"
-                  placeholder="050-444-44-22"
+                  type="text"
+                  id="whatsappNumber"
+                  name="whatsappNumber"
+                  value={formData.whatsappNumber}
+                  onChange={handleInputChange}
                   className={styles.input}
+                  placeholder="050 123 45 67"
+                  disabled={isLoading}
                 />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="description" className={styles.label}>
-                  Təsvir
+                  Əlavə Məlumat (İstəyə görə)
                 </label>
                 <textarea
                   id="description"
                   name="description"
-                  placeholder="Nömrəniz haqqında əlavə məlumat..."
+                  value={formData.description}
+                  onChange={handleInputChange}
                   className={styles.textarea}
+                  placeholder="Nömrə haqqında əlavə məlumatlar..."
                   rows={4}
-                ></textarea>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="image" className={styles.label}>
-                  Şəkil
-                </label>
-                <input
-                  type="file"
-                  id="image"
-                  name="image"
-                  accept="image/*"
-                  className={styles.fileInput}
+                  disabled={isLoading}
                 />
               </div>
 
-              <div className={styles.priceInfo}>
-                <h3>Gold Elan - 2 AZN</h3>
-                <ul>
-                  <li>20 gün aktiv</li>
-                  <li>Orta hissədə göstərilir</li>
-                  <li>Gold vurğu</li>
-                  <li>WhatsApp dəstəyi</li>
-                </ul>
-              </div>
-
-              <button type="submit" className={styles.submitButton}>
-                Gold Elan Yerləşdir
+              <button
+                type="submit"
+                className={styles.submitButton}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <span className={styles.spinner}></span>
+                    Elan yerləşdirilir...
+                  </>
+                ) : (
+                  'Gold Elan Yerləşdir'
+                )}
               </button>
             </form>
           </div>
         </section>
       </div>
     </PageTemplate>
+  );
+}
+
+export default function GoldAdPage() {
+  return (
+    <Suspense fallback={<div>Yüklənir...</div>}>
+      <GoldAdPageContent />
+    </Suspense>
   );
 }
