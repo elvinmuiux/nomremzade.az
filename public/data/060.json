@@ -1,0 +1,14 @@
+{
+  "naxtelAds": [
+    {
+      "id": 1,
+      "phoneNumber": "060-999-99-99",
+      "price": 50,
+      "contactPhone": "099-999-99-99",
+      "type": "standard",
+      "isVip": false,
+      "description": "Naxtel nömrə",
+      "provider": "Naxtel"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "bakcellAds": [
+    {
+      "id": 1,
+      "phoneNumber": "055 999 99 99",
+      "price": 0,
+      "contactPhone": "099 999 99 99",
+      "type": "Sms",
+      "isVip": false,
+      "description": ""
+    }
+  ]
+}

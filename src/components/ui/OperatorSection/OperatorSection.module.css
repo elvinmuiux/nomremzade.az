@@ -1,0 +1,152 @@
+.operatorSection {
+  padding: 1.25rem 0.5rem 0.5rem 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  text-align: center;
+}
+
+.operatorTitle {
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-bottom: 0.875rem;
+  color: var(--color-white);
+  letter-spacing: -0.01em;
+}
+
+.operatorLogos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 37px;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.operatorLogo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 37px;
+  height: 37px;
+  background-color: var(--color-white);
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.operatorLogo:not(:first-child) {
+  margin-left: -13px; /* 30% overlap */
+}
+
+.operatorLogo:hover {
+  transform: translateY(-2px) scale(1.05);
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 999 !important;
+}
+
+.operatorImage {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .operatorSection {
+    padding: 1rem 0.25rem 0.25rem 0.25rem;
+  }
+  
+  .operatorTitle {
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .operatorLogo {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .operatorLogo:not(:first-child) {
+    margin-left: -18px; /* 50% overlap for smaller screens */
+  }
+  
+  .operatorImage {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 992px) {
+  .operatorSection {
+    padding: 0.75rem 0.5rem;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .operatorTitle {
+    display: none;
+  }
+
+  .operatorLogos {
+    height: auto;
+    flex-direction: column;
+    gap: 0;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .operatorLogos::before {
+    content: "O";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    background-color: var(--color-white);
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-family: var(--font-archivo);
+    box-shadow:
+      0 0 0 1px rgba(197, 159, 50, 0.3),
+      0 2px 6px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+
+  .operatorLogo {
+    display: none;
+  }
+}
+
+@media (max-width: 580px) {
+  .operatorSection {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) and (min-width: 581px) {
+  .operatorLogo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .operatorLogo:not(:first-child) {
+    margin-left: -16px; /* 50% overlap for mobile */
+  }
+
+  .operatorImage {
+    width: 20px;
+    height: 20px;
+  }
+}

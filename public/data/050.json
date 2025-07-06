@@ -1,0 +1,13 @@
+{
+  "azercellAds": [
+    {
+      "id": 2,
+      "phoneNumber": "050-888-88-88",
+      "price": 2800,
+      "contactPhone": "050-123-45-67",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "azercellAds": [
+    {
+      "id": 1,
+      "phoneNumber": "051-777-77-77",
+      "price": 3000,
+      "contactPhone": "050-123-45-67",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    }
+  ]
+}

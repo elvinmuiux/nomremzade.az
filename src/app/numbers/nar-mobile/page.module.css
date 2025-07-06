@@ -1,0 +1,43 @@
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comingSoon {
+  text-align: center;
+  padding: 40px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.logo {
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 32px;
+  color: #333;
+  font-weight: bold;
+}
+
+.message {
+  margin: 0;
+  font-size: 20px;
+  color: #666;
+  font-style: italic;
+}

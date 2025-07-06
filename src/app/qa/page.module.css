@@ -1,0 +1,245 @@
+.qaPage {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.pageDescription {
+  font-size: 1.25rem;
+  color: #666;
+  text-align: center;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+.section {
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent);
+  position: relative;
+  text-align: center;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 2px;
+  background-color: var(--color-primary);
+}
+
+.faqContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.faqItem {
+  background-color: var(--color-white);
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.faqItem:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.question {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.question::before {
+  content: 'S:';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.answer {
+  color: #666;
+  line-height: 1.7;
+  font-size: 1rem;
+  margin: 0;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.answer::before {
+  content: 'C:';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.contactInfo {
+  background-color: var(--color-secondary);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  border: 2px solid var(--color-accent);
+}
+
+.contactInfo p {
+  font-size: 1.125rem;
+  color: var(--color-primary);
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.contactMethods {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.contactMethod {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-white);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.contactMethod:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contactIcon {
+  font-size: 1.25rem;
+}
+
+.contactMethod span:last-child {
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.contactLink {
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.contactLink:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 2rem;
+  }
+
+  .pageDescription {
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+  }
+
+  .faqItem {
+    padding: 1.5rem;
+  }
+
+  .question {
+    font-size: 1.125rem;
+    padding-left: 1.5rem;
+  }
+
+  .answer {
+    font-size: 0.95rem;
+    padding-left: 1.5rem;
+  }
+
+  .contactInfo {
+    padding: 1.5rem;
+  }
+
+  .contactMethods {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .contactMethod {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 1.75rem;
+  }
+
+  .faqItem {
+    padding: 1.25rem;
+  }
+
+  .question {
+    font-size: 1rem;
+    padding-left: 1.25rem;
+  }
+
+  .answer {
+    font-size: 0.9rem;
+    padding-left: 1.25rem;
+  }
+
+  .contactInfo {
+    padding: 1rem;
+  }
+
+  .contactMethod {
+    padding: 0.75rem 1rem;
+  }
+
+  .contactMethod span:last-child {
+    font-size: 0.85rem;
+  }
+}
