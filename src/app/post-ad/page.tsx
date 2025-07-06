@@ -19,7 +19,7 @@ export default function PostAdPage() {
             <div className={styles.adTypeCard}>
               <div className={styles.adTypeHeader}>
                 <h3>Premium Elan</h3>
-                <span className={styles.price}>50 AZN</span>
+                <span className={styles.price}>5 AZN</span>
               </div>
               <ul className={styles.featuresList}>
                 <li>30 gün aktiv</li>
@@ -36,7 +36,7 @@ export default function PostAdPage() {
             <div className={styles.adTypeCard}>
               <div className={styles.adTypeHeader}>
                 <h3>Gold Elan</h3>
-                <span className={styles.price}>30 AZN</span>
+                <span className={styles.price}>2 AZN</span>
               </div>
               <ul className={styles.featuresList}>
                 <li>20 gün aktiv</li>
@@ -52,7 +52,7 @@ export default function PostAdPage() {
             <div className={styles.adTypeCard}>
               <div className={styles.adTypeHeader}>
                 <h3>Standart Elan</h3>
-                <span className={styles.price}>15 AZN</span>
+                <span className={styles.price}>1 AZN</span>
               </div>
               <ul className={styles.featuresList}>
                 <li>10 gün aktiv</li>

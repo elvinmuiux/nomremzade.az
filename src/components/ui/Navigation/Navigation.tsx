@@ -46,13 +46,7 @@ const navigationItems: NavigationItem[] = [
     id: 'post-ad',
     label: 'Elan yerləşdir',
     href: '/post-ad',
-    icon: Edit3,
-    hasDropdown: true,
-    children: [
-      { id: 'premium', label: 'Premium elan', href: '/post-ad/premium' },
-      { id: 'gold', label: 'Gold elan', href: '/post-ad/gold' },
-      { id: 'standard', label: 'Standart elan', href: '/post-ad/standard' }
-    ]
+    icon: Edit3
   },
   {
     id: 'cooperation',

@@ -24,7 +24,7 @@ export default function PremiumAdPage() {
                   type="tel"
                   id="number"
                   name="number"
-                  placeholder="050-123-45-67"
+                  placeholder="050-444-44-22"
                   className={styles.input}
                   required
                 />
@@ -66,7 +66,7 @@ export default function PremiumAdPage() {
                   type="tel"
                   id="contact"
                   name="contact"
-                  placeholder="050-987-65-43"
+                  placeholder="050-266-63-66"
                   className={styles.input}
                   required
                 />
@@ -80,7 +80,7 @@ export default function PremiumAdPage() {
                   type="tel"
                   id="whatsapp"
                   name="whatsapp"
-                  placeholder="050-987-65-43"
+                  placeholder="050-444-44-22"
                   className={styles.input}
                 />
               </div>
@@ -112,7 +112,7 @@ export default function PremiumAdPage() {
               </div>
 
               <div className={styles.priceInfo}>
-                <h3>Premium Elan - 50 AZN</h3>
+                <h3>Premium Elan - 5 AZN</h3>
                 <ul>
                   <li>30 gün aktiv</li>
                   <li>Səhifə yuxarısında göstərilir</li>

@@ -24,7 +24,7 @@ export default function StandardAdPage() {
                   type="tel"
                   id="number"
                   name="number"
-                  placeholder="050-123-45-67"
+                  placeholder="050-266-63-66"
                   className={styles.input}
                   required
                 />
@@ -66,7 +66,7 @@ export default function StandardAdPage() {
                   type="tel"
                   id="contact"
                   name="contact"
-                  placeholder="050-987-65-43"
+                  placeholder="050-444-44-22"
                   className={styles.input}
                   required
                 />
@@ -86,7 +86,7 @@ export default function StandardAdPage() {
               </div>
 
               <div className={styles.priceInfo}>
-                <h3>Standart Elan - 15 AZN</h3>
+                <h3>Standart Elan - 1 AZN</h3>
                 <ul>
                   <li>10 gün aktiv</li>
                   <li>Standart göstərim</li>

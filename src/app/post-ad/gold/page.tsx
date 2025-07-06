@@ -112,7 +112,7 @@ export default function GoldAdPage() {
               </div>
 
               <div className={styles.priceInfo}>
-                <h3>Gold Elan - 30 AZN</h3>
+                <h3>Gold Elan - 2 AZN</h3>
                 <ul>
                   <li>20 gün aktiv</li>
                   <li>Orta hissədə göstərilir</li>

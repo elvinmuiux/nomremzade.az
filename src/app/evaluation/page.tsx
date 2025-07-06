@@ -19,7 +19,6 @@ export default function EvaluationPage() {
   const [feedbacks, setFeedbacks] = useState<FeedbackData[]>([]);
   const [averageRating, setAverageRating] = useState(0);
   const [totalFeedbacks, setTotalFeedbacks] = useState(0);
-  const [isAdminMode, setIsAdminMode] = useState(false);
 
   const loadFeedbacks = () => {
     // Load feedbacks from localStorage
@@ -39,36 +38,6 @@ export default function EvaluationPage() {
       setFeedbacks([]);
       setTotalFeedbacks(0);
       setAverageRating(0);
-    }
-  };
-
-  const clearAllFeedbacks = () => {
-    if (confirm('Bütün rəyləri silmək istədiyinizə əminsiniz?')) {
-      localStorage.removeItem('feedbacks');
-      setFeedbacks([]);
-      setTotalFeedbacks(0);
-      setAverageRating(0);
-      alert('Bütün rəylər silindi!');
-    }
-  };
-
-  const deleteFeedback = (indexToDelete: number) => {
-    if (confirm('Bu rəyi silmək istədiyinizə əminsiniz?')) {
-      const updatedFeedbacks = feedbacks.filter((_, index) => index !== indexToDelete);
-      localStorage.setItem('feedbacks', JSON.stringify(updatedFeedbacks));
-      setFeedbacks(updatedFeedbacks);
-      setTotalFeedbacks(updatedFeedbacks.length);
-      
-      // Recalculate average rating
-      const ratingsOnly = updatedFeedbacks.filter((f: FeedbackData) => f.rating && f.rating !== '');
-      if (ratingsOnly.length > 0) {
-        const sum = ratingsOnly.reduce((acc: number, f: FeedbackData) => acc + parseInt(f.rating), 0);
-        setAverageRating(sum / ratingsOnly.length);
-      } else {
-        setAverageRating(0);
-      }
-      
-      alert('Rəy silindi!');
     }
   };
 
@@ -233,70 +202,6 @@ export default function EvaluationPage() {
             )}
           </div>
         </section>
-
-        {/* Admin Giriş Düyməsi */}
-        <section className={styles.section}>
-          <div className={styles.adminToggle}>
-            <button 
-              onClick={() => setIsAdminMode(!isAdminMode)}
-              className={styles.adminButton}
-            >
-              {isAdminMode ? '🔓 Admin Paneldən Çıx' : '🔐 Admin Panel'}
-            </button>
-          </div>
-        </section>
-
-        {isAdminMode && (
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Admin Panel - Rəy İdarəetməsi</h2>
-            <div className={styles.adminPanel}>
-              <div className={styles.adminStats}>
-                <p>Cəmi {totalFeedbacks} rəy mövcuddur.</p>
-                <button 
-                  onClick={clearAllFeedbacks}
-                  className={styles.clearButton}
-                >
-                  🗑️ Bütün Rəyləri Sil
-                </button>
-              </div>
-              
-              {totalFeedbacks > 0 && (
-                <div className={styles.adminFeedbackList}>
-                  <h3 className={styles.adminSubtitle}>Fərdi Rəy Silmə</h3>
-                  <div className={styles.adminFeedbacks}>
-                    {feedbacks.map((feedback, index) => (
-                      <div key={index} className={styles.adminFeedbackCard}>
-                        <div className={styles.adminFeedbackHeader}>
-                          <h4>{feedback.subject}</h4>
-                          <div className={styles.adminFeedbackMeta}>
-                            <span className={styles.feedbackType}>{getTypeLabel(feedback.feedbackType)}</span>
-                            {feedback.rating && (
-                              <span className={styles.feedbackRating}>
-                                {'⭐'.repeat(parseInt(feedback.rating))}
-                              </span>
-                            )}
-                            <button
-                              onClick={() => deleteFeedback(index)}
-                              className={styles.deleteButton}
-                              title="Bu rəyi sil"
-                            >
-                              🗑️ Sil
-                            </button>
-                          </div>
-                        </div>
-                        <p className={styles.adminFeedbackMessage}>{feedback.message}</p>
-                        <div className={styles.adminFeedbackFooter}>
-                          <span>- {feedback.name}</span>
-                          <span>{feedback.date}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
       </div>
     </PageTemplate>
   );
