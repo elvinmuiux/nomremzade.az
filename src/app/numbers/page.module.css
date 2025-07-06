@@ -1,31 +1,330 @@
 .container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  min-height: 60vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #425C5B 0%, #2C3E3D 100%);
 }
 
-.comingSoon {
+.header {
   text-align: center;
-  padding: 40px;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 3rem;
 }
 
 .title {
-  margin: 0 0 20px 0;
-  font-size: 32px;
-  color: #333;
-  font-weight: bold;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
 }
 
-.message {
-  margin: 0;
-  font-size: 20px;
+.subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: white;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #C69F32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: white;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.emptyState h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.emptyState p {
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+.registerButton {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #C69F32 0%, #E4B942 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.registerButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(198, 159, 50, 0.3);
+}
+
+.adsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.premiumAdCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.premiumAdCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+  border-color: #C69F32;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.operatorInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.operatorLogo {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.operatorName {
+  font-weight: 600;
+  color: #425C5B;
+}
+
+.premiumBadge {
+  background: linear-gradient(135deg, #C69F32 0%, #E4B942 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.cardBody {
+  padding: 1rem 1.5rem;
+}
+
+.phoneNumber {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #425C5B;
+  margin-bottom: 0.5rem;
+  font-family: 'Courier New', monospace;
+}
+
+.description {
   color: #666;
-  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.priceSection {
+  margin-bottom: 1rem;
+}
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #C69F32;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.publishDate {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.contactButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.whatsappButton,
+.callButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.whatsappButton {
+  background: #25D366;
+  color: white;
+}
+
+.whatsappButton:hover {
+  background: #1da851;
+  transform: translateY(-1px);
+}
+
+.callButton {
+  background: #007bff;
+  color: white;
+}
+
+.callButton:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.whatsappIcon,
+.callIcon {
+  font-size: 1rem;
+}
+
+.infoSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.infoCard {
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 500px;
+  text-align: center;
+  color: white;
+}
+
+.infoCard h3 {
+  margin-bottom: 1rem;
+  color: #C69F32;
+}
+
+.infoCard p {
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.featuresList {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.featuresList li {
+  padding: 0.5rem 0;
+  opacity: 0.9;
+}
+
+.postAdButton {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #C69F32 0%, #E4B942 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.postAdButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(198, 159, 50, 0.3);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .adsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .premiumAdCard {
+    margin: 0 0.5rem;
+  }
+  
+  .cardHeader {
+    padding: 1rem 1rem 0 1rem;
+  }
+  
+  .cardBody {
+    padding: 0.75rem 1rem;
+  }
+  
+  .cardFooter {
+    padding: 0.75rem 1rem 1rem 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  
+  .contactButtons {
+    justify-content: stretch;
+  }
+  
+  .whatsappButton,
+  .callButton {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .infoCard {
+    margin: 0 1rem;
+    padding: 1.5rem;
+  }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import AuthButtons from '@/components/ui/AuthButtons/AuthButtons';
 import styles from './Logo.module.css';
 import { LogoProps } from '@/types/navigation';
 
@@ -16,27 +17,35 @@ const Logo: React.FC<LogoProps> = ({
   if (showBrandInfo) {
     return (
       <div className={`${styles.logoArea} ${className}`}>
-        <div className={`${styles.logo} ${styles[size]}`}>
-          {src ? (
-            <div className={styles.logoContainer}>
-              <Image
-                src={src}
-                alt={alt}
-                width={size === 'small' ? 40 : size === 'large' ? 80 : 60}
-                height={size === 'small' ? 40 : size === 'large' ? 80 : 60}
-                className={styles.logoImage}
-                priority
-              />
-            </div>
-          ) : (
-            <div className={styles.logoCircle}>
-              <span className={styles.logoText}>NZ</span>
-            </div>
-          )}
+        <div className={styles.logoAndMobileAuth}>
+          <div className={`${styles.logo} ${styles[size]}`}>
+            {src ? (
+              <div className={styles.logoContainer}>
+                <Image
+                  src={src}
+                  alt={alt}
+                  width={size === 'small' ? 40 : size === 'large' ? 80 : 60}
+                  height={size === 'small' ? 40 : size === 'large' ? 80 : 60}
+                  className={styles.logoImage}
+                  priority
+                />
+              </div>
+            ) : (
+              <div className={styles.logoCircle}>
+                <span className={styles.logoText}>NZ</span>
+              </div>
+            )}
+          </div>
+          <div className={styles.mobileAuthButtons}>
+            <AuthButtons />
+          </div>
         </div>
         <div className={styles.brandInfo}>
           <h1 className={styles.brandTitle}>{title}</h1>
           <p className={styles.brandSubtitle}>{subtitle}</p>
+          <div className={styles.desktopAuthButtons}>
+            <AuthButtons />
+          </div>
         </div>
       </div>
     );

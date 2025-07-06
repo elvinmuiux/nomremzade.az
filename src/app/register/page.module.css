@@ -1,0 +1,331 @@
+.registerPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #425C5B 0%, #E4F2F2 100%);
+  position: relative;
+}
+
+.registerPage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="10" cy="50" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="90" cy="30" r="0.5" fill="rgba(255,255,255,0.02)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.header {
+  text-align: center;
+  padding: 60px 20px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.headerContent {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 16px 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.pageDescription {
+  font-size: 18px;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.6;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 60px;
+  padding: 0 20px 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.formSection {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(228, 242, 242, 0.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(66, 92, 91, 0.1);
+  border: 1px solid rgba(228, 242, 242, 0.2);
+}
+
+.registerForm {
+  width: 100%;
+}
+
+.errorAlert {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(255,107,107,0.3);
+}
+
+.errorIcon {
+  font-size: 18px;
+}
+
+.formGroup {
+  margin-bottom: 24px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #425C5B;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid #E4F2F2;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: white;
+  color: #425C5B;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #C69F32;
+  box-shadow: 0 0 0 4px rgba(198, 159, 50, 0.1);
+  transform: translateY(-2px);
+}
+
+.input::placeholder {
+  color: #8a95a6;
+}
+
+.submitButton {
+  width: 100%;
+  background: linear-gradient(135deg, #C69F32 0%, #425C5B 100%);
+  color: white;
+  border: none;
+  padding: 18px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(198, 159, 50, 0.4);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.authLinks {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #E4F2F2;
+}
+
+.authLinks p {
+  margin: 0;
+  color: #425C5B;
+  font-size: 14px;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #C69F32;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 6px;
+  transition: color 0.3s ease;
+}
+
+.linkButton:hover {
+  color: #425C5B;
+}
+
+.benefitsSection {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.benefitsContainer {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(66, 92, 91, 0.15);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 40px;
+  border: 1px solid rgba(228, 242, 242, 0.3);
+}
+
+.benefitsTitle {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 32px 0;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.benefitsList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.benefitItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(228, 242, 242, 0.2);
+  border-radius: 16px;
+  border: 1px solid rgba(228, 242, 242, 0.3);
+  transition: all 0.3s ease;
+}
+
+.benefitItem:hover {
+  background: rgba(198, 159, 50, 0.15);
+  transform: translateY(-2px);
+}
+
+.benefitIcon {
+  font-size: 32px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.benefitContent h4 {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.benefitContent p {
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .contentWrapper {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 600px;
+  }
+  
+  .pageTitle {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 40px 20px 30px;
+  }
+  
+  .pageTitle {
+    font-size: 32px;
+  }
+  
+  .pageDescription {
+    font-size: 16px;
+  }
+  
+  .contentWrapper {
+    padding: 0 20px 40px;
+    gap: 30px;
+  }
+  
+  .formContainer, .benefitsContainer {
+    padding: 30px 24px;
+  }
+  
+  .benefitItem {
+    padding: 16px;
+  }
+  
+  .benefitIcon {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 28px;
+  }
+  
+  .formContainer, .benefitsContainer {
+    padding: 24px 20px;
+  }
+  
+  .input, .submitButton {
+    padding: 14px 16px;
+  }
+}

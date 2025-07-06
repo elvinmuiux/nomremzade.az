@@ -1,20 +1,19 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
+import PaymentForm from '@/components/ui/PaymentForm/PaymentForm';
 import SecureDatabase, { User, PremiumAd } from '@/lib/database';
 import styles from './page.module.css';
 
-// Force dynamic rendering for this page
-export const dynamic = 'force-dynamic';
-
-function PremiumAdPageContent() {
+export default function PremiumAdPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showPayment, setShowPayment] = useState(false);
   const [formData, setFormData] = useState({
     phoneNumber: '',
     operator: '',
@@ -28,28 +27,27 @@ function PremiumAdPageContent() {
     // Check if user is logged in
     const userData = localStorage.getItem('currentUser');
     if (userData) {
-      setCurrentUser(JSON.parse(userData));
+      try {
+        const user = JSON.parse(userData);
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('currentUser');
+      }
     }
 
-    // Show success message if user just registered/logged in
-    if (searchParams.get('registered') === 'true') {
-      setSuccessMessage('Qeydiyyat uğurla tamamlandı! İndi premium elanınızı yerləşdirə bilərsiniz.');
-    } else if (searchParams.get('loggedIn') === 'true') {
+    // Check for success messages from registration
+    const registered = searchParams.get('registered');
+    const paymentSuccess = searchParams.get('payment');
+    const loggedIn = searchParams.get('loggedIn');
+    
+    if (registered === 'true' && paymentSuccess === 'success') {
+      setSuccessMessage('Qeydiyyat və ödəmə uğurla tamamlandı! İndi premium elanınızı yerləşdirə bilərsiniz.');
+    } else if (registered === 'true') {
+      setSuccessMessage('Qeydiyyat uğurla tamamlandı! Premium elan yerləşdirmək üçün ödəmə tələb olunur.');
+    } else if (loggedIn === 'true') {
       setSuccessMessage('Giriş uğurla həyata keçirildi! Premium elanınızı yerləşdirin.');
     }
-
-    // Listen for storage changes (when user logs in)
-    const handleStorageChange = () => {
-      const userData = localStorage.getItem('currentUser');
-      if (userData) {
-        setCurrentUser(JSON.parse(userData));
-      } else {
-        setCurrentUser(null);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
   }, [searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -61,7 +59,13 @@ function PremiumAdPageContent() {
     e.preventDefault();
     
     if (!currentUser) {
-      // Show authentication options
+      router.push('/register');
+      return;
+    }
+
+    // Check if user has premium status (paid)
+    if (!currentUser.isPremium) {
+      setShowPayment(true);
       return;
     }
 
@@ -70,7 +74,7 @@ function PremiumAdPageContent() {
     // Simulate processing
     setTimeout(() => {
       const newAd: PremiumAd = {
-        id: `ad_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `premium_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         userId: currentUser.id,
         phoneNumber: formData.phoneNumber,
         operator: formData.operator,
@@ -78,7 +82,7 @@ function PremiumAdPageContent() {
         price: formData.price ? parseInt(formData.price) : undefined,
         createdAt: new Date().toISOString(),
         isActive: true,
-        paymentId: 'temp_payment_id' // This would be set after successful payment
+        paymentId: `existing_${currentUser.id}` // Reference to user's payment
       };
 
       // Save ad data using SecureDatabase
@@ -104,6 +108,26 @@ function PremiumAdPageContent() {
     }, 2000);
   };
 
+  const handlePaymentSuccess = () => {
+    // Process payment and update user status
+    if (currentUser) {
+      const updatedUser = { ...currentUser, isPremium: true };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      SecureDatabase.saveUser(updatedUser);
+    }
+    setShowPayment(false);
+    setSuccessMessage('Ödəmə uğurla tamamlandı! İndi premium elanınızı yerləşdirə bilərsiniz.');
+  };
+
+  const handlePaymentError = (error: string) => {
+    setSuccessMessage(`Ödəmə xətası: ${error}`);
+  };
+
+  const handlePaymentCancel = () => {
+    setShowPayment(false);
+  };
+
   if (!currentUser) {
     return (
       <PageTemplate showTopNav={false}>
@@ -111,41 +135,28 @@ function PremiumAdPageContent() {
           <section className={styles.section}>
             <h1 className={styles.pageTitle}>Premium Elan Yerləşdir</h1>
             <p className={styles.pageDescription}>
-              Premium elan yerləşdirmək üçün qeydiyyatdan keçməlisiniz və ya giriş etməlisiniz.
+              Premium elanınızla nömrənizi ən yaxşı şəkildə təqdim edin.
             </p>
           </section>
 
           <section className={styles.section}>
             <div className={styles.authRequired}>
-              <div className={styles.authCard}>
-                <h3>🔐 Üzv Girişi Tələb Olunur</h3>
-                <p>Premium elan yerləşdirmək üçün hesabınız olmalıdır.</p>
-                
-                <div className={styles.authButtons}>
-                  <button 
-                    onClick={() => router.push('/register')} 
-                    className={styles.registerButton}
-                  >
-                    Qeydiyyatdan Keç
-                  </button>
-                  <button 
-                    onClick={() => router.push('/login')} 
-                    className={styles.loginButton}
-                  >
-                    Giriş Et
-                  </button>
-                </div>
-
-                <div className={styles.benefits}>
-                  <h4>Premium Elan Üstünlükləri:</h4>
-                  <ul>
-                    <li>30 gün aktiv elan</li>
-                    <li>Səhifə yuxarısında göstərilir</li>
-                    <li>Əlavə rəng vurğusu</li>
-                    <li>WhatsApp dəstəyi</li>
-                    <li>Sosial media paylaşımı</li>
-                  </ul>
-                </div>
+              <span className={styles.authIcon}>🔐</span>
+              <h3>Qeydiyyat Tələb Olunur</h3>
+              <p>Premium elan yerləşdirmək üçün əvvəlcə qeydiyyatdan keçməlisiniz.</p>
+              <div className={styles.authButtons}>
+                <button 
+                  onClick={() => router.push('/register')} 
+                  className={styles.registerBtn}
+                >
+                  Qeydiyyat
+                </button>
+                <button 
+                  onClick={() => router.push('/login')} 
+                  className={styles.loginBtn}
+                >
+                  Giriş
+                </button>
               </div>
             </div>
           </section>
@@ -162,15 +173,29 @@ function PremiumAdPageContent() {
           <p className={styles.pageDescription}>
             Premium elanınızla nömrənizi ən yaxşı şəkildə təqdim edin.
           </p>
-          <div className={styles.userInfo}>
+        </section>
+
+        {/* User welcome message */}
+        <section className={styles.section}>
+          <div className={styles.welcomeMessage}>
+            <span className={styles.welcomeIcon}>👋</span>
             Xoş gəlmisiniz, <strong>{currentUser.fullName}</strong>!
+            {currentUser.isPremium ? (
+              <span className={styles.premiumBadge}>⭐ Premium Üzv</span>
+            ) : (
+              <span className={styles.pendingBadge}>🔓 Ödəmə Gözləyir</span>
+            )}
           </div>
         </section>
 
+        {/* Success/Error Messages */}
         {successMessage && (
-          <div className={styles.successAlert}>
-            {successMessage}
-          </div>
+          <section className={styles.section}>
+            <div className={styles.successMessage}>
+              <span className={styles.successIcon}>✅</span>
+              {successMessage}
+            </div>
+          </section>
         )}
 
         <section className={styles.section}>
@@ -291,20 +316,32 @@ function PremiumAdPageContent() {
                 className={styles.submitButton}
                 disabled={isLoading}
               >
-                {isLoading ? 'Elan yerləşdirilir...' : 'Premium Elan Yerləşdir'}
+                {isLoading ? (
+                  <>
+                    <span className={styles.spinner}></span>
+                    Yerləşdirilir...
+                  </>
+                ) : currentUser?.isPremium ? (
+                  'Premium Elan Yerləşdir'
+                ) : (
+                  'Ödəmə Et və Elanı Yerləşdir'
+                )}
               </button>
             </form>
           </div>
         </section>
+
+        {/* Payment Modal */}
+        {showPayment && (
+          <PaymentForm
+            amount={5.00}
+            currency="AZN"
+            onPaymentSuccess={handlePaymentSuccess}
+            onPaymentError={handlePaymentError}
+            onCancel={handlePaymentCancel}
+          />
+        )}
       </div>
     </PageTemplate>
-  );
-}
-
-export default function PremiumAdPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <PremiumAdPageContent />
-    </Suspense>
   );
 }
