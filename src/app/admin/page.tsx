@@ -91,6 +91,88 @@ export default function AdminPage() {
     });
   };
 
+  const addTestData = () => {
+    // Sample test users
+    const testUsers = [
+      {
+        id: 'user_test_001',
+        name: 'Əli Məmmədov',
+        email: 'ali@test.com',
+        phone: '0504444422',
+        password: '123456',
+        isPremium: true,
+        createdAt: new Date().toISOString()
+      },
+      {
+        id: 'user_test_002', 
+        name: 'Aysel Həsənova',
+        email: 'aysel@test.com',
+        phone: '0554443322',
+        password: '123456',
+        isPremium: true,
+        createdAt: new Date().toISOString()
+      }
+    ];
+
+    // Sample premium ads
+    const testAds = [
+      {
+        id: 'ad_test_001',
+        userId: 'user_test_001',
+        phoneNumber: '055 266 63 66',
+        operator: 'azercell',
+        price: 150,
+        contactPhone: '0504444422',
+        whatsappNumber: '0504444422',
+        description: 'Gözəl və asan yadda qalan nömrə',
+        adType: 'premium' as const,
+        status: 'active' as const,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        views: 45,
+        featured: true
+      },
+      {
+        id: 'ad_test_002',
+        userId: 'user_test_002',
+        phoneNumber: '070 777 77 77',
+        operator: 'nar-mobile',
+        price: 300,
+        contactPhone: '0554443322',
+        whatsappNumber: '0554443322',
+        description: 'Premium 7li nömrə - çox xüsusi',
+        adType: 'premium' as const,
+        status: 'active' as const,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        views: 78,
+        featured: true
+      },
+      {
+        id: 'ad_test_003',
+        userId: 'user_test_001',
+        phoneNumber: '050 555 55 55',
+        operator: 'bakcell',
+        price: 200,
+        contactPhone: '0504444422',
+        description: '5li nömrə - VIP',
+        adType: 'gold' as const,
+        status: 'active' as const,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString(),
+        views: 32,
+        featured: false
+      }
+    ];
+
+    // Save test data
+    testUsers.forEach(user => SecureDatabase.saveUser(user));
+    testAds.forEach(ad => SecureDatabase.savePremiumAd(ad));
+    
+    alert('Test verilər əlavə edildi!');
+    loadData(); // Refresh data
+  };
+
   // Search and filter functions
   const handleUserSearch = (searchTerm: string) => {
     setUserSearchTerm(searchTerm);
@@ -236,9 +318,14 @@ export default function AdminPage() {
       <div className={styles.adminContainer}>
         <div className={styles.header}>
           <h1>Admin Panel</h1>
-          <button onClick={handleLogout} className={styles.logoutButton}>
-            Çıkış Et
-          </button>
+          <div className={styles.headerButtons}>
+            <button onClick={addTestData} className={styles.testDataButton}>
+              Test Verilər Əlavə Et
+            </button>
+            <button onClick={handleLogout} className={styles.logoutButton}>
+              Çıkış Et
+            </button>
+          </div>
         </div>
 
         {/* İstatistikler */}

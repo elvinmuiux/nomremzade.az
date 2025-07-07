@@ -1,8 +1,59 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
+import StatisticsManager, { Statistics } from '@/lib/statistics';
 import styles from './page.module.css';
 
 export default function AboutPage() {
+  const [stats, setStats] = useState<Statistics>({
+    activeUsers: 10000,
+    soldNumbers: 50000,
+    lastUpdated: new Date().toISOString()
+  });
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  useEffect(() => {
+    // Load current statistics
+    const currentStats = StatisticsManager.getStats();
+    setStats(currentStats);
+
+    // Increment active users count on page visit
+    const updatedStats = StatisticsManager.incrementActiveUsers();
+    setStats(updatedStats);
+
+    // Listen for storage changes to update statistics in real-time (cross-tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'site_statistics' && e.newValue) {
+        try {
+          const newStats = JSON.parse(e.newValue);
+          setIsUpdating(true);
+          setStats(newStats);
+          // Reset updating state after animation
+          setTimeout(() => setIsUpdating(false), 600);
+        } catch (error) {
+          console.error('Error parsing updated statistics:', error);
+        }
+      }
+    };
+
+    // Listen for custom event to update statistics in same tab
+    const handleStatisticsUpdate = (e: CustomEvent) => {
+      setIsUpdating(true);
+      setStats(e.detail);
+      // Reset updating state after animation
+      setTimeout(() => setIsUpdating(false), 600);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('statisticsUpdated', handleStatisticsUpdate as EventListener);
+
+    // Cleanup event listeners on component unmount
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('statisticsUpdated', handleStatisticsUpdate as EventListener);
+    };
+  }, []);
   return (
     <PageTemplate showTopNav={false}>
       <div className={styles.aboutPage}>
@@ -26,11 +77,15 @@ export default function AboutPage() {
             </div>
             <div className={styles.statsContainer}>
               <div className={styles.stat}>
-                <span className={styles.statNumber}>10,000+</span>
+                <span className={`${styles.statNumber} ${isUpdating ? styles.updating : ''}`}>
+                  {StatisticsManager.formatNumber(stats.activeUsers)}
+                </span>
                 <span className={styles.statLabel}>Aktiv İstifadəçi</span>
               </div>
               <div className={styles.stat}>
-                <span className={styles.statNumber}>50,000+</span>
+                <span className={`${styles.statNumber} ${isUpdating ? styles.updating : ''}`}>
+                  {StatisticsManager.formatNumber(stats.soldNumbers)}
+                </span>
                 <span className={styles.statLabel}>Satılmış Nömrə</span>
               </div>
               <div className={styles.stat}>
