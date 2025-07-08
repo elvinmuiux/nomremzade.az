@@ -135,10 +135,31 @@ export default function NumbersPageTemplate({
         if (!phoneDigits.startsWith(cleanPrefix)) return false;
       }
       
-      // Filter by search term if provided
+      // Filter by search term if provided - improved exact matching
       if (searchTerm.trim()) {
         const searchDigits = searchTerm.replace(/\D/g, '');
-        if (searchDigits && !phoneDigits.includes(searchDigits)) return false;
+        if (searchDigits) {
+          // If search term is a full phone number (9-10 digits), use exact matching
+          if (searchDigits.length >= 9) {
+            const cleanPhoneNumber = phoneDigits.replace(/^(994|0)/, '');
+            const cleanSearchTerm = searchDigits.replace(/^(994|0)/, '');
+            
+            // Must be exact match
+            if (cleanPhoneNumber !== cleanSearchTerm) return false;
+          }
+          // For 7-8 digit searches, match the main part of the number
+          else if (searchDigits.length >= 7) {
+            const cleanPhoneNumber = phoneDigits.replace(/^(994|0)/, '');
+            const cleanSearchTerm = searchDigits.replace(/^(994|0)/, '');
+            
+            // Must contain the exact sequence
+            if (!cleanPhoneNumber.includes(cleanSearchTerm)) return false;
+          }
+          // For shorter searches, use contains logic
+          else {
+            if (!phoneDigits.includes(searchDigits)) return false;
+          }
+        }
       }
       
       // Filter by price range

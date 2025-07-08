@@ -9,6 +9,8 @@ function HomePage() {
         <div className={styles.comingSoon}>
           <h1 className={styles.title}>Əsas Səhifə</h1>
           <p className={styles.message}>Tezliklə...</p>
+          <h1 className={styles.title}>Ay Nick Necedi?</h1>
+          <p className={styles.message}>Seyfelere bah</p>
         </div>
       </div>
     </PageTemplate>
