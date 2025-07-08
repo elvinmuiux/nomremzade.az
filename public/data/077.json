@@ -1,14 +1,5 @@
 {
   "narmobileAds": [
-    {
-      "id": 1,
-      "phoneNumber": "077-123-45-67",
-      "price": 150,
-      "contactPhone": "050-765-43-21",
-      "type": "premium",
-      "isVip": true,
-      "description": "VIP Nar Mobile nömrə",
-      "provider": "Nar Mobile"
-    }
+    
   ]
 }
