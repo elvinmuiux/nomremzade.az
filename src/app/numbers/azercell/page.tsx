@@ -16,6 +16,7 @@ export default function AzercellPage() {
       dataFiles={dataFiles}
       operatorPrefixes={['010', '050', '051']}
       showProviderFilter={false}
+      operatorName="azercell"
     />
   );
 }

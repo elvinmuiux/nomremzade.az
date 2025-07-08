@@ -15,6 +15,7 @@ export default function BakcellPage() {
       dataFiles={dataFiles}
       operatorPrefixes={['055', '099']}
       showProviderFilter={false}
+      operatorName="bakcell"
     />
   );
 }

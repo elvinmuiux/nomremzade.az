@@ -14,6 +14,7 @@ export default function NaxtelPage() {
       dataFiles={dataFiles}
       operatorPrefixes={['060']}
       showProviderFilter={false}
+      operatorName="naxtel"
     />
   );
 }

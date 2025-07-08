@@ -1,5 +1,31 @@
 {
   "azercellAds": [
-    
+    {
+      "id": 2,
+      "phoneNumber": "010-888-88-88",
+      "price": 2800,
+      "contactPhone": "050-123-45-67",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    },
+    {
+      "id": 3,
+      "phoneNumber": "050-777-77-77",
+      "price": 1500,
+      "contactPhone": "051-234-56-78",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    },
+    {
+      "id": 4,
+      "phoneNumber": "051-888-88-88",
+      "price": 2800,
+      "contactPhone": "050-123-45-67",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    }
   ]
 }

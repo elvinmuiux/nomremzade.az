@@ -1,4 +1,31 @@
 {
   "bakcellAds": [
+    {
+      "id": 1,
+      "phoneNumber": "099-888-88-88",
+      "price": 2500,
+      "contactPhone": "055-123-45-67",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    },
+    {
+      "id": 2,
+      "phoneNumber": "099-777-77-77",
+      "price": 1800,
+      "contactPhone": "055-234-56-78",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    },
+    {
+      "id": 3,
+      "phoneNumber": "099-555-55-55",
+      "price": 1200,
+      "contactPhone": "055-345-67-89",
+      "type": "premium",
+      "isVip": false,
+      "description": "Gözəl nömrə"
+    }
   ]
 }

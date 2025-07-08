@@ -15,6 +15,7 @@ export default function NarMobilePage() {
       dataFiles={dataFiles}
       operatorPrefixes={['070', '077']}
       showProviderFilter={false}
+      operatorName="nar-mobile"
     />
   );
 }

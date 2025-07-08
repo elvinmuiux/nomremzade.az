@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Phone, MessageCircle, Bookmark, Heart, Diamond, Filter, X } from 'lucide-react';
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
 import StatisticsManager from '@/lib/statistics';
+import Image from 'next/image';
 import './NumbersPageTemplate.css';
 
 interface NumberAd {
@@ -30,13 +31,15 @@ interface NumbersPageTemplateProps {
   dataFiles: DataFileConfig[];
   operatorPrefixes?: string[];
   showProviderFilter?: boolean;
+  operatorName?: string; // Add operator name for logo display
 }
 
 export default function NumbersPageTemplate({
   pageTitle,
   dataFiles,
   operatorPrefixes,
-  showProviderFilter = false
+  showProviderFilter = false,
+  operatorName
 }: NumbersPageTemplateProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [ads, setAds] = useState<NumberAd[]>([]);
@@ -45,6 +48,18 @@ export default function NumbersPageTemplate({
   const [priceRange, setPriceRange] = useState<[number, number | null]>([0, null]);
   const [selectedPrefix, setSelectedPrefix] = useState<string>('');
   const [selectedProvider, setSelectedProvider] = useState<string>('');
+
+  // Helper function to get operator logo path
+  const getOperatorLogo = (operatorName: string) => {
+    const logoMap: { [key: string]: string } = {
+      'azercell': '/images/operators/azercell.svg',
+      'bakcell': '/images/operators/bakcell.svg',
+      'nar-mobile': '/images/operators/nar-mobile.svg',
+      'naxtel': '/images/operators/naxtel.svg'
+    };
+    
+    return logoMap[operatorName.toLowerCase()] || null;
+  };
 
   useEffect(() => {
     const loadNumbers = async () => {
@@ -58,26 +73,32 @@ export default function NumbersPageTemplate({
               const data = await response.json();
               const adsArray = data[dataFile.key] || [];
               
-              const processedAds = adsArray.map((item: Record<string, unknown>, index: number) => ({
-                id: item.id || index + 1,
-                phoneNumber: String(item.phoneNumber || item.numara || ''),
-                price: (() => {
-                  if (item.price) return Number(item.price);
-                  if (item.fiyat) {
-                    if (item.fiyat === null) return 0;
-                    const priceStr = String(item.fiyat);
-                    const numericPrice = priceStr.replace(/[^0-9]/g, '');
-                    return numericPrice ? Number(numericPrice) : 0;
-                  }
-                  return 0;
-                })(),
-                contactPhone: String(item.contactPhone || '(050) 444-44-22'),
-                type: item.type || 'standard',
-                isVip: Boolean(item.isVip),
-                description: item.description || '',
-                provider: dataFile.provider,
-                prefix: dataFile.prefix
-              }));
+              const processedAds = adsArray.map((item: Record<string, unknown>, index: number) => {
+                const phoneNumber = String(item.phoneNumber || item.numara || '');
+                const phoneDigits = phoneNumber.replace(/[^0-9]/g, '');
+                const actualPrefix = phoneDigits.slice(0, 3); // Extract first 3 digits as prefix
+                
+                return {
+                  id: item.id || index + 1,
+                  phoneNumber: phoneNumber,
+                  price: (() => {
+                    if (item.price) return Number(item.price);
+                    if (item.fiyat) {
+                      if (item.fiyat === null) return 0;
+                      const priceStr = String(item.fiyat);
+                      const numericPrice = priceStr.replace(/[^0-9]/g, '');
+                      return numericPrice ? Number(numericPrice) : 0;
+                    }
+                    return 0;
+                  })(),
+                  contactPhone: String(item.contactPhone || '(050) 444-44-22'),
+                  type: item.type || 'standard',
+                  isVip: Boolean(item.isVip),
+                  description: item.description || '',
+                  provider: dataFile.provider,
+                  prefix: actualPrefix // Use actual prefix from phone number
+                };
+              });
 
               allNumbers.push(...processedAds);
             }
@@ -219,7 +240,21 @@ export default function NumbersPageTemplate({
   return (
     <PageTemplate showTopNav={false}>
       <div className="numbers-container">
-        <h1 className="numbers-title">{pageTitle}</h1>
+        <div className="page-header">
+          {operatorName && getOperatorLogo(operatorName) && (
+            <div className="operator-logo-container">
+              <Image 
+                src={getOperatorLogo(operatorName)!} 
+                alt={`${operatorName} logo`}
+                className="operator-logo"
+                width={120}
+                height={60}
+                priority
+              />
+            </div>
+          )}
+          <h1 className="numbers-title">{pageTitle}</h1>
+        </div>
 
         <div className="search-controls">
           <div className="controls-row">
