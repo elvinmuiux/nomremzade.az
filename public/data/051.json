@@ -2,48 +2,273 @@
   "azercellAds": [
     {
       "id": 1,
-      "phoneNumber": "051-777-77-77",
-      "price": 2500,
-      "contactPhone": "050-123-45-67",
-      "type": "premium",
+      "phoneNumber": "051-777-77-74",
+      "price": 4500,
+      "contactPhone": "",
+      "type": "Azercell",
       "isVip": true,
-      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+      "description": ""
     },
     {
       "id": 2,
-      "phoneNumber": "051-888-88-88",
-      "price": 2800,
-      "contactPhone": "050-987-65-43",
-      "type": "premium",
+      "phoneNumber": "051-999-44-44",
+      "price": 4000,
+      "contactPhone": "",
+      "type": "Azercell",
       "isVip": true,
-      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+      "description": ""
     },
     {
       "id": 3,
-      "phoneNumber": "051-999-99-99",
-      "price": 3200,
-      "contactPhone": "050-111-22-33",
-      "type": "premium",
+      "phoneNumber": "051-277-55-55",
+      "price": 1700,
+      "contactPhone": "",
+      "type": "Azercell",
       "isVip": true,
-      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+      "description": ""
     },
     {
       "id": 4,
-      "phoneNumber": "051-555-55-55",
-      "price": 2200,
-      "contactPhone": "050-444-55-66",
-      "type": "premium",
+      "phoneNumber": "051-388-83-83",
+      "price": 1000,
+      "contactPhone": "",
+      "type": "Azercell",
       "isVip": true,
-      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+      "description": ""
     },
     {
       "id": 5,
-      "phoneNumber": "051-123-45-67",
-      "price": 750,
-      "contactPhone": "050-777-88-99",
-      "type": "standard",
+      "phoneNumber": "051-355-55-33",
+      "price": 700,
+      "contactPhone": "",
+      "type": "Azercell",
       "isVip": false,
-      "description": "Standart nömrə"
+      "description": ""
+    },
+    {
+      "id": 6,
+      "phoneNumber": "051-667-77-66",
+      "price": null,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 7,
+      "phoneNumber": "051-388-85-88",
+      "price": 350,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 8,
+      "phoneNumber": "051-513-95-95",
+      "price": 135,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 9,
+      "phoneNumber": "051-620-69-69",
+      "price": 135,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 10,
+      "phoneNumber": "051-433-96-96",
+      "price": 135,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 11,
+      "phoneNumber": "051-620-68-68",
+      "price": 135,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 12,
+      "phoneNumber": "051-518-93-93",
+      "price": 135,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 13,
+      "phoneNumber": "051-379-91-91",
+      "price": 135,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 14,
+      "phoneNumber": "051-677-95-95",
+      "price": null,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 15,
+      "phoneNumber": "051-316-54-54",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 16,
+      "phoneNumber": "051-365-86-86",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 17,
+      "phoneNumber": "051-365-24-24",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 18,
+      "phoneNumber": "051-365-73-73",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 19,
+      "phoneNumber": "051-365-96-96",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 20,
+      "phoneNumber": "051-593-31-31",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 21,
+      "phoneNumber": "051-364-78-78",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 22,
+      "phoneNumber": "051-513-96-96",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 23,
+      "phoneNumber": "051-589-78-78",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 24,
+      "phoneNumber": "051-429-78-78",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 25,
+      "phoneNumber": "051-593-69-69",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 26,
+      "phoneNumber": "051-593-28-28",
+      "price": 100,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 27,
+      "phoneNumber": "051-824-23-25",
+      "price": 55,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 28,
+      "phoneNumber": "051-795-94-96",
+      "price": 55,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 29,
+      "phoneNumber": "051-415-17-16",
+      "price": 55,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
+    },
+    {
+      "id": 30,
+      "phoneNumber": "051-416-17-15",
+      "price": 55,
+      "contactPhone": "",
+      "type": "Azercell",
+      "isVip": false,
+      "description": ""
     }
   ]
 }

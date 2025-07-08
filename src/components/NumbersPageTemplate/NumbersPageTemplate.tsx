@@ -5,6 +5,7 @@ import { Search, Phone, MessageCircle, Bookmark, Heart, Diamond, Filter, X } fro
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
 import StatisticsManager from '@/lib/statistics';
 import Image from 'next/image';
+import Link from 'next/link';
 import './NumbersPageTemplate.css';
 
 interface NumberAd {
@@ -55,6 +56,7 @@ export default function NumbersPageTemplate({
       'azercell': '/images/operators/azercell.svg',
       'bakcell': '/images/operators/bakcell.svg',
       'nar-mobile': '/images/operators/nar-mobile.svg',
+      'narmobile': '/images/operators/nar-mobile.svg', // Alternative naming
       'naxtel': '/images/operators/naxtel.svg'
     };
     
@@ -127,38 +129,29 @@ export default function NumbersPageTemplate({
       const phoneDigits = ad.phoneNumber.replace(/[^0-9]/g, '');
       
       // Filter by provider if selected (only for all numbers page)
-      if (showProviderFilter && selectedProvider && ad.provider !== selectedProvider) return false;
+      if (showProviderFilter && selectedProvider && ad.provider !== selectedProvider) {
+        return false;
+      }
       
-      // Filter by prefix if selected
+      // ✅ PRIORITY: Filter by prefix FIRST - this is the most important filter
       if (selectedPrefix) {
         const cleanPrefix = selectedPrefix.replace(/[^0-9]/g, '');
         if (!phoneDigits.startsWith(cleanPrefix)) return false;
       }
       
-      // Filter by search term if provided - improved exact matching
+      // ✅ IMPROVED: Search filtering works WITHIN the selected prefix
       if (searchTerm.trim()) {
         const searchDigits = searchTerm.replace(/\D/g, '');
+        
+        // If search contains digits, search in phone digits
         if (searchDigits) {
-          // If search term is a full phone number (9-10 digits), use exact matching
-          if (searchDigits.length >= 9) {
-            const cleanPhoneNumber = phoneDigits.replace(/^(994|0)/, '');
-            const cleanSearchTerm = searchDigits.replace(/^(994|0)/, '');
-            
-            // Must be exact match
-            if (cleanPhoneNumber !== cleanSearchTerm) return false;
-          }
-          // For 7-8 digit searches, match the main part of the number
-          else if (searchDigits.length >= 7) {
-            const cleanPhoneNumber = phoneDigits.replace(/^(994|0)/, '');
-            const cleanSearchTerm = searchDigits.replace(/^(994|0)/, '');
-            
-            // Must contain the exact sequence
-            if (!cleanPhoneNumber.includes(cleanSearchTerm)) return false;
-          }
-          // For shorter searches, use contains logic
-          else {
-            if (!phoneDigits.includes(searchDigits)) return false;
-          }
+          // Check if phone number contains the search digits anywhere
+          if (!phoneDigits.includes(searchDigits)) return false;
+        } else {
+          // Text search - check if phone number contains the search text
+          const searchText = searchTerm.toLowerCase().trim();
+          const phoneText = ad.phoneNumber.toLowerCase();
+          if (!phoneText.includes(searchText)) return false;
         }
       }
       
@@ -202,16 +195,47 @@ export default function NumbersPageTemplate({
   };
 
   const getUniquePrefixes = () => {
-    const prefixes = [...new Set(ads.map(ad => ad.prefix))];
-    return prefixes.sort();
+    // Ana sayfada (showProviderFilter=true) ise, seçilen operatora göre prefiks listesi getir
+    if (showProviderFilter && selectedProvider) {
+      const filteredPrefixes = ads
+        .filter(ad => ad.provider === selectedProvider)
+        .map(ad => ad.prefix);
+      return [...new Set(filteredPrefixes)].sort();
+    }
+    
+    // Operator sayfalarında da dinamik prefiksleri kullan
+    if (ads.length > 0) {
+      const prefixes = [...new Set(ads.map(ad => ad.prefix))];
+      return prefixes.sort();
+    }
+    
+    // Fallback olarak operatorPrefixes kullan
+    return operatorPrefixes || [];
   };
 
   const highlightSearchTerm = (phoneNumber: string, searchTerm: string) => {
     if (!searchTerm.trim()) return phoneNumber;
     
     const searchDigits = searchTerm.replace(/\D/g, '');
-    if (!searchDigits) return phoneNumber;
+    if (!searchDigits) {
+      // Metin araması için
+      const searchText = searchTerm.toLowerCase();
+      const phoneText = phoneNumber.toLowerCase();
+      const matchIndex = phoneText.indexOf(searchText);
+      if (matchIndex === -1) return phoneNumber;
+      
+      return (
+        <>
+          {phoneNumber.slice(0, matchIndex)}
+          <span className="highlight">
+            {phoneNumber.slice(matchIndex, matchIndex + searchTerm.length)}
+          </span>
+          {phoneNumber.slice(matchIndex + searchTerm.length)}
+        </>
+      );
+    }
     
+    // Sayı araması için
     const phoneDigits = phoneNumber.replace(/\D/g, '');
     const matchIndex = phoneDigits.indexOf(searchDigits);
     if (matchIndex === -1) return phoneNumber;
@@ -264,14 +288,16 @@ export default function NumbersPageTemplate({
         <div className="page-header">
           {operatorName && getOperatorLogo(operatorName) && (
             <div className="operator-logo-container">
-              <Image 
-                src={getOperatorLogo(operatorName)!} 
-                alt={`${operatorName} logo`}
-                className="operator-logo"
-                width={120}
-                height={60}
-                priority
-              />
+              <Link href="/" className="operator-logo-link">
+                <Image 
+                  src={getOperatorLogo(operatorName)!} 
+                  alt={`${operatorName} logo`}
+                  className="operator-logo"
+                  width={120}
+                  height={60}
+                  priority
+                />
+              </Link>
             </div>
           )}
           <h1 className="numbers-title">{pageTitle}</h1>
@@ -287,8 +313,8 @@ export default function NumbersPageTemplate({
                       value={selectedProvider}
                       onChange={(e) => {
                         setSelectedProvider(e.target.value);
-                        setSelectedPrefix('');
-                        setSearchTerm('');
+                        setSelectedPrefix(''); // Prefiks seçimini sıfırla
+                        setSearchTerm(''); // Arama terimini sıfırla
                       }}
                       className="select-input"
                       aria-label="Operator seçin"
@@ -304,41 +330,84 @@ export default function NumbersPageTemplate({
                   <select
                     value={selectedPrefix}
                     onChange={(e) => {
-                      setSelectedPrefix(e.target.value);
-                      setSearchTerm('');
+                      const newPrefix = e.target.value;
+                      setSelectedPrefix(newPrefix);
+                      // ✅ IMPROVED: Keep search term when prefix is selected
+                      // This allows prefix + search combination to work together
                     }}
                     className="select-input"
                     aria-label="Prefiks seçin"
                   >
                     <option value="">Prefiks seçin</option>
-                    {showProviderFilter ? (
-                      getUniquePrefixes().map(prefix => (
-                        <option key={prefix} value={prefix}>{prefix}</option>
-                      ))
-                    ) : (
-                      operatorPrefixes?.map(prefix => (
-                        <option key={prefix} value={prefix}>{prefix}</option>
-                      ))
-                    )}
+                    {getUniquePrefixes().map(prefix => (
+                      <option key={prefix} value={prefix}>{prefix}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="search-container">
-                  <input
-                    type="text"
-                    placeholder="Nömrə axtar..."
-                    className="search-input"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
                   <div className="search-icon">
                     <Search size={20} />
                   </div>
+                  <input
+                    type="text"
+                    placeholder={selectedPrefix ? 
+                      `${selectedPrefix} prefiksi daxilində axtar (266, 777...)` : 
+                      "Əvvəlcə prefix seçin, sonra axtar (266, 777...)"
+                    }
+                    className="search-input"
+                    value={searchTerm}
+                    onChange={(e) => {
+                      const newSearchTerm = e.target.value;
+                      setSearchTerm(newSearchTerm);
+                      
+                      // ✅ IMPROVED: Keep prefix selection even when user starts typing
+                      // This ensures prefix filtering is always maintained
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && searchTerm.trim()) {
+                        console.log(`Enter ile arama: "${searchTerm}"`);
+                      }
+                    }}
+                  />
+                  <button 
+                    className="search-button"
+                    onClick={() => {
+                      // ✅ Search button functionality - manually trigger search
+                      if (searchTerm.trim()) {
+                        console.log(`Buton ile arama: "${searchTerm}"`);
+                      }
+                    }}
+                    aria-label="Axtar"
+                  >
+                    <Search size={18} />
+                  </button>
                 </div>
                 <div className="results-info">
-                  {searchTerm ? (
-                    <span>Axtarılan nömrə: {searchTerm}</span>
+                  {searchTerm.trim() && selectedPrefix ? (
+                    // Prefix + arama kombinasyonu
+                    filteredAds.length === 1 ? (
+                      <span>{selectedPrefix} prefiksində &ldquo;{searchTerm}&rdquo; axtarışına uyğun 1 nömrə tapıldı</span>
+                    ) : filteredAds.length > 1 ? (
+                      <span>{selectedPrefix} prefiksində &ldquo;{searchTerm}&rdquo; üçün {filteredAds.length} nəticə tapıldı</span>
+                    ) : (
+                      <span>{selectedPrefix} prefiksində &ldquo;{searchTerm}&rdquo; üçün heç bir nəticə tapılmadı</span>
+                    )
+                  ) : searchTerm.trim() ? (
+                    // Sadece arama
+                    filteredAds.length === 1 ? (
+                      <span>&ldquo;{searchTerm}&rdquo; axtarışına uyğun 1 nömrə tapıldı</span>
+                    ) : filteredAds.length > 1 ? (
+                      <span>&ldquo;{searchTerm}&rdquo; üçün {filteredAds.length} nəticə tapıldı</span>
+                    ) : (
+                      <span>&ldquo;{searchTerm}&rdquo; üçün heç bir nəticə tapılmadı</span>
+                    )
+                  ) : selectedPrefix ? (
+                    // Sadece prefix
+                    <span>{selectedPrefix} prefiksi: {filteredAds.length} nömrə</span>
+                  ) : selectedProvider ? (
+                    <span>{selectedProvider}: {filteredAds.length} nömrə</span>
                   ) : (
-                    <span>Mövcud nömrə sayısı: {filteredAds.length}</span>
+                    <span>Cəmi {filteredAds.length} nömrə</span>
                   )}
                 </div>
               </div>
@@ -347,12 +416,7 @@ export default function NumbersPageTemplate({
             <button
               onClick={() => {
                 if (showFilters) {
-                  setPriceRange([0, null]);
-                  setSelectedPrefix('');
-                  if (showProviderFilter) {
-                    setSelectedProvider('');
-                  }
-                  setSearchTerm('');
+                  handleReset();
                 }
                 setShowFilters(!showFilters);
               }}

@@ -1,31 +1,59 @@
 {
   "azercellAds": [
+  
     {
-      "id": 1,
-      "phoneNumber": "010-888-88-88",
-      "price": 2800,
-      "contactPhone": "050-123-45-67",
-      "type": "premium",
+      "id": 42,
+      "phoneNumber": "010-450-00-73",
+      "price": 135,
+      "contactPhone": null,
+      "type": "Azercell",
       "isVip": true,
-      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+      "description": "Xüsusi"
     },
     {
-      "id": 2,
-      "phoneNumber": "010-777-77-77",
-      "price": 1500,
-      "contactPhone": "051-234-56-78",
-      "type": "premium",
+      "id": 43,
+      "phoneNumber": "010-450-00-62",
+      "price": 135,
+      "contactPhone": null,
+      "type": "Azercell",
       "isVip": true,
-      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+      "description": "Xüsusi"
     },
     {
-      "id": 3,
-      "phoneNumber": "010-123-45-67",
-      "price": 800,
-      "contactPhone": "050-111-22-33",
-      "type": "standard",
-      "isVip": false,
-      "description": "Standart nömrə"
+      "id": 44,
+      "phoneNumber": "010-450-00-96",
+      "price": 135,
+      "contactPhone": null,
+      "type": "Azercell",
+      "isVip": true,
+      "description": "Xüsusi"
+    },
+    {
+      "id": 45,
+      "phoneNumber": "010-450-00-98",
+      "price": 135,
+      "contactPhone": null,
+      "type": "Azercell",
+      "isVip": true,
+      "description": "Xüsusi"
+    },
+    {
+      "id": 46,
+      "phoneNumber": "050-692-00-08",
+      "price": 135,
+      "contactPhone": null,
+      "type": "Azercell",
+      "isVip": true,
+      "description": "Xüsusi"
+    },
+    {
+      "id": 47,
+      "phoneNumber": "010-835-00-04",
+      "price": 135,
+      "contactPhone": null,
+      "type": "Azercell",
+      "isVip": true,
+      "description": "Xüsusi"
     }
   ]
 }

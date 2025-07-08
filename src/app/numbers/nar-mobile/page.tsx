@@ -5,15 +5,17 @@ import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTem
 
 export default function NarMobilePage() {
   const dataFiles = [
-    { file: '070.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '070' },
-    { file: '077.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '077' }
+    { file: '070.json', key: 'narMobileAds', provider: 'Nar Mobile', prefix: '070' },
+    { file: '077.json', key: 'narMobileAds', provider: 'Nar Mobile', prefix: '077' },
+    // Uncomment the following lines if you want to include more prefixes
+    
   ];
 
   return (
     <NumbersPageTemplate
       pageTitle="Nar Mobile nömrələri"
       dataFiles={dataFiles}
-      operatorPrefixes={['070', '077']}
+      operatorPrefixes={['070', '077',]}
       showProviderFilter={false}
       operatorName="nar-mobile"
     />

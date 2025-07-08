@@ -5,9 +5,12 @@ import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTem
 
 export default function AzercellPage() {
   const dataFiles = [
-    { file: '010.json', key: 'azercellAds', provider: 'Azercell', prefix: '010' },
     { file: '050.json', key: 'azercellAds', provider: 'Azercell', prefix: '050' },
-    { file: '051.json', key: 'azercellAds', provider: 'Azercell', prefix: '051' }
+    { file: '051.json', key: 'azercellAds', provider: 'Azercell', prefix: '051' },
+    { file: '010.json', key: 'azercellAds', provider: 'Azercell', prefix: '010' },
+
+    // Uncomment the following lines if you want to include more prefixes
+    
   ];
 
   return (
