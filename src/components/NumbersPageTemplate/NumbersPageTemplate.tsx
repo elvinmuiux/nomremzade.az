@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Phone, MessageCircle, Bookmark, Heart, Diamond, Filter, X } from 'lucide-react';
+import { Search, Phone, MessageCircle, Bookmark, Heart, Diamond } from 'lucide-react';
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
 import StatisticsManager from '@/lib/statistics';
+import PremiumElanlar from '@/components/PremiumElanlar/PremiumElanlar';
 import Image from 'next/image';
 import Link from 'next/link';
 import './NumbersPageTemplate.css';
@@ -45,8 +46,6 @@ export default function NumbersPageTemplate({
   const [searchTerm, setSearchTerm] = useState('');
   const [ads, setAds] = useState<NumberAd[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
-  const [priceRange, setPriceRange] = useState<[number, number | null]>([0, null]);
   const [selectedPrefix, setSelectedPrefix] = useState<string>('');
   const [selectedProvider, setSelectedProvider] = useState<string>('');
 
@@ -155,21 +154,20 @@ export default function NumbersPageTemplate({
         }
       }
       
-      // Filter by price range
-      const [minPrice, maxPrice] = priceRange;
-      if (minPrice > 0 && ad.price < minPrice) return false;
-      if (maxPrice !== null && ad.price > maxPrice) return false;
-      
       return true;
     });
-  }, [ads, searchTerm, selectedPrefix, selectedProvider, priceRange, showProviderFilter]);
+  }, [ads, searchTerm, selectedPrefix, selectedProvider, showProviderFilter]);
 
   const handleOrderNumber = (phoneNumber: string) => {
     // Increment sold numbers statistics
     StatisticsManager.incrementSoldNumbers();
     
-    // Show success message
-    alert(`${phoneNumber} nömrəsi üçün sifarişiniz qeydə alındı! Ən qısa zamanda sizinlə əlaqə saxlanacaq.`);
+    // Show success message with clickable phone number
+    const confirmed = confirm(`${phoneNumber} nömrəsi üçün sifarişiniz qeydə alındı! Ən qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (0550 444-44-22)`);
+    
+    if (confirmed) {
+      window.location.href = 'tel:+994550444422';
+    }
   };
 
   const handleWhatsAppContact = (phoneNumber: string) => {
@@ -182,7 +180,6 @@ export default function NumbersPageTemplate({
 
   const handleReset = () => {
     setSearchTerm('');
-    setPriceRange([0, null]);
     setSelectedPrefix('');
     if (showProviderFilter) {
       setSelectedProvider('');
@@ -382,112 +379,33 @@ export default function NumbersPageTemplate({
                     <Search size={18} />
                   </button>
                 </div>
-                <div className="results-info">
-                  {searchTerm.trim() && selectedPrefix ? (
-                    // Prefix + arama kombinasyonu
-                    filteredAds.length === 1 ? (
-                      <span>{selectedPrefix} prefiksində &ldquo;{searchTerm}&rdquo; axtarışına uyğun 1 nömrə tapıldı</span>
-                    ) : filteredAds.length > 1 ? (
-                      <span>{selectedPrefix} prefiksində &ldquo;{searchTerm}&rdquo; üçün {filteredAds.length} nəticə tapıldı</span>
-                    ) : (
-                      <span>{selectedPrefix} prefiksində &ldquo;{searchTerm}&rdquo; üçün heç bir nəticə tapılmadı</span>
-                    )
-                  ) : searchTerm.trim() ? (
-                    // Sadece arama
-                    filteredAds.length === 1 ? (
-                      <span>&ldquo;{searchTerm}&rdquo; axtarışına uyğun 1 nömrə tapıldı</span>
-                    ) : filteredAds.length > 1 ? (
-                      <span>&ldquo;{searchTerm}&rdquo; üçün {filteredAds.length} nəticə tapıldı</span>
-                    ) : (
-                      <span>&ldquo;{searchTerm}&rdquo; üçün heç bir nəticə tapılmadı</span>
-                    )
-                  ) : selectedPrefix ? (
-                    // Sadece prefix
-                    <span>{selectedPrefix} prefiksi: {filteredAds.length} nömrə</span>
-                  ) : selectedProvider ? (
-                    <span>{selectedProvider}: {filteredAds.length} nömrə</span>
-                  ) : (
-                    <span>Cəmi {filteredAds.length} nömrə</span>
-                  )}
-                </div>
               </div>
             </div>
-
-            <button
-              onClick={() => {
-                if (showFilters) {
-                  handleReset();
-                }
-                setShowFilters(!showFilters);
-              }}
-              className="filter-button"
-              aria-label={showFilters ? 'Filtrləri bağla' : 'Filtrləri aç'}
-            >
-              {showFilters ? <X size={24} /> : <Filter size={20} />}
-              {showFilters ? 'Filtrləri bağla' : 'Filtrlə'}
-            </button>
           </div>
 
-          {showFilters && (
-            <div className="filters-panel">
-              <div className="filters-grid">
-                <div className="filter-group">
-                  <label className="filter-label">Qiymət aralığı (₼)</label>
-                  <div className="price-range">
-                    <input
-                      type="number"
-                      min="0"
-                      value={priceRange[0] === 0 ? '' : priceRange[0]}
-                      onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                      className="price-input"
-                      placeholder="Min"
-                    />
-                    <span className="price-separator">-</span>
-                    <input
-                      type="number"
-                      min="0"
-                      value={priceRange[1] === null ? '' : priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], e.target.value ? parseInt(e.target.value) : null])}
-                      className="price-input"
-                      placeholder="Maks"
-                    />
-                  </div>
-                </div>
+        {/* Total Count Display */}
+        <div className="total-count">
+          <span className="total-count-text">
+            {searchTerm.trim() && selectedPrefix ? (
+              `${selectedPrefix} prefiksində "${searchTerm}" için ${filteredAds.length} nömrə`
+            ) : searchTerm.trim() ? (
+              `"${searchTerm}" axtarışı üçün ${filteredAds.length} nömrə`
+            ) : selectedPrefix ? (
+              `${selectedPrefix} prefiksi: ${filteredAds.length} nömrə`
+            ) : selectedProvider ? (
+              `${selectedProvider}: ${filteredAds.length} nömrə`
+            ) : (
+              `Toplam ${filteredAds.length} nömrə`
+            )}
+          </span>
+        </div>
 
-                <div className="filter-actions">
-                  {showProviderFilter && (
-                    <div className="filter-group">
-                      <label className="filter-label">Operator</label>
-                      <select
-                        value={selectedProvider}
-                        onChange={(e) => {
-                          setSelectedProvider(e.target.value);
-                          setSelectedPrefix('');
-                          setSearchTerm('');
-                        }}
-                        className="select-input"
-                        aria-label="Operator seçin"
-                      >
-                        <option value="">Operator seçin</option>
-                        {getUniqueProviders().map(provider => (
-                          <option key={provider} value={provider}>{provider}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  <button
-                    onClick={handleReset}
-                    className="reset-button"
-                    aria-label="Bütün filtrləri sıfırla"
-                  >
-                    Filtrləri sıfırla
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+        {/* Premium Elanlar - Show only on main page */}
+        {showProviderFilter && (
+          <PremiumElanlar />
+        )}
 
-          <div className="numbers-list">
+        <div className="numbers-list">
             {isSearching && !hasSearchResults ? (
               <div className="empty-state">
                 <p className="empty-title">Axtarışa uyğun nömrə tapılmadı</p>
@@ -554,7 +472,7 @@ export default function NumbersPageTemplate({
                 ) : (
                   <p className="empty-title">Hal-hazırda mövcud nömrə yoxdur</p>
                 )}
-                {(searchTerm || priceRange[0] > 0 || priceRange[1] || selectedProvider || selectedPrefix) && (
+                {(searchTerm || selectedProvider || selectedPrefix) && (
                   <button 
                     onClick={handleReset}
                     className="order-button margin-top-16"

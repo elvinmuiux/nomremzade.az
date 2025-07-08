@@ -1,0 +1,257 @@
+
+
+/* Premium Header */
+.premium-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.premium-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #425C5B;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.premium-crown {
+  color: rgb(251 191 36); /* text-amber-400 */
+  font-size: 1.25rem;
+}
+
+
+/* Premium Cards Container */
+.premium-cards-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.5rem;
+  scroll-behavior: smooth;
+}
+
+.premium-cards-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.premium-cards-container::-webkit-scrollbar-track {
+  background: #425C5B; /* bg-slate-600 */
+  border-radius: 4px;
+}
+
+.premium-cards-container::-webkit-scrollbar-thumb {
+  background: #C69F32; /* bg-amber-500 */
+  border-radius: 4px;
+}
+
+
+.premium-card-wrapper {
+  flex-shrink: 0;
+  width: 289px; /* Updated width to 289px */
+  min-width: 289px; /* Ensure minimum width */
+}
+
+/* Premium Card */
+.premium-card {
+  position: relative;
+  border-radius: 0.5rem;
+  padding: 0.75rem; /* Reduced padding */
+  color: white;
+  min-height: 128px; /* Updated height to 128px */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+.premium-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.premium-card-default {
+  background-color: #425C5B; /* bg-slate-700 */
+}
+
+.premium-card-active {
+  background-color: #425C5B; /* bg-teal-700 */
+  box-shadow: 0 0 20px rgba(15, 118, 110, 0.3);
+}
+
+/* Premium Card Header */
+.premium-card-header {
+  display: flex;
+  justify-content: flex-start; /* Changed to flex-start since no heart button */
+  align-items: flex-start;
+  margin-bottom: 0.5rem; /* Reduced margin */
+}
+
+.premium-card-info {
+  display: flex;
+  flex-direction: row; /* Changed to row to put price next to phone */
+  align-items: baseline; /* Align baseline for better text alignment */
+  gap: 40px; /* Increased gap to 40px between phone and price */
+}
+
+.premium-phone {
+  font-size: 1.4rem; /* Reduced font size */
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.premium-price {
+  font-size: 1.4rem; /* Reduced font size */
+  opacity: 0.8;
+  color: rgb(251 191 36); /* text-amber-400 */
+  font-weight: 700;
+
+}
+
+/* Premium Location */
+.premium-location {
+  font-size: 20px; /* Increased font size */
+  color: #E4F2FF; /* text-amber-400 */
+  opacity: 0.7;
+  margin-bottom: 0.5rem; /* Reduced margin */
+  line-height: 1.3;
+  font-weight: bold; /* Made bold */
+}
+
+/* Premium Card Footer */
+.premium-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.premium-contact-btn {
+  background-color: #C69F32; /* bg-amber-500 */
+  color: #E4F2FF; /* text-white */
+  padding: 0.2rem 0.6rem; /* Reduced padding */
+  border-radius: 0.25rem;
+  font-size: 0.8rem; /* Reduced font size */
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.30rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.premium-contact-btn:hover {
+  background-color: rgb(217 119 6); /* hover:bg-amber-600 */
+  transform: translateY(-1px);
+}
+
+.premium-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.premium-action-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: E4F2FF;
+  padding: 0.3rem; /* Reduced padding */
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.premium-action-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Premium Progress */
+.premium-progress {
+  margin-top: 1rem;
+  background-color: rgb(71 85 105); /* bg-slate-600 */
+  border-radius: 9999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.premium-progress-bar {
+  background-color: rgb(245 158 11); /* bg-amber-500 */
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+  width: 80%;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .premium-container {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .premium-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .premium-title {
+    font-size: 1.125rem;
+  }
+
+  .premium-main-contact {
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .premium-card-wrapper {
+    width: 260px; /* Proportionally smaller on mobile */
+    min-width: 260px;
+  }
+
+  .premium-cards-container {
+    gap: 0.75rem;
+  }
+
+  .premium-card {
+    padding: 0.6rem; /* Reduced padding */
+    min-height: 115px; /* Proportionally updated height for tablet */
+  }
+
+  .premium-phone {
+    font-size: 0.9rem; /* Smaller font */
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-card-wrapper {
+    width: 240px; /* Proportionally smaller on very small screens */
+    min-width: 240px;
+  }
+
+  .premium-header {
+    margin-bottom: 1rem;
+  }
+
+  .premium-card {
+    padding: 0.5rem; /* Further reduced padding */
+    min-height: 105px; /* Proportionally updated height for mobile */
+  }
+
+  .premium-contact-btn {
+    padding: 0.15rem 0.4rem; /* Smaller button */
+    font-size: 0.75rem; /* Smaller font */
+  }
+
+  .premium-cards-container {
+    gap: 0.5rem;
+  }
+}
