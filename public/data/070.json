@@ -1,5 +1,49 @@
 {
   "narmobileAds": [
-  
+    {
+      "id": 1,
+      "phoneNumber": "070-777-77-77",
+      "price": 2100,
+      "contactPhone": "070-123-45-67",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    },
+    {
+      "id": 2,
+      "phoneNumber": "070-888-88-88",
+      "price": 2500,
+      "contactPhone": "070-987-65-43",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    },
+    {
+      "id": 3,
+      "phoneNumber": "070-999-99-99",
+      "price": 2800,
+      "contactPhone": "070-111-22-33",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə - təkrar edilən rəqəmlər"
+    },
+    {
+      "id": 4,
+      "phoneNumber": "070-666-66-66",
+      "price": 1900,
+      "contactPhone": "070-444-55-66",
+      "type": "premium",
+      "isVip": false,
+      "description": "Gözəl nömrə"
+    },
+    {
+      "id": 5,
+      "phoneNumber": "070-321-54-76",
+      "price": 550,
+      "contactPhone": "070-777-88-99",
+      "type": "standard",
+      "isVip": false,
+      "description": "Standart nömrə"
+    }
   ]
 }

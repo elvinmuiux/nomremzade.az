@@ -1,19 +1,23 @@
-import React from 'react';
-import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
-import styles from './page.module.css';
+import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
 
 function HomePage() {
+  const dataFiles = [
+    { file: '010.json', key: 'azercellAds', provider: 'Azercell', prefix: '010' },
+    { file: '050.json', key: 'azercellAds', provider: 'Azercell', prefix: '050' },
+    { file: '051.json', key: 'azercellAds', provider: 'Azercell', prefix: '051' },
+    { file: '055.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '055' },
+    { file: '060.json', key: 'naxtelAds', provider: 'Naxtel', prefix: '060' },
+    { file: '070.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '070' },
+    { file: '077.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '077' },
+    { file: '099.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '099' }
+  ];
+
   return (
-    <PageTemplate showTopNav={false}>
-      <div className={styles.container}>
-        <div className={styles.comingSoon}>
-          <h1 className={styles.title}>Əsas Səhifə</h1>
-          <p className={styles.message}>Tezliklə...</p>
-          <h1 className={styles.title}>Ay Nick Necedi?</h1>
-          <p className={styles.message}>Seyfelere bah</p>
-        </div>
-      </div>
-    </PageTemplate>
+    <NumbersPageTemplate
+      pageTitle="Bütün Nömrələr"
+      dataFiles={dataFiles}
+      showProviderFilter={true}
+    />
   );
 }
 
