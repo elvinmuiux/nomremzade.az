@@ -5,6 +5,7 @@ import { Search, Phone, MessageCircle, Bookmark, Heart, Diamond } from 'lucide-r
 import PageTemplate from '@/components/layout/PageTemplate/PageTemplate';
 import StatisticsManager from '@/lib/statistics';
 import PremiumElanlar from '@/components/PremiumElanlar/PremiumElanlar';
+import GoldElanlar from '@/components/GoldElanlar/GoldElanlar';
 import Image from 'next/image';
 import Link from 'next/link';
 import './NumbersPageTemplate.css';
@@ -383,27 +384,31 @@ export default function NumbersPageTemplate({
             </div>
           </div>
 
-        {/* Total Count Display */}
-        <div className="total-count">
-          <span className="total-count-text">
-            {searchTerm.trim() && selectedPrefix ? (
-              `${selectedPrefix} prefiksində "${searchTerm}" için ${filteredAds.length} nömrə`
-            ) : searchTerm.trim() ? (
-              `"${searchTerm}" axtarışı üçün ${filteredAds.length} nömrə`
-            ) : selectedPrefix ? (
-              `${selectedPrefix} prefiksi: ${filteredAds.length} nömrə`
-            ) : selectedProvider ? (
-              `${selectedProvider}: ${filteredAds.length} nömrə`
-            ) : (
-              `Toplam ${filteredAds.length} nömrə`
-            )}
-          </span>
-        </div>
-
         {/* Premium Elanlar - Show only on main page */}
         {showProviderFilter && (
-          <PremiumElanlar />
+          <>
+            <PremiumElanlar />
+            <GoldElanlar />
+          </>
         )}
+
+        {/* Total Count Display - Left Aligned */}
+        <div className="total-count-left">
+          {searchTerm.trim() && selectedPrefix ? (
+            `${selectedPrefix} prefiksində "${searchTerm}" için ${filteredAds.length} nömrə`
+          ) : searchTerm.trim() ? (
+            `"${searchTerm}" axtarışı üçün ${filteredAds.length} nömrə`
+          ) : selectedPrefix ? (
+            `${selectedPrefix} prefiksi: ${filteredAds.length} nömrə`
+          ) : selectedProvider ? (
+            `${selectedProvider}: ${filteredAds.length} nömrə`
+          ) : (
+            `Toplam ${filteredAds.length} nömrə`
+          )}
+        </div>
+
+        {/* Divider Line */}
+        <div className="count-divider"></div>
 
         <div className="numbers-list">
             {isSearching && !hasSearchResults ? (

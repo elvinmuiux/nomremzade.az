@@ -14,7 +14,8 @@ function HomePage() {
 
   return (
     <NumbersPageTemplate
-      pageTitle="Bütün Nömrələr"
+      pageTitle="Əsas səhifə"
+      
       dataFiles={dataFiles}
       showProviderFilter={true}
     />

@@ -1,0 +1,162 @@
+
+
+.gold-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.gold-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #425C5B;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.gold-crown {
+  color: #C69F32;
+}
+
+/* Brands Container */
+.gold-brands-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 1rem;
+  scroll-behavior: smooth;
+}
+
+.gold-brands-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.gold-brands-container::-webkit-scrollbar-track {
+  background: #425C5B;
+  border-radius: 4px;
+}
+
+.gold-brands-container::-webkit-scrollbar-thumb {
+  background: #C69F32;
+  border-radius: 4px;
+}
+
+.gold-brands-container::-webkit-scrollbar-thumb:hover {
+  background: #B8912B;
+}
+
+/* Brand Card */
+.gold-brand-card {
+  flex-shrink: 0;
+  width: 12rem;
+  height: 5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border: 2px solid #e5e7eb;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.gold-brand-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.gold-brand-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Background Colors */
+.bg-light-gray {
+  background-color: #f8fafc;
+}
+
+.bg-purple {
+  background-color: #7c3aed;
+}
+
+.bg-green {
+  background-color: #22c55e;
+}
+
+.bg-blue {
+  background-color: #1e40af;
+}
+
+.bg-dark-gray {
+  background-color: #374151;
+}
+
+.bg-red {
+  background-color: #dc2626;
+}
+
+.bg-pink {
+  background-color: #ec4899;
+}
+
+/* Text Colors */
+.text-dark {
+  color: #374151;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-blue {
+  color: #2563eb;
+}
+
+.default-text {
+  color: #374151;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gold-container {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  .gold-title {
+    font-size: 1.125rem;
+  }
+  
+  .gold-brand-card {
+    width: 10rem;
+    height: 4rem;
+  }
+  
+  .gold-brand-logo {
+    font-size: 1.25rem;
+  }
+  
+  .gold-header {
+    margin-bottom: 1rem;
+  }
+  
+  .gold-brands-container {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gold-brand-card {
+    width: 8rem;
+    height: 3.5rem;
+  }
+  
+  .gold-brand-logo {
+    font-size: 1rem;
+  }
+}
