@@ -3,7 +3,7 @@
     {
       "id": 1,
       "phoneNumber": "099-777-77-77",
-      "price": 2200,
+      "price": 880,
       "contactPhone": "099-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -12,7 +12,7 @@
     {
       "id": 2,
       "phoneNumber": "099-266-63-66",
-      "price": 1500,
+      "price": 760,
       "contactPhone": "099-123-45-67",
       "type": "premium",
       "isVip": false,
@@ -21,7 +21,7 @@
     {
       "id": 3,
       "phoneNumber": "099-123-45-67",
-      "price": 800,
+      "price": 32,
       "contactPhone": "099-123-45-67",
       "type": "standard",
       "isVip": false,
@@ -30,7 +30,7 @@
     {
       "id": 4,
       "phoneNumber": "099-999-99-99",
-      "price": 5000,
+      "price": 1000,
       "contactPhone": "099-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -39,7 +39,7 @@
     {
       "id": 5,
       "phoneNumber": "099-555-55-55",
-      "price": 3500,
+      "price": 920,
       "contactPhone": "099-123-45-67",
       "type": "premium",
       "isVip": true,

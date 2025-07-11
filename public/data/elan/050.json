@@ -1,0 +1,64 @@
+{
+  "premium": [
+    {
+      "id": 1,
+      "phoneNumber": "050-266-63-66",
+      "price": 800,
+      "contactPhone": "(050) 444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP premium nömrə",
+      "provider": "050",
+      "prefix": "050",
+      "status": "active",
+      "dateAdded": "2024-01-15T10:30:00Z",
+      "category": "premium"
+    },
+    {
+      "id": 2,
+      "phoneNumber": "050-555-55-55",
+      "price": 1000,
+      "contactPhone": "(050) 444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "Çox xüsusi VIP nömrə",
+      "provider": "050",
+      "prefix": "050",
+      "status": "active",
+      "dateAdded": "2024-01-20T14:45:00Z",
+      "category": "premium"
+    }
+  ],
+  "gold": [
+    {
+      "id": 3,
+      "phoneNumber": "050-777-77-77",
+      "price": 400,
+      "contactPhone": "(050) 444-44-22",
+      "type": "gold",
+      "isVip": false,
+      "description": "Gözəl qızıl nömrə",
+      "provider": "050",
+      "prefix": "050",
+      "status": "active",
+      "dateAdded": "2024-01-25T09:15:00Z",
+      "category": "gold"
+    }
+  ],
+  "standard": [
+    {
+      "id": 4,
+      "phoneNumber": "050-123-45-67",
+      "price": 30,
+      "contactPhone": "(050) 444-44-22",
+      "type": "standard",
+      "isVip": false,
+      "description": "Standart nömrə",
+      "provider": "050",
+      "prefix": "050",
+      "status": "active",
+      "dateAdded": "2024-02-01T16:20:00Z",
+      "category": "standard"
+    }
+  ]
+}

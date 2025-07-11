@@ -3,7 +3,7 @@
     {
       "id": 1,
       "phoneNumber": "060-777-77-77",
-      "price": 2000,
+      "price": 950,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -12,7 +12,7 @@
     {
       "id": 2,
       "phoneNumber": "060-266-63-66",
-      "price": 1400,
+      "price": 820,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": false,
@@ -21,7 +21,7 @@
     {
       "id": 3,
       "phoneNumber": "060-123-45-67",
-      "price": 800,
+      "price": 32,
       "contactPhone": "060-123-45-67",
       "type": "standard",
       "isVip": false,
@@ -30,7 +30,7 @@
     {
       "id": 4,
       "phoneNumber": "060-999-99-99",
-      "price": 4500,
+      "price": 1000,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -39,7 +39,7 @@
     {
       "id": 5,
       "phoneNumber": "060-555-55-55",
-      "price": 3200,
+      "price": 900,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -48,7 +48,7 @@
     {
       "id": 6,
       "phoneNumber": "060-266-62-66",
-      "price": 900,
+      "price": 34,
       "contactPhone": "060-123-45-67",
       "type": "standard",
       "isVip": false,
@@ -57,7 +57,7 @@
     {
       "id": 7,
       "phoneNumber": "060-888-88-88",
-      "price": 3500,
+      "price": 880,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -66,7 +66,7 @@
     {
       "id": 8,
       "phoneNumber": "060-777-77-78",
-      "price": 2500,
+      "price": 860,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -75,7 +75,7 @@
     {
       "id": 9,
       "phoneNumber": "060-888-88-88",
-      "price": 2800,
+      "price": 840,
       "contactPhone": "060-987-65-43",
       "type": "premium",
       "isVip": true,
@@ -84,7 +84,7 @@
     {
       "id": 10,
       "phoneNumber": "060-999-99-99",
-      "price": 3000,
+      "price": 920,
       "contactPhone": "060-111-22-33",
       "type": "premium",
       "isVip": true,
@@ -93,7 +93,7 @@
     {
       "id": 11,
       "phoneNumber": "060-555-55-55",
-      "price": 2200,
+      "price": 780,
       "contactPhone": "060-444-55-66",
       "type": "premium",
       "isVip": false,
@@ -102,7 +102,7 @@
     {
       "id": 12,
       "phoneNumber": "060-123-45-67",
-      "price": 800,
+      "price": 33,
       "contactPhone": "060-777-88-99",
       "type": "standard",
       "isVip": false,
@@ -111,7 +111,7 @@
     {
       "id": 13,
       "phoneNumber": "060-999-33-77",
-      "price": 1500,
+      "price": 35,
       "contactPhone": "060-222-33-44",
       "type": "standard",
       "isVip": false,
@@ -120,7 +120,7 @@
     {
       "id": 14,
       "phoneNumber": "060-777-77-77",
-      "price": 2500,
+      "price": 760,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": true,
@@ -129,7 +129,7 @@
     {
       "id": 15,
       "phoneNumber": "060-123-45-67",
-      "price": 700,
+      "price": 31,
       "contactPhone": "060-123-45-67",
       "type": "standard",
       "isVip": false,
@@ -138,7 +138,7 @@
     {
       "id": 16,
       "phoneNumber": "060-444-44-44",
-      "price": 3800,
+      "price": 970,
       "contactPhone": "060-123-45-67",
       "type": "premium",
       "isVip": true,

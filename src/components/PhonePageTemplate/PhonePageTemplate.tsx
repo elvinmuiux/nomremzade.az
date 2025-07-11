@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import StatisticsManager from '@/lib/statistics';
+import { loadAllElanData, filterByPrefix, searchNumbers, ElanData } from '@/lib/elanData';
 import './PhonePageTemplate.css';
 
 interface NumberAd {
@@ -47,6 +48,8 @@ interface PremiumNumbersProps {
 }
 
 const PremiumNumbers: React.FC<PremiumNumbersProps> = ({ numbers = [] }) => {
+  const [showAll, setShowAll] = useState(false);
+  
   const handleOrder = (number: string, price: number) => {
     StatisticsManager.incrementSoldNumbers();
     const confirmed = confirm(`${number} nömrəsi üçün sifarişiniz qeydə alındı!\nQiymət: ₼${price}\n\nƏn qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (0550 444-44-22)`);
@@ -59,21 +62,30 @@ const PremiumNumbers: React.FC<PremiumNumbersProps> = ({ numbers = [] }) => {
     return null;
   }
 
+  // Show only first 3 numbers if showAll is false
+  const displayedNumbers = showAll ? numbers : numbers.slice(0, 3);
+  const hasMoreNumbers = numbers.length > 3;
+
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-semibold text-blue-600 mb-4">Premium nömrələr</h2>
+      <br />
+      <h2 className="text-lg font-semibold text-blue-600 mb-4">Toplam Premium elan ({numbers.length})</h2>
+      <p className="text-sm text-gray-500 mb-4">
+      <br />
+      </p>
+      
       
       <div className="premium-numbers-container">
-        {numbers.map((item) => (
+        {displayedNumbers.map((item) => (
           <div 
             key={item.id} 
             className="bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-between text-white transition-colors cursor-pointer shadow-sm premium-number-card"
           >
             <div className="flex items-center gap-4">
               <span className="text-lg font-medium">{item.number}</span>
-              <div className="flex items-center gap-1 text-blue-100">
-                <span className="text-sm">₼</span>
-                <span className="text-sm">{item.price}</span>
+              <div className="flex items-center gap-1 text-blue-100 price-display-large">
+                <span className="price-currency-large">₼</span>
+                <span className="price-amount-large">{item.price}</span>
               </div>
             </div>
             
@@ -87,77 +99,17 @@ const PremiumNumbers: React.FC<PremiumNumbersProps> = ({ numbers = [] }) => {
         ))}
       </div>
       
-      {/* View All Link */}
-      <div className="text-right mt-4">
-        <button className="text-sm text-blue-500 hover:text-blue-600 transition-colors">
-          Hamısına bax...
-        </button>
-      </div>
-    </div>
-  );
-};
-
-// Gold Numbers Component for Mobile  
-interface GoldNumber {
-  id: number;
-  number: string;
-  views: number;
-  price: number;
-  operator: string;
-  status: string;
-}
-
-interface GoldNumbersProps {
-  numbers?: GoldNumber[];
-}
-
-const GoldNumbers: React.FC<GoldNumbersProps> = ({ numbers = [] }) => {
-  const handleOrder = (number: string, price: number) => {
-    StatisticsManager.incrementSoldNumbers();
-    const confirmed = confirm(`${number} nömrəsi üçün sifarişiniz qeydə alındı!\nQiymət: ₼${price}\n\nƏn qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (0550 444-44-22)`);
-    if (confirmed) {
-      window.location.href = 'tel:+994550444422';
-    }
-  };
-
-  if (!numbers || numbers.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="mb-6">
-      <h2 className="text-lg font-semibold text-yellow-600 mb-4">Gold nömrələr</h2>
-      
-      <div className="gold-numbers-container">
-        {numbers.map((item) => (
-          <div 
-            key={item.id} 
-            className="bg-yellow-500 hover:bg-yellow-600 rounded-full flex items-center justify-between text-white transition-colors cursor-pointer shadow-sm gold-number-card"
+      {/* View All Link - Only show if there are more than 3 numbers */}
+      {hasMoreNumbers && (
+        <div className="text-right mt-4">
+          <button 
+            onClick={() => setShowAll(!showAll)}
+            className="text-sm text-blue-500 hover:text-blue-600 transition-colors"
           >
-            <div className="flex items-center gap-4">
-              <span className="text-lg font-medium">{item.number}</span>
-              <div className="flex items-center gap-1 text-yellow-100">
-                <span className="text-sm">₼</span>
-                <span className="text-sm">{item.price}</span>
-              </div>
-            </div>
-            
-            <button 
-              onClick={() => handleOrder(item.number, item.price)}
-              className="phone-order-btn-gold"
-            >
-              Sifariş et
-            </button>
-          </div>
-        ))}
-      </div>
-      
-      {/* View All Link */}
-      <div className="text-right mt-4">
-        <button className="text-sm text-yellow-500 hover:text-yellow-600 transition-colors">
-          Hamısına bax...
-        </button>
-      </div>
+            {showAll ? 'Daha az göstər...' : 'Hamısına bax...'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -174,6 +126,7 @@ export default function PhonePageTemplate({
   const [selectedProvider, setSelectedProvider] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [elanData, setElanData] = useState<ElanData>({ premium: [], gold: [], standard: [] });
 
   // Check if we're on client side and if device is mobile
   useEffect(() => {
@@ -189,12 +142,63 @@ export default function PhonePageTemplate({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Load numbers data
+  // Load numbers data from new elan structure
   useEffect(() => {
     const loadNumbers = async () => {
       try {
+        // Load from new elan data structure
+        const newElanData = await loadAllElanData();
+        setElanData(newElanData);
+        
+        // Convert elan data to ads format for compatibility
         const allNumbers: NumberAd[] = [];
+        
+        // Add premium numbers
+        newElanData.premium.forEach(num => {
+          allNumbers.push({
+            id: num.id,
+            phoneNumber: num.phoneNumber,
+            price: num.price,
+            contactPhone: num.contactPhone,
+            type: num.type,
+            isVip: num.isVip,
+            description: num.description,
+            provider: num.provider,
+            prefix: num.prefix
+          });
+        });
+        
+        // Add gold numbers
+        newElanData.gold.forEach(num => {
+          allNumbers.push({
+            id: num.id,
+            phoneNumber: num.phoneNumber,
+            price: num.price,
+            contactPhone: num.contactPhone,
+            type: num.type,
+            isVip: num.isVip,
+            description: num.description,
+            provider: num.provider,
+            prefix: num.prefix
+          });
+        });
+        
+        // Add standard numbers
+        newElanData.standard.forEach(num => {
+          allNumbers.push({
+            id: num.id,
+            phoneNumber: num.phoneNumber,
+            price: num.price,
+            contactPhone: num.contactPhone,
+            type: num.type,
+            isVip: num.isVip,
+            description: num.description,
+            provider: num.provider,
+            prefix: num.prefix
+          });
+        });
 
+        // Also load legacy data for backward compatibility
         for (const dataFile of dataFiles) {
           try {
             const response = await fetch(`/data/${dataFile.file}`);
@@ -208,7 +212,7 @@ export default function PhonePageTemplate({
                 const actualPrefix = phoneDigits.slice(0, 3);
                 
                 return {
-                  id: item.id || index + 1,
+                  id: item.id || (index + 1000), // Offset to avoid conflicts
                   phoneNumber: phoneNumber,
                   price: (() => {
                     if (item.price) return Number(item.price);
@@ -247,16 +251,75 @@ export default function PhonePageTemplate({
     loadNumbers();
   }, [dataFiles]);
 
+  // Helper function to get prefixes for each operator
+  const getOperatorPrefixes = (operator: string): string[] => {
+    switch (operator) {
+      case 'azercell':
+        return ['050', '051', '010'];
+      case 'bakcell':
+        return ['055', '099'];
+      case 'nar-mobile':
+        return ['070', '077'];
+      case 'naxtel':
+        return ['060'];
+      default:
+        return [];
+    }
+  };
+
   const filteredAds = useMemo(() => {
     if (!ads.length) return [];
     
-    return ads.filter(ad => {
+    let filteredData = { premium: [...elanData.premium], gold: [...elanData.gold], standard: [...elanData.standard] };
+    
+    // Apply operator filter
+    if (showProviderFilter && selectedProvider && selectedProvider !== 'all') {
+      const operatorPrefixes = getOperatorPrefixes(selectedProvider);
+      filteredData = {
+        premium: filteredData.premium.filter(num => operatorPrefixes.includes(num.prefix)),
+        gold: filteredData.gold.filter(num => operatorPrefixes.includes(num.prefix)),
+        standard: filteredData.standard.filter(num => operatorPrefixes.includes(num.prefix))
+      };
+    }
+    
+    // Apply prefix filter
+    if (selectedPrefix && selectedPrefix !== 'all') {
+      filteredData = filterByPrefix(filteredData, selectedPrefix);
+    }
+    
+    // Apply search filter
+    if (searchTerm.trim()) {
+      filteredData = searchNumbers(filteredData, searchTerm);
+    }
+    
+    // Convert back to ads format and merge with legacy data
+    const filteredNumbers: NumberAd[] = [];
+    
+    [...filteredData.premium, ...filteredData.gold, ...filteredData.standard].forEach(num => {
+      filteredNumbers.push({
+        id: num.id,
+        phoneNumber: num.phoneNumber,
+        price: num.price,
+        contactPhone: num.contactPhone,
+        type: num.type,
+        isVip: num.isVip,
+        description: num.description,
+        provider: num.provider,
+        prefix: num.prefix
+      });
+    });
+    
+    // Add legacy filtered data
+    const legacyFiltered = ads.filter(ad => {
       if (!ad || !ad.phoneNumber) return false;
+      if (ad.id < 1000) return false; // Only include legacy data (id >= 1000)
       
       const phoneDigits = ad.phoneNumber.replace(/[^0-9]/g, '');
       
-      if (showProviderFilter && selectedProvider && selectedProvider !== 'all' && ad.provider !== selectedProvider) {
-        return false;
+      // Apply operator filter to legacy data
+      if (showProviderFilter && selectedProvider && selectedProvider !== 'all') {
+        const operatorPrefixes = getOperatorPrefixes(selectedProvider);
+        if (!operatorPrefixes.includes(ad.prefix)) return false;
       }
       
       if (selectedPrefix && selectedPrefix !== 'all') {
@@ -278,13 +341,17 @@ export default function PhonePageTemplate({
       
       return true;
     });
-  }, [ads, searchTerm, selectedPrefix, selectedProvider, showProviderFilter]);
+    
+    return [...filteredNumbers, ...legacyFiltered];
+  }, [ads, searchTerm, selectedPrefix, selectedProvider, showProviderFilter, elanData]);
 
   const getUniqueProviders = () => {
-    const providers = [...new Set(ads.map(ad => ad.provider))];
     return [
       { value: 'all', label: 'Operator seçin' },
-      ...providers.sort().map(provider => ({ value: provider, label: provider }))
+      { value: 'azercell', label: 'Azercell' },
+      { value: 'bakcell', label: 'Bakcell' },
+      { value: 'nar-mobile', label: 'Nar Mobile' },
+      { value: 'naxtel', label: 'Naxtel' }
     ];
   };
 
@@ -292,9 +359,8 @@ export default function PhonePageTemplate({
     let prefixes: string[] = [];
     
     if (showProviderFilter && selectedProvider && selectedProvider !== 'all') {
-      prefixes = ads
-        .filter(ad => ad.provider === selectedProvider)
-        .map(ad => ad.prefix);
+      // Get prefixes for the selected operator
+      prefixes = getOperatorPrefixes(selectedProvider);
     } else if (ads.length > 0) {
       prefixes = ads.map(ad => ad.prefix);
     } else {
@@ -308,14 +374,47 @@ export default function PhonePageTemplate({
     ];
   };
 
-  // Sample data for premium and gold numbers
-  const premiumNumbers = [
-    { id: 1, number: "050-266-63-66", views: 5758, price: 1500, operator: "050", status: "active" },
-    { id: 2, number: "051-555-55-55", views: 4321, price: 1200, operator: "051", status: "active" },
-    { id: 3, number: "055-777-77-77", views: 3456, price: 800, operator: "055", status: "active" }
-  ];
-
-  const goldNumbers: GoldNumber[] = [];
+  // Get premium numbers from elan data
+  const premiumNumbers = useMemo(() => {
+    const allPremiumNumbers = [...elanData.premium, ...elanData.gold];
+    
+    // Apply filters to premium numbers
+    let filteredPremium = allPremiumNumbers;
+    
+    // Apply operator filter to premium numbers
+    if (showProviderFilter && selectedProvider && selectedProvider !== 'all') {
+      const operatorPrefixes = getOperatorPrefixes(selectedProvider);
+      filteredPremium = filteredPremium.filter(num => operatorPrefixes.includes(num.prefix));
+    }
+    
+    if (selectedPrefix && selectedPrefix !== 'all') {
+      filteredPremium = filteredPremium.filter(num => num.prefix === selectedPrefix);
+    }
+    
+    if (searchTerm.trim()) {
+      const searchDigits = searchTerm.replace(/\D/g, '');
+      if (searchDigits) {
+        filteredPremium = filteredPremium.filter(num => 
+          num.phoneNumber.replace(/\D/g, '').includes(searchDigits)
+        );
+      } else {
+        const searchText = searchTerm.toLowerCase();
+        filteredPremium = filteredPremium.filter(num => 
+          num.phoneNumber.toLowerCase().includes(searchText) ||
+          num.description.toLowerCase().includes(searchText)
+        );
+      }
+    }
+    
+    return filteredPremium.map(num => ({
+      id: num.id,
+      number: num.phoneNumber,
+      views: Math.floor(Math.random() * 9000) + 1000, // Random views for demo
+      price: num.price,
+      operator: num.prefix,
+      status: num.status
+    }));
+  }, [elanData, selectedProvider, selectedPrefix, searchTerm, showProviderFilter]);
 
   // Highlight search term in phone number (only matching digits)
   const highlightSearchTerm = (phoneNumber: string, searchTerm: string) => {
@@ -465,11 +564,6 @@ export default function PhonePageTemplate({
           <PremiumNumbers numbers={premiumNumbers} />
         )}
 
-        {/* Gold Numbers Section - Only show on main page */}
-        {showProviderFilter && (
-          <GoldNumbers numbers={goldNumbers} />
-        )}
-
         {/* Standard Numbers List */}
         <div className="space-y-3">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
@@ -496,9 +590,9 @@ export default function PhonePageTemplate({
                 >
                   <div className="flex items-center gap-4">
                     <span className="text-lg font-medium phone-number-display">{highlightSearchTerm(ad.phoneNumber, searchTerm)}</span>
-                    <div className="flex items-center gap-1 text-blue-100">
-                      <span className="text-sm">₼</span>
-                      <span className="text-sm">{ad.price}</span>
+                    <div className="flex items-center gap-1 text-blue-100 price-display-large">
+                      <span className="price-currency-large">₼</span>
+                      <span className="price-amount-large">{ad.price}</span>
                     </div>
                   </div>
                   

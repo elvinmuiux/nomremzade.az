@@ -1,0 +1,50 @@
+{
+  "premium": [
+    {
+      "id": 5,
+      "phoneNumber": "055-999-99-99",
+      "price": 900,
+      "contactPhone": "(055) 444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "Premium 055 nömrə",
+      "provider": "055",
+      "prefix": "055",
+      "status": "active",
+      "dateAdded": "2024-01-18T11:30:00Z",
+      "category": "premium"
+    }
+  ],
+  "gold": [
+    {
+      "id": 6,
+      "phoneNumber": "055-888-88-88",
+      "price": 390,
+      "contactPhone": "(055) 444-44-22",
+      "type": "gold",
+      "isVip": false,
+      "description": "Qızıl 055 nömrə",
+      "provider": "055",
+      "prefix": "055",
+      "status": "active",
+      "dateAdded": "2024-01-22T13:45:00Z",
+      "category": "gold"
+    }
+  ],
+  "standard": [
+    {
+      "id": 7,
+      "phoneNumber": "055-123-45-67",
+      "price": 33,
+      "contactPhone": "(055) 444-44-22",
+      "type": "standard",
+      "isVip": false,
+      "description": "Standart 055 nömrə",
+      "provider": "055",
+      "prefix": "055",
+      "status": "active",
+      "dateAdded": "2024-02-02T10:15:00Z",
+      "category": "standard"
+    }
+  ]
+}

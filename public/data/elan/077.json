@@ -1,0 +1,50 @@
+{
+  "premium": [
+    {
+      "id": 17,
+      "phoneNumber": "077-555-55-55",
+      "price": 820,
+      "contactPhone": "(077) 444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "Premium 077 nömrə",
+      "provider": "077",
+      "prefix": "077",
+      "status": "active",
+      "dateAdded": "2024-01-16T12:25:00Z",
+      "category": "premium"
+    }
+  ],
+  "gold": [
+    {
+      "id": 18,
+      "phoneNumber": "077-888-88-88",
+      "price": 370,
+      "contactPhone": "(077) 444-44-22",
+      "type": "gold",
+      "isVip": false,
+      "description": "Qızıl 077 nömrə",
+      "provider": "077",
+      "prefix": "077",
+      "status": "active",
+      "dateAdded": "2024-01-27T10:15:00Z",
+      "category": "gold"
+    }
+  ],
+  "standard": [
+    {
+      "id": 19,
+      "phoneNumber": "077-345-67-89",
+      "price": 33,
+      "contactPhone": "(077) 444-44-22",
+      "type": "standard",
+      "isVip": false,
+      "description": "Standart 077 nömrə",
+      "provider": "077",
+      "prefix": "077",
+      "status": "active",
+      "dateAdded": "2024-02-06T14:40:00Z",
+      "category": "standard"
+    }
+  ]
+}

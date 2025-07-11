@@ -1,9 +1,8 @@
-/* CSS Updated: 2025-01-11 19:00:00 - Added specific dimensions to Sifariş et buttons */
-/* DEBUGGING: Premium design applied to standard cards + button sizing added */
+/* CSS Updated: 2025-01-11 19:20:00 - Added 10px left margin to design */
+/* DEBUGGING: Premium design only, Gold sections removed, left spacing added */
 
 /* Mobile-Only Phone Template Styles - Based on Reference Design */
 /* Main container for mobile template */
-
 
 /* Hide mobile template on desktop */
 @media (min-width: 768px) {
@@ -13,41 +12,41 @@
 }
 
 /* Ensure mobile template shows on mobile devices */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .phone-page-container {
     display: block !important;
   }
 }
 
-/* Premium and Gold number card fixed dimensions */
+/* Premium number card fixed dimensions */
 .premium-number-card {
   width: 458px;
   height: 45px;
-  padding-left: 14px;
-  padding-right: 14px;
+  padding-left: 10px;
+  padding-right: 10px;
   margin-bottom: 10px;
 }
 
-.gold-number-card {
-  width: 458px;
-  height: 45px;
-  padding-left: 14px;
-  padding-right: 14px;
-  margin-bottom: 10px;
+.premium-number-card > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
 }
 
-/* Premium and Gold Numbers Container Spacing */
+.premium-number-card > div:first-child > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* Premium Numbers Container Spacing */
 .premium-numbers-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.gold-numbers-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+  gap: 0px;
+} 
 
 /* Header */
 .phone-header {
@@ -277,6 +276,20 @@
   justify-content: space-between;
   position: relative;
   cursor: pointer;
+}
+
+.phone-number-card > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.phone-number-card > div:first-child > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
 }
 
 .phone-number-card:hover {
@@ -561,13 +574,6 @@
     margin-bottom: 8px;
   }
   
-  .gold-number-card {
-    width: 100%;
-    max-width: 300px;
-    height: 38px;
-    margin-bottom: 8px;
-  }
-  
   .phone-number-display {
     font-size: 16px;
   }
@@ -619,13 +625,6 @@
   }
   
   .premium-number-card {
-    width: 100%;
-    max-width: 350px;
-    height: 42px;
-    margin-bottom: 8px;
-  }
-  
-  .gold-number-card {
     width: 100%;
     max-width: 350px;
     height: 42px;
@@ -686,13 +685,6 @@
     margin-bottom: 8px;
   }
   
-  .gold-number-card {
-    width: 100%;
-    max-width: 390px;
-    height: 46px;
-    margin-bottom: 8px;
-  }
-  
   .phone-number-display {
     font-size: 18px;
   }
@@ -741,13 +733,6 @@
   }
   
   .premium-number-card {
-    width: 100%;
-    max-width: 450px;
-    height: 50px;
-    margin-bottom: 10px;
-  }
-  
-  .gold-number-card {
     width: 100%;
     max-width: 450px;
     height: 50px;
@@ -808,13 +793,6 @@
     margin-bottom: 12px;
   }
   
-  .gold-number-card {
-    width: 100%;
-    max-width: 500px;
-    height: 54px;
-    margin-bottom: 12px;
-  }
-  
   .phone-number-display {
     font-size: 20px;
   }
@@ -868,13 +846,6 @@
     margin-bottom: 10px;
   }
   
-  .gold-number-card {
-    width: 100%;
-    max-width: 340px;
-    height: 40px;
-    margin-bottom: 10px;
-  }
-  
   .phone-number-display {
     font-size: 18px;
   }
@@ -883,13 +854,6 @@
 /* Responsive adjustments for medium mobile screens */
 @media (max-width: 480px) {
   .premium-number-card {
-    width: 100%;
-    max-width: 450px;
-    height: 42px;
-    margin-bottom: 10px;
-  }
-
-  .gold-number-card {
     width: 100%;
     max-width: 450px;
     height: 42px;
@@ -949,7 +913,48 @@
 
 /* Price display in standard cards - now matches premium design */
 .phone-number-card .text-blue-100 {
-  color: rgba(219, 234, 254, 0.8);
+  color: rgba(219, 234, 254, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  font-weight: 600 !important;
+  font-size: 22px !important;
+  text-align: center !important;
+  min-width: 60px !important;
+}
+
+/* Premium price display - centered */
+.premium-number-card .text-blue-100 {
+  color: rgba(219, 234, 254, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  font-weight: 600 !important;
+  font-size: 22px !important;
+  text-align: center !important;
+  min-width: 60px !important;
+}
+
+/* Large price display classes */
+.price-display-large {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+}
+
+.price-currency-large {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+}
+
+.price-amount-large {
+  font-size: 22px !important;
+  font-weight: 600 !important;
 }
 
 /* Page Title */
@@ -996,86 +1001,8 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Gold Sifariş et button - yellow color scheme */
-.phone-order-btn-gold {
-  width: 100px !important;
-  height: 35px !important;
-  min-width: 100px !important;
-  min-height: 35px !important;
-  padding: 8px 16px !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  border-radius: 9999px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: white !important;
-  color: #d97706 !important;
-  border: none !important;
-  cursor: pointer !important;
-  transition: all 0.3s !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-}
-
-.phone-order-btn-gold:hover {
-  background: #fef3c7 !important;
-  color: #92400e !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-}
-
-/* Responsive gold button sizes */
-@media (max-width: 320px) {
-  .phone-order-btn-gold {
-    width: 80px !important;
-    height: 32px !important;
-    min-width: 80px !important;
-    min-height: 32px !important;
-    padding: 6px 12px !important;
-    font-size: 12px !important;
-  }
-}
-
-@media (min-width: 321px) and (max-width: 375px) {
-  .phone-order-btn-gold {
-    width: 85px !important;
-    height: 33px !important;
-    min-width: 85px !important;
-    min-height: 33px !important;
-    padding: 7px 14px !important;
-    font-size: 13px !important;
-  }
-}
-
-@media (min-width: 376px) and (max-width: 414px) {
-  .phone-order-btn-gold {
-    width: 90px !important;
-    height: 34px !important;
-    min-width: 90px !important;
-    min-height: 34px !important;
-    padding: 7px 15px !important;
-    font-size: 13px !important;
-  }
-}
-
-@media (min-width: 415px) and (max-width: 480px) {
-  .phone-order-btn-gold {
-    width: 95px !important;
-    height: 35px !important;
-    min-width: 95px !important;
-    min-height: 35px !important;
-    padding: 8px 16px !important;
-    font-size: 14px !important;
-  }
-}
-
-@media (min-width: 481px) and (max-width: 767px) {
-  .phone-order-btn-gold {
-    width: 110px !important;
-    height: 40px !important;
-    min-width: 110px !important;
-    min-height: 40px !important;
-    padding: 10px 18px !important;
-    font-size: 15px !important;
-  }
+/* Search section container */
+.phone-search-section {
+  margin-left: 0px;
+  padding: 0px;
 }

@@ -1,0 +1,50 @@
+{
+  "premium": [
+    {
+      "id": 23,
+      "phoneNumber": "051-777-77-77",
+      "price": 750,
+      "contactPhone": "(051) 444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "Premium 051 nömrə",
+      "provider": "051",
+      "prefix": "051",
+      "status": "active",
+      "dateAdded": "2024-01-13T07:20:00Z",
+      "category": "premium"
+    }
+  ],
+  "gold": [
+    {
+      "id": 24,
+      "phoneNumber": "051-222-22-22",
+      "price": 350,
+      "contactPhone": "(051) 444-44-22",
+      "type": "gold",
+      "isVip": false,
+      "description": "Qızıl 051 nömrə",
+      "provider": "051",
+      "prefix": "051",
+      "status": "active",
+      "dateAdded": "2024-01-29T11:45:00Z",
+      "category": "gold"
+    }
+  ],
+  "standard": [
+    {
+      "id": 25,
+      "phoneNumber": "051-678-90-12",
+      "price": 35,
+      "contactPhone": "(051) 444-44-22",
+      "type": "standard",
+      "isVip": false,
+      "description": "Standart 051 nömrə",
+      "provider": "051",
+      "prefix": "051",
+      "status": "active",
+      "dateAdded": "2024-02-08T13:20:00Z",
+      "category": "standard"
+    }
+  ]
+}

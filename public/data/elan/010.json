@@ -1,0 +1,50 @@
+{
+  "premium": [
+    {
+      "id": 8,
+      "phoneNumber": "010-222-22-22",
+      "price": 800,
+      "contactPhone": "(010) 444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "Premium 010 nömrə",
+      "provider": "010",
+      "prefix": "010",
+      "status": "active",
+      "dateAdded": "2024-01-19T15:20:00Z",
+      "category": "premium"
+    }
+  ],
+  "gold": [
+    {
+      "id": 9,
+      "phoneNumber": "010-333-33-33",
+      "price": 375,
+      "contactPhone": "(010) 444-44-22",
+      "type": "gold",
+      "isVip": false,
+      "description": "Qızıl 010 nömrə",
+      "provider": "010",
+      "prefix": "010",
+      "status": "active",
+      "dateAdded": "2024-01-24T12:30:00Z",
+      "category": "gold"
+    }
+  ],
+  "standard": [
+    {
+      "id": 10,
+      "phoneNumber": "010-987-65-43",
+      "price": 32,
+      "contactPhone": "(010) 444-44-22",
+      "type": "standard",
+      "isVip": false,
+      "description": "Standart 010 nömrə",
+      "provider": "010",
+      "prefix": "010",
+      "status": "active",
+      "dateAdded": "2024-02-03T08:45:00Z",
+      "category": "standard"
+    }
+  ]
+}

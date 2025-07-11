@@ -1,0 +1,50 @@
+{
+  "premium": [
+    {
+      "id": 20,
+      "phoneNumber": "060-999-99-99",
+      "price": 850,
+      "contactPhone": "(060) 444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "Premium 060 nömrə",
+      "provider": "060",
+      "prefix": "060",
+      "status": "active",
+      "dateAdded": "2024-01-14T08:30:00Z",
+      "category": "premium"
+    }
+  ],
+  "gold": [
+    {
+      "id": 21,
+      "phoneNumber": "060-111-11-11",
+      "price": 380,
+      "contactPhone": "(060) 444-44-22",
+      "type": "gold",
+      "isVip": false,
+      "description": "Qızıl 060 nömrə",
+      "provider": "060",
+      "prefix": "060",
+      "status": "active",
+      "dateAdded": "2024-01-28T15:35:00Z",
+      "category": "gold"
+    }
+  ],
+  "standard": [
+    {
+      "id": 22,
+      "phoneNumber": "060-567-89-01",
+      "price": 34,
+      "contactPhone": "(060) 444-44-22",
+      "type": "standard",
+      "isVip": false,
+      "description": "Standart 060 nömrə",
+      "provider": "060",
+      "prefix": "060",
+      "status": "active",
+      "dateAdded": "2024-02-07T12:50:00Z",
+      "category": "standard"
+    }
+  ]
+}
