@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, TrendingUp } from 'lucide-react';
+import { Search } from 'lucide-react';
 import StatisticsManager from '@/lib/statistics';
 import './PhonePageTemplate.css';
 
@@ -72,14 +72,14 @@ const PremiumNumbers: React.FC<PremiumNumbersProps> = ({ numbers = [] }) => {
             <div className="flex items-center gap-4">
               <span className="text-lg font-medium">{item.number}</span>
               <div className="flex items-center gap-1 text-blue-100">
-                <TrendingUp size={16} />
-                <span className="text-sm">{item.views}</span>
+                <span className="text-sm">₼</span>
+                <span className="text-sm">{item.price}</span>
               </div>
             </div>
             
             <button 
               onClick={() => handleOrder(item.number, item.price)}
-              className="bg-white text-blue-600 hover:bg-blue-50 px-6 py-2 rounded-full font-medium transition-colors shadow-sm"
+              className="phone-order-btn"
             >
               Sifariş et
             </button>
@@ -137,14 +137,14 @@ const GoldNumbers: React.FC<GoldNumbersProps> = ({ numbers = [] }) => {
             <div className="flex items-center gap-4">
               <span className="text-lg font-medium">{item.number}</span>
               <div className="flex items-center gap-1 text-yellow-100">
-                <TrendingUp size={16} />
-                <span className="text-sm">{item.views}</span>
+                <span className="text-sm">₼</span>
+                <span className="text-sm">{item.price}</span>
               </div>
             </div>
             
             <button 
               onClick={() => handleOrder(item.number, item.price)}
-              className="bg-white text-yellow-600 hover:bg-yellow-50 px-6 py-2 rounded-full font-medium transition-colors shadow-sm"
+              className="phone-order-btn-gold"
             >
               Sifariş et
             </button>
@@ -492,13 +492,13 @@ export default function PhonePageTemplate({
               .map((ad) => (
                 <div 
                   key={`${ad.provider}-${ad.id}`} 
-                  className="phone-number-card"
+                  className="bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-between text-white transition-colors cursor-pointer shadow-sm phone-number-card"
                 >
-                  <div className="phone-number-card-left">
-                    <span className="phone-number-display">{highlightSearchTerm(ad.phoneNumber, searchTerm)}</span>
-                    <div className="phone-number-card-views">
-                      <TrendingUp size={16} />
-                      <span>0</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-lg font-medium phone-number-display">{highlightSearchTerm(ad.phoneNumber, searchTerm)}</span>
+                    <div className="flex items-center gap-1 text-blue-100">
+                      <span className="text-sm">₼</span>
+                      <span className="text-sm">{ad.price}</span>
                     </div>
                   </div>
                   
@@ -510,7 +510,7 @@ export default function PhonePageTemplate({
                         window.location.href = 'tel:+994550444422';
                       }
                     }}
-                    className="phone-order-button"
+                    className="phone-order-btn"
                   >
                     Sifariş et
                   </button>
