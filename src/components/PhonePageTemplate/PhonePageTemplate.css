@@ -1,13 +1,9 @@
+/* CSS Updated: 2025-01-11 17:30:00 */
+/* DEBUGGING: This is a test to see if CSS changes are applied */
+
 /* Mobile-Only Phone Template Styles - Based on Reference Design */
 /* Main container for mobile template */
-.phone-page-container {
-  background-color: #f9fafb;
-  min-height: 100vh;
-  padding: 16px;
-  display: block;
-  max-width: 100%;
-  margin: 0 auto;
-}
+
 
 /* Hide mobile template on desktop */
 @media (min-width: 768px) {
@@ -150,40 +146,42 @@
   color: #C69F32;
 }
 
-/* Search Section */
-.phone-search-section {
-  padding: 16px;
-  background: white;
-  border-bottom: 1px solid #e9ecef;
-}
+
 
 .phone-search-container {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
 }
 
 .phone-search-input-wrapper {
   position: relative;
-  flex: 1;
+  flex: none;
 }
 
 .phone-search-icon {
   position: absolute;
-  left: 12px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: #6c757d;
+  pointer-events: none;
 }
 
 .phone-search-input {
-  width: 100%;
-  padding: 12px 12px 12px 40px;
+  width: 160px;
+  height: 40px;
+  padding: 2px 40px 2px 12px;
   border: 2px solid #e9ecef;
   border-radius: 12px;
   font-size: 16px;
   background: #f8f9fa;
   transition: all 0.2s;
+  height: 40px;
+  box-sizing: border-box;
+  color: #425C5B;
 }
 
 .phone-search-input:focus {
@@ -193,18 +191,7 @@
   box-shadow: 0 0 0 3px rgba(198, 159, 50, 0.1);
 }
 
-.phone-filter-button {
-  background: #C69F32;
-  border: none;
-  color: white;
-  padding: 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 
 .phone-filter-button:hover {
   background: #b8913d;
@@ -216,16 +203,20 @@
   margin-top: 12px;
   display: flex;
   gap: 8px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .phone-select {
-  flex: 1;
-  padding: 10px 12px;
+  flex: none;
+  padding: 2px 12px;
   border: 2px solid #e9ecef;
   border-radius: 8px;
   font-size: 14px;
   background: white;
   color: #495057;
+  height: 60px !important;
+  width: 120px !important;
 }
 
 .phone-select:focus {
@@ -270,17 +261,17 @@
 
 /* Number Cards */
 .phone-number-card {
-  background: linear-gradient(135deg, #398, #3989d8);
+  background: linear-gradient(135deg, #425c5b, #425C5B);
   color: white;
-  border-radius: 25px;
+  border-radius: 12px;
   padding: 14px 24px;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
   border: none;
   transition: all 0.3s;
   width: 100%;
-  max-width: 458px;
-  height: 45px;
-  margin-bottom: 10px;
+  max-width: 460px;
+  height: 49px;
+  margin-bottom: 7px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -289,7 +280,7 @@
 .phone-number-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #d4af47 100%);
 }
 
 .phone-card-header {
@@ -306,12 +297,10 @@
   font-family: 'Courier New', monospace;
 }
 
+/* Highlight matching search digits in phone numbers - Only text color change */
 .phone-highlight {
-  background: linear-gradient(120deg, #C69F32 0%, #d4af47 100%);
-  color: white;
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-weight: 800;
+  color: #C69F32 !important;
+  font-weight: bold;
 }
 
 .phone-price {
@@ -379,7 +368,7 @@
 
 .phone-action-buttons {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .phone-action-btn {
@@ -437,14 +426,16 @@
   background: white;
   color: #3b82f6;
   border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 8px 4px;
+  border-radius: 15px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
   text-transform: none;
   letter-spacing: normal;
+  min-width: 100px;
+  margin-left: 50px;
 }
 
 .phone-order-button:hover {
@@ -648,4 +639,41 @@
   gap: 4px;
   color: rgba(255, 255, 255, 0.8);
   font-size: 14px;
+}
+
+/* Mobile specific styles */
+@media (max-width: 767px) {
+  .phone-filter-button {
+    height: 20px !important;
+    min-height: 20px !important;
+    width: 100px !important;
+
+  }
+  
+  .phone-search-input {
+    height: 50px !important;
+    min-height: 50px !important;
+  }
+  
+  .phone-select {
+    height: 50px !important;
+    min-height: 50px !important;
+    width: 130px !important;
+  }
+}
+
+/* Page Title */
+.phone-page-title {
+  text-align: center;
+  padding: 10px 10px;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.phone-page-title h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #425C5B;
+  margin: 0;
+  text-align: center;
 }

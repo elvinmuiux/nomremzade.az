@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronDown, Search, TrendingUp } from 'lucide-react';
+import { Search, TrendingUp } from 'lucide-react';
 import StatisticsManager from '@/lib/statistics';
 import './PhonePageTemplate.css';
 
@@ -317,6 +317,64 @@ export default function PhonePageTemplate({
 
   const goldNumbers: GoldNumber[] = [];
 
+  // Highlight search term in phone number (only matching digits)
+  const highlightSearchTerm = (phoneNumber: string, searchTerm: string) => {
+    if (!searchTerm.trim()) return phoneNumber;
+    
+    const searchDigits = searchTerm.replace(/\D/g, '');
+    if (!searchDigits) {
+      // Metin araması için
+      const searchText = searchTerm.toLowerCase();
+      const phoneText = phoneNumber.toLowerCase();
+      const matchIndex = phoneText.indexOf(searchText);
+      if (matchIndex === -1) return phoneNumber;
+      
+      return (
+        <>
+          {phoneNumber.slice(0, matchIndex)}
+          <span className="phone-highlight">
+            {phoneNumber.slice(matchIndex, matchIndex + searchTerm.length)}
+          </span>
+          {phoneNumber.slice(matchIndex + searchTerm.length)}
+        </>
+      );
+    }
+    
+    // Sayı araması için
+    const phoneDigits = phoneNumber.replace(/\D/g, '');
+    const matchIndex = phoneDigits.indexOf(searchDigits);
+    if (matchIndex === -1) return phoneNumber;
+    
+    let digitCount = 0;
+    let highlightStart = null;
+    let highlightEnd = null;
+    
+    for (let i = 0; i < phoneNumber.length; i++) {
+      if (/\d/.test(phoneNumber[i])) {
+        if (digitCount === matchIndex) highlightStart = i;
+        if (digitCount === matchIndex + searchDigits.length - 1) {
+          highlightEnd = i + 1;
+          break;
+        }
+        digitCount++;
+      }
+    }
+    
+    if (highlightStart !== null && highlightEnd !== null) {
+      return (
+        <>
+          {phoneNumber.slice(0, highlightStart)}
+          <span className="phone-highlight">
+            {phoneNumber.slice(highlightStart, highlightEnd)}
+          </span>
+          {phoneNumber.slice(highlightEnd)}
+        </>
+      );
+    }
+    
+    return phoneNumber;
+  };
+
   // Only render on client side and mobile devices
   if (!isClient || !isMobile) {
     return null;
@@ -335,13 +393,18 @@ export default function PhonePageTemplate({
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen p-4">
-      <div className="max-w-lg mx-auto">
+    <div className="phone-page-container">
+      {/* Page Title */}
+      <div className="phone-page-title">
+        <h1>Esas səhifə</h1>
+      </div>
+      
+      <div className="phone-search-section">
         {/* Filter Controls */}
-        <div className="flex gap-3 mb-6">
+        <div className="phone-search-container">
           {/* Operator Dropdown */}
           {showProviderFilter && (
-            <div className="relative flex-1">
+            <div className="phone-search-input-wrapper">
               <select 
                 value={selectedProvider}
                 onChange={(e) => {
@@ -349,7 +412,7 @@ export default function PhonePageTemplate({
                   setSelectedPrefix('all');
                   setSearchTerm('');
                 }}
-                className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2.5 pr-10 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="phone-select"
                 title="Operator seçin"
                 aria-label="Operator seçin"
               >
@@ -359,16 +422,15 @@ export default function PhonePageTemplate({
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
             </div>
           )}
           
           {/* Prefix Dropdown */}
-          <div className="relative flex-1">
+          <div className="phone-search-input-wrapper">
             <select 
               value={selectedPrefix}
               onChange={(e) => setSelectedPrefix(e.target.value)}
-              className="w-full appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2.5 pr-10 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="phone-select"
               title="Prefiks seçin"
               aria-label="Prefiks seçin"
             >
@@ -378,20 +440,24 @@ export default function PhonePageTemplate({
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
           </div>
           
           {/* Search Input */}
-          <div className="relative flex-1">
+          <div className="phone-search-input-wrapper">
             <input
               type="text"
               placeholder="Nömrə axtar..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 pr-10 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="phone-search-input"
             />
-            <Search className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
+            <Search className="phone-search-icon" />
           </div>
+          
+          {/* Filter Button */}
+          <button className="phone-filter-button" title="Axtarış et">
+           
+          </button>
         </div>
 
         {/* Premium Numbers Section - Only show on main page */}
@@ -429,7 +495,7 @@ export default function PhonePageTemplate({
                   className="phone-number-card"
                 >
                   <div className="phone-number-card-left">
-                    <span className="phone-number-display">{ad.phoneNumber}</span>
+                    <span className="phone-number-display">{highlightSearchTerm(ad.phoneNumber, searchTerm)}</span>
                     <div className="phone-number-card-views">
                       <TrendingUp size={16} />
                       <span>0</span>
