@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronDown, Search, TrendingUp, Phone, MessageCircle, Diamond } from 'lucide-react';
+import { ChevronDown, Search, TrendingUp } from 'lucide-react';
 import StatisticsManager from '@/lib/statistics';
 import './PhonePageTemplate.css';
 
@@ -426,51 +426,28 @@ export default function PhonePageTemplate({
               .map((ad) => (
                 <div 
                   key={`${ad.provider}-${ad.id}`} 
-                  className="bg-white rounded-lg p-4 shadow-sm border border-gray-200"
+                  className="phone-number-card"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-semibold text-gray-800">{ad.phoneNumber}</span>
-                    <span className="text-lg font-bold text-green-600">₼{ad.price}</span>
+                  <div className="phone-number-card-left">
+                    <span className="phone-number-display">{ad.phoneNumber}</span>
+                    <div className="phone-number-card-views">
+                      <TrendingUp size={16} />
+                      <span>0</span>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center gap-2 mb-3">
-                    <Diamond className="text-yellow-500" size={16} />
-                    <span className="text-sm text-gray-600">{ad.provider}</span>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={() => {
-                        StatisticsManager.incrementSoldNumbers();
-                        const confirmed = confirm(`${ad.phoneNumber} nömrəsi üçün sifarişiniz qeydə alındı!\nQiymət: ₼${ad.price}\n\nƏn qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (0550 444-44-22)`);
-                        if (confirmed) {
-                          window.location.href = 'tel:+994550444422';
-                        }
-                      }}
-                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg font-medium transition-colors text-sm"
-                    >
-                      Sifariş Ver
-                    </button>
-                    <button 
-                      onClick={() => {
-                        const message = encodeURIComponent(`Salam! ${ad.phoneNumber} nömrəsi barədə məlumat almaq istərdim. Qiymət: ₼${ad.price}`);
-                        window.open(`https://wa.me/994550444422?text=${message}`, '_blank');
-                      }}
-                      className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
-                      title="WhatsApp ilə əlaqə"
-                      aria-label="WhatsApp ilə əlaqə"
-                    >
-                      <MessageCircle size={16} />
-                    </button>
-                    <a 
-                      href={`tel:${ad.contactPhone?.replace(/\D/g, '')}`} 
-                      className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center"
-                      title="Zəng et"
-                      aria-label="Zəng et"
-                    >
-                      <Phone size={16} />
-                    </a>
-                  </div>
+                  <button 
+                    onClick={() => {
+                      StatisticsManager.incrementSoldNumbers();
+                      const confirmed = confirm(`${ad.phoneNumber} nömrəsi üçün sifarişiniz qeydə alındı!\nQiymət: ₼${ad.price}\n\nƏn qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (0550 444-44-22)`);
+                      if (confirmed) {
+                        window.location.href = 'tel:+994550444422';
+                      }
+                    }}
+                    className="phone-order-button"
+                  >
+                    Sifariş et
+                  </button>
                 </div>
               ))
           ) : (

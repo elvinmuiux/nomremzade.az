@@ -2,6 +2,7 @@
 
 import React from 'react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
+import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
 
 export default function AzercellPage() {
   const dataFiles = [
@@ -14,12 +15,24 @@ export default function AzercellPage() {
   ];
 
   return (
-    <NumbersPageTemplate
-      pageTitle="Azercell nömrələri"
-      dataFiles={dataFiles}
-      operatorPrefixes={['010', '050', '051']}
-      showProviderFilter={false}
-      operatorName="azercell"
-    />
+    <>
+      {/* Desktop Template */}
+      <NumbersPageTemplate
+        pageTitle="Azercell nömrələri"
+        dataFiles={dataFiles}
+        operatorPrefixes={['010', '050', '051']}
+        showProviderFilter={false}
+        operatorName="azercell"
+      />
+      
+      {/* Mobile Template */}
+      <PhonePageTemplate
+        pageTitle="Azercell nömrələri"
+        dataFiles={dataFiles}
+        operatorPrefixes={['010', '050', '051']}
+        showProviderFilter={false}
+        operatorName="azercell"
+      />
+    </>
   );
 }

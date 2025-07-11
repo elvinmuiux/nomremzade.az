@@ -2,6 +2,7 @@
 
 import React from 'react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
+import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
 
 export default function BakcellPage() {
   const dataFiles = [
@@ -12,12 +13,24 @@ export default function BakcellPage() {
   ];
 
   return (
-    <NumbersPageTemplate
-      pageTitle="Bakcell nömrələri"
-      dataFiles={dataFiles}
-      operatorPrefixes={['055', '099',]}
-      showProviderFilter={false}
-      operatorName="bakcell"
-    />
+    <>
+      {/* Desktop Template */}
+      <NumbersPageTemplate
+        pageTitle="Bakcell nömrələri"
+        dataFiles={dataFiles}
+        operatorPrefixes={['055', '099']}
+        showProviderFilter={false}
+        operatorName="bakcell"
+      />
+      
+      {/* Mobile Template */}
+      <PhonePageTemplate
+        pageTitle="Bakcell nömrələri"
+        dataFiles={dataFiles}
+        operatorPrefixes={['055', '099']}
+        showProviderFilter={false}
+        operatorName="bakcell"
+      />
+    </>
   );
 }

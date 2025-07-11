@@ -2,6 +2,7 @@
 
 import React from 'react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
+import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
 
 export default function NarMobilePage() {
   const dataFiles = [
@@ -12,12 +13,24 @@ export default function NarMobilePage() {
   ];
 
   return (
-    <NumbersPageTemplate
-      pageTitle="Nar Mobile nömrələri"
-      dataFiles={dataFiles}
-      operatorPrefixes={['070', '077',]}
-      showProviderFilter={false}
-      operatorName="nar-mobile"
-    />
+    <>
+      {/* Desktop Template */}
+      <NumbersPageTemplate
+        pageTitle="Nar Mobile nömrələri"
+        dataFiles={dataFiles}
+        operatorPrefixes={['070', '077']}
+        showProviderFilter={false}
+        operatorName="nar-mobile"
+      />
+      
+      {/* Mobile Template */}
+      <PhonePageTemplate
+        pageTitle="Nar Mobile nömrələri"
+        dataFiles={dataFiles}
+        operatorPrefixes={['070', '077']}
+        showProviderFilter={false}
+        operatorName="nar-mobile"
+      />
+    </>
   );
 }
