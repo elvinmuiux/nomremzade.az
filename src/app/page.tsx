@@ -1,4 +1,5 @@
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
+import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
 
 function HomePage() {
   const dataFiles = [
@@ -13,12 +14,21 @@ function HomePage() {
   ];
 
   return (
-    <NumbersPageTemplate
-      pageTitle="Əsas səhifə"
+    <>
+      {/* Desktop Template */}
+      <NumbersPageTemplate
+        pageTitle="Əsas səhifə"
+        dataFiles={dataFiles}
+        showProviderFilter={true}
+      />
       
-      dataFiles={dataFiles}
-      showProviderFilter={true}
-    />
+      {/* Mobile Template */}
+      <PhonePageTemplate
+        pageTitle="Bütün nömrələr"
+        dataFiles={dataFiles}
+        showProviderFilter={true}
+      />
+    </>
   );
 }
 
