@@ -35,6 +35,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   showProviderFilter = false
 }) => {
   const [showExpanded, setShowExpanded] = useState(false);
+  const [showOperatorDropdown, setShowOperatorDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPrice, setSelectedPrice] = useState<string>('');
   const [selectedLength, setSelectedLength] = useState<string>('');
@@ -47,14 +48,11 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   useEffect(() => {
     const loadData = async () => {
       try {
-        console.log('Loading data for operator:', operator, 'showAllNumbers:', showAllNumbers);
         if (showAllNumbers) {
           const data = await loadAllElanData();
-          console.log('Loaded all data:', data);
           setElanData(data);
         } else if (operator) {
           const data = await loadElanData(operator);
-          console.log('Loaded operator data:', data);
           setElanData(data);
         }
       } catch (error) {
@@ -67,6 +65,21 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
     loadData();
   }, [operator, showAllNumbers]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.phone-custom-select')) {
+        setShowOperatorDropdown(false);
+      }
+    };
+
+    if (showOperatorDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showOperatorDropdown]);
+
   // Get unique providers from dataFiles
   const providers = useMemo(() => {
     if (!showAllNumbers || !dataFiles.length) return [];
@@ -74,12 +87,32 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
     return uniqueProviders;
   }, [dataFiles, showAllNumbers]);
 
-  // Operator options
+  // Operator options - Using simple logos for now
   const operatorOptions = useMemo(() => [
-    { value: 'azercell', label: 'Azercell', icon: '🔵' },
-    { value: 'bakcell', label: 'Bakcell', icon: '🟢' },
-    { value: 'nar-mobile', label: 'Nar Mobile', icon: '🟡' },
-    { value: 'naxtel', label: 'Naxtel', icon: '🔴' }
+    { 
+      value: 'azercell', 
+      label: 'Azercell', 
+      icon: 'A',
+      color: '#0066CC'
+    },
+    { 
+      value: 'bakcell', 
+      label: 'Bakcell', 
+      icon: 'B',
+      color: '#00A651'
+    },
+    { 
+      value: 'nar-mobile', 
+      label: 'Nar Mobile', 
+      icon: 'N',
+      color: '#FF6B00'
+    },
+    { 
+      value: 'naxtel', 
+      label: 'Naxtel', 
+      icon: 'X',
+      color: '#E30613'
+    }
   ], []);
 
   // Prefix options based on selected operator
@@ -181,13 +214,17 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   };
 
   const getOperatorIcon = (provider: string) => {
+    const normalizedProvider = provider.toLowerCase().replace(/[-\s]/g, '');
+    
     const iconMap: { [key: string]: string } = {
-      'Azercell': '🔵',
-      'Bakcell': '🟢', 
-      'Nar Mobile': '🟡',
-      'Naxtel': '🔴'
+      'azercell': 'A',
+      'bakcell': 'B',
+      'narmobile': 'N',
+      'nar': 'N',
+      'naxtel': 'X'
     };
-    return iconMap[provider] || '📱';
+    
+    return iconMap[normalizedProvider] || '📱';
   };
 
   const handleWhatsAppClick = (number: string) => {
@@ -195,16 +232,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   };
 
   const handleSearch = () => {
-    // Force refresh with current filters
-    console.log('Searching with filters:', {
-      searchTerm,
-      selectedPrice,
-      selectedLength,
-      selectedProvider,
-      selectedOperator,
-      selectedPrefix
-    });
-    // The filtering is already reactive via useMemo, so this logs the current state
+    // The filtering is already reactive via useMemo
   };
 
   const handleClearFilters = () => {
@@ -267,19 +295,63 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
         {/* Search Interface - Enhanced with Operator, Prefix and Search Button */}
         <div className="phone-search-container">
           <div className="phone-search-input-wrapper">
-            <select 
-              value={selectedOperator} 
-              onChange={(e) => setSelectedOperator(e.target.value)}
-              className="phone-select"
-              aria-label="Operator seçin"
-            >
-              <option value="">Bütün operatorlar</option>
-              {operatorOptions.map(op => (
-                <option key={op.value} value={op.value}>
-                  {op.icon} {op.label}
-                </option>
-              ))}
-            </select>
+            <div className="phone-custom-select">
+              <div 
+                className={`phone-select-trigger ${showOperatorDropdown ? 'active' : ''}`}
+                onClick={() => setShowOperatorDropdown(!showOperatorDropdown)}
+              >
+                <div className="phone-select-value">
+                  {selectedOperator ? (
+                    <>
+                      <span 
+                        className={`phone-operator-icon ${selectedOperator}`}
+                      >
+                        {operatorOptions.find(op => op.value === selectedOperator)?.icon}
+                      </span>
+                      <span>{operatorOptions.find(op => op.value === selectedOperator)?.label}</span>
+                    </>
+                  ) : (
+                    <span>Bütün operatorlar</span>
+                  )}
+                </div>
+                <div className="phone-select-arrow">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="6,9 12,15 18,9"></polyline>
+                  </svg>
+                </div>
+              </div>
+              
+              {showOperatorDropdown && (
+                <div className="phone-select-dropdown">
+                  <div 
+                    className="phone-select-option"
+                    onClick={() => {
+                      setSelectedOperator('');
+                      setSelectedPrefix('');
+                      setShowOperatorDropdown(false);
+                    }}
+                  >
+                    <span>Bütün operatorlar</span>
+                  </div>
+                  {operatorOptions.map(option => (
+                    <div 
+                      key={option.value}
+                      className="phone-select-option"
+                      onClick={() => {
+                        setSelectedOperator(option.value);
+                        setSelectedPrefix('');
+                        setShowOperatorDropdown(false);
+                      }}
+                    >
+                      <span className={`phone-operator-icon ${option.value}`}>
+                        {option.icon}
+                      </span>
+                      <span>{option.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="phone-search-input-wrapper">

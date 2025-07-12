@@ -34,9 +34,7 @@ const PhonePageMainTemplate: React.FC<PhonePageMainTemplateProps> = ({
   useEffect(() => {
     const loadAllData = async () => {
       try {
-        console.log('Loading all data for main template');
         const data = await loadAllElanData();
-        console.log('Loaded all data in main template:', data);
         setAllElanData(data);
       } catch (error) {
         console.error('Error loading all elan data:', error);

@@ -98,6 +98,137 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* CUSTOM OPERATOR DROPDOWN WITH LOGOS */
+.phone-custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.phone-select-trigger {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 18px);
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  color: #1e293b;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 2vw, 12px);
+}
+
+.phone-select-trigger:hover {
+  border-color: #cbd5e1;
+}
+
+.phone-select-trigger:focus,
+.phone-select-trigger.active {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.phone-select-value {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.5vw, 8px);
+  flex: 1;
+}
+
+.phone-select-arrow {
+  color: #667eea;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.phone-select-trigger.active .phone-select-arrow {
+  transform: rotate(180deg);
+}
+
+.phone-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  animation: slideDown 0.2s ease;
+}
+
+.phone-select-option {
+  padding: clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 18px);
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.5vw, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: clamp(14px, 3.5vw, 16px);
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.phone-select-option:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #667eea;
+}
+
+.phone-select-option:last-child {
+  border-radius: 0 0 10px 10px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* OPERATOR ICON STYLES */
+.phone-operator-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  margin-right: 8px;
+}
+
+.phone-operator-icon.azercell {
+  background-color: #0066CC;
+}
+
+.phone-operator-icon.bakcell {
+  background-color: #00A651;
+  border-radius: 4px;
+}
+
+.phone-operator-icon.nar-mobile {
+  background-color: #FF6B00;
+}
+
+.phone-operator-icon.naxtel {
+  background-color: #E30613;
+  border-radius: 4px;
+}
+
 /* ENHANCED SEARCH INTERFACE */
 .phone-search-container {
   display: flex;

@@ -94,9 +94,7 @@ export async function addNewNumber(numberData: Omit<ElanNumber, 'id' | 'dateAdde
     }
     
     // In a real application, you would save this back to the server
-    // For now, we'll just log it since we can't write to JSON files from client-side
-    console.log(`New ${numberData.type} number added:`, newNumber);
-    console.log(`Updated data for prefix ${prefix}:`, existingData);
+    // For now, we'll just return true since we can't write to JSON files from client-side
     
     return true;
   } catch (error) {

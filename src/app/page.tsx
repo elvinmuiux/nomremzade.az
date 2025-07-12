@@ -24,7 +24,7 @@ function HomePage() {
       
       {/* Mobile Template */}
       <PhonePageTemplate
-        pageTitle="Bütün nömrələr"
+        title="Bütün nömrələr"
         dataFiles={dataFiles}
         showProviderFilter={true}
       />
