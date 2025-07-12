@@ -39,29 +39,22 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   const [selectedPrice, setSelectedPrice] = useState<string>('');
   const [selectedLength, setSelectedLength] = useState<string>('');
   const [selectedProvider, setSelectedProvider] = useState<string>('');
+  const [selectedOperator, setSelectedOperator] = useState<string>('');
+  const [selectedPrefix, setSelectedPrefix] = useState<string>('');
   const [elanData, setElanData] = useState<ElanData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log('Loading data for operator:', operator, 'showAllNumbers:', showAllNumbers);
         if (showAllNumbers) {
           const data = await loadAllElanData();
+          console.log('Loaded all data:', data);
           setElanData(data);
         } else if (operator) {
           const data = await loadElanData(operator);
+          console.log('Loaded operator data:', data);
           setElanData(data);
         }
       } catch (error) {
@@ -80,6 +73,27 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
     const uniqueProviders = [...new Set(dataFiles.map(file => file.provider))];
     return uniqueProviders;
   }, [dataFiles, showAllNumbers]);
+
+  // Operator options
+  const operatorOptions = useMemo(() => [
+    { value: 'azercell', label: 'Azercell', icon: '🔵' },
+    { value: 'bakcell', label: 'Bakcell', icon: '🟢' },
+    { value: 'nar-mobile', label: 'Nar Mobile', icon: '🟡' },
+    { value: 'naxtel', label: 'Naxtel', icon: '🔴' }
+  ], []);
+
+  // Prefix options based on selected operator
+  const prefixOptions = useMemo(() => {
+    const prefixMap: { [key: string]: string[] } = {
+      'azercell': ['050', '051', '055', '010'],
+      'bakcell': ['055', '099'],
+      'nar-mobile': ['070', '077'],
+      'naxtel': ['060']
+    };
+    
+    if (!selectedOperator) return [];
+    return prefixMap[selectedOperator] || [];
+  }, [selectedOperator]);
 
   const filteredNumbers = useMemo(() => {
     if (!elanData?.standard) return [];
@@ -100,10 +114,16 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
 
       const matchesProvider = selectedProvider === '' || 
         number.provider === selectedProvider;
+
+      const matchesOperator = selectedOperator === '' || 
+        number.provider.toLowerCase().includes(selectedOperator.toLowerCase());
+
+      const matchesPrefix = selectedPrefix === '' || 
+        number.phoneNumber.startsWith(selectedPrefix);
       
-      return matchesSearch && matchesPrice && matchesLength && matchesProvider;
+      return matchesSearch && matchesPrice && matchesLength && matchesProvider && matchesOperator && matchesPrefix;
     });
-  }, [elanData, searchTerm, selectedPrice, selectedLength, selectedProvider]);
+  }, [elanData, searchTerm, selectedPrice, selectedLength, selectedProvider, selectedOperator, selectedPrefix]);
 
   const filteredPremiumNumbers = useMemo(() => {
     if (!elanData?.premium) return [];
@@ -114,10 +134,16 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
       
       const matchesProvider = selectedProvider === '' || 
         number.provider === selectedProvider;
+
+      const matchesOperator = selectedOperator === '' || 
+        number.provider.toLowerCase().includes(selectedOperator.toLowerCase());
+
+      const matchesPrefix = selectedPrefix === '' || 
+        number.phoneNumber.startsWith(selectedPrefix);
       
-      return matchesSearch && matchesProvider;
+      return matchesSearch && matchesProvider && matchesOperator && matchesPrefix;
     });
-  }, [elanData, searchTerm, selectedProvider]);
+  }, [elanData, searchTerm, selectedProvider, selectedOperator, selectedPrefix]);
 
   const filteredGoldNumbers = useMemo(() => {
     if (!elanData?.gold) return [];
@@ -128,10 +154,16 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
       
       const matchesProvider = selectedProvider === '' || 
         number.provider === selectedProvider;
+
+      const matchesOperator = selectedOperator === '' || 
+        number.provider.toLowerCase().includes(selectedOperator.toLowerCase());
+
+      const matchesPrefix = selectedPrefix === '' || 
+        number.phoneNumber.startsWith(selectedPrefix);
       
-      return matchesSearch && matchesProvider;
+      return matchesSearch && matchesProvider && matchesOperator && matchesPrefix;
     });
-  }, [elanData, searchTerm, selectedProvider]);
+  }, [elanData, searchTerm, selectedProvider, selectedOperator, selectedPrefix]);
 
   const highlightNumber = (number: string) => {
     if (!searchTerm) return number;
@@ -162,9 +194,32 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
     window.open(`https://wa.me/994501234567?text=Salam, ${number} nömrəsini sifarış etmək istəyirəm`, '_blank');
   };
 
-  if (!isMobile) {
-    return null; // Mobile template only renders on mobile
-  }
+  const handleSearch = () => {
+    // Force refresh with current filters
+    console.log('Searching with filters:', {
+      searchTerm,
+      selectedPrice,
+      selectedLength,
+      selectedProvider,
+      selectedOperator,
+      selectedPrefix
+    });
+    // The filtering is already reactive via useMemo, so this logs the current state
+  };
+
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSelectedPrice('');
+    setSelectedLength('');
+    setSelectedProvider('');
+    setSelectedOperator('');
+    setSelectedPrefix('');
+  };
+
+  // Remove mobile-only restriction to show on all devices
+  // if (!isMobile) {
+  //   return null; // Mobile template only renders on mobile
+  // }
 
   if (loading) {
     return (
@@ -209,8 +264,41 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
           </div>
         </div>
 
-        {/* Search Interface - Numbers Page Style */}
+        {/* Search Interface - Enhanced with Operator, Prefix and Search Button */}
         <div className="phone-search-container">
+          <div className="phone-search-input-wrapper">
+            <select 
+              value={selectedOperator} 
+              onChange={(e) => setSelectedOperator(e.target.value)}
+              className="phone-select"
+              aria-label="Operator seçin"
+            >
+              <option value="">Bütün operatorlar</option>
+              {operatorOptions.map(op => (
+                <option key={op.value} value={op.value}>
+                  {op.icon} {op.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="phone-search-input-wrapper">
+            <select 
+              value={selectedPrefix} 
+              onChange={(e) => setSelectedPrefix(e.target.value)}
+              className="phone-select"
+              aria-label="Prefiks seçin"
+              disabled={!selectedOperator}
+            >
+              <option value="">Bütün prefikslər</option>
+              {prefixOptions.map(prefix => (
+                <option key={prefix} value={prefix}>
+                  {prefix}
+                </option>
+              ))}
+            </select>
+          </div>
+          
           <div className="phone-search-input-wrapper">
             <select 
               value={selectedPrice} 
@@ -225,30 +313,24 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
             </select>
           </div>
           
-          <div className="phone-search-input-wrapper">
-            <select 
-              value={selectedLength} 
-              onChange={(e) => setSelectedLength(e.target.value)}
-              className="phone-select"
-              aria-label="Uzunluq seçin"
-            >
-              <option value="">Bütün uzunluqlar</option>
-              <option value="short">Qısa (≤10)</option>
-              <option value="medium">Orta (11-12)</option>
-              <option value="long">Uzun (&gt;12)</option>
-            </select>
-          </div>
+          <button 
+            onClick={handleSearch}
+            className="phone-search-button"
+            aria-label="Axtarış et"
+          >
+            <Search size={20} />
+          </button>
           
           <button 
             onClick={() => setShowExpanded(!showExpanded)}
             className="phone-filter-button"
-            aria-label="Axtarış filtrlərini aç"
+            aria-label="Əlavə filtrlər"
           >
             <Filter size={20} />
           </button>
         </div>
 
-        {/* Expandable Search Box */}
+        {/* Expandable Search Box - Enhanced Filters */}
         {showExpanded && (
           <div className="phone-search-expandable">
             <div className="phone-search-input-wrapper">
@@ -262,6 +344,20 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
               <Search size={20} className="phone-search-icon" />
             </div>
             
+            <div className="phone-search-input-wrapper">
+              <select 
+                value={selectedLength} 
+                onChange={(e) => setSelectedLength(e.target.value)}
+                className="phone-select"
+                aria-label="Uzunluq seçin"
+              >
+                <option value="">Bütün uzunluqlar</option>
+                <option value="short">Qısa (≤10)</option>
+                <option value="medium">Orta (11-12)</option>
+                <option value="long">Uzun (&gt;12)</option>
+              </select>
+            </div>
+            
             {/* Provider Filter */}
             {showProviderFilter && providers.length > 0 && (
               <div className="phone-search-input-wrapper">
@@ -269,9 +365,9 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
                   value={selectedProvider} 
                   onChange={(e) => setSelectedProvider(e.target.value)}
                   className="phone-select"
-                  aria-label="Operator seçin"
+                  aria-label="Provider seçin"
                 >
-                  <option value="">Bütün operatorlar</option>
+                  <option value="">Bütün providerlər</option>
                   {providers.map(provider => (
                     <option key={provider} value={provider}>
                       {getOperatorIcon(provider)} {provider}
@@ -280,6 +376,23 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
                 </select>
               </div>
             )}
+
+            <div className="phone-search-actions">
+              <button 
+                onClick={handleSearch}
+                className="phone-search-action-btn phone-search-btn"
+              >
+                <Search size={16} />
+                Axtarış et
+              </button>
+              
+              <button 
+                onClick={handleClearFilters}
+                className="phone-search-action-btn phone-clear-btn"
+              >
+                Təmizlə
+              </button>
+            </div>
           </div>
         )}
 
@@ -440,12 +553,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
               <h3>Heç bir nömrə tapılmadı</h3>
               <p>Axtarış kriteriyalarınızı dəyişdirərək yenidən cəhd edin</p>
               <button 
-                onClick={() => {
-                  setSearchTerm('');
-                  setSelectedPrice('');
-                  setSelectedLength('');
-                  setSelectedProvider('');
-                }}
+                onClick={handleClearFilters}
                 className="phone-clear-filters-btn"
               >
                 Filtrləri təmizlə

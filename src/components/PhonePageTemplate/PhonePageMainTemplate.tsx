@@ -30,23 +30,13 @@ const PhonePageMainTemplate: React.FC<PhonePageMainTemplateProps> = ({
   const [selectedProvider, setSelectedProvider] = useState<string>('');
   const [allElanData, setAllElanData] = useState<ElanData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   useEffect(() => {
     const loadAllData = async () => {
       try {
+        console.log('Loading all data for main template');
         const data = await loadAllElanData();
+        console.log('Loaded all data in main template:', data);
         setAllElanData(data);
       } catch (error) {
         console.error('Error loading all elan data:', error);
@@ -143,9 +133,10 @@ const PhonePageMainTemplate: React.FC<PhonePageMainTemplateProps> = ({
     return iconMap[provider] || '📱';
   };
 
-  if (!isMobile) {
-    return null; // Mobile template only renders on mobile
-  }
+  // Remove mobile-only restriction to show on all devices
+  // if (!isMobile) {
+  //   return null; // Mobile template only renders on mobile
+  // }
 
   if (loading) {
     return (
