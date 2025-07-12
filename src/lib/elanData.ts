@@ -42,7 +42,7 @@ export async function loadElanData(prefix: string): Promise<ElanData> {
 
 // Load all elan data (all prefixes)
 export async function loadAllElanData(): Promise<ElanData> {
-  const prefixes = ['050', '051', '055', '061', '099', '070', '077', '060', '010'];
+  const prefixes = ['050', '051', '055', '099', '070', '077', '060', '010'];
   const allData: ElanData = { premium: [], gold: [], standard: [] };
 
   for (const prefix of prefixes) {

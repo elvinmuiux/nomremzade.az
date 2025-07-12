@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Search, Filter, Phone, Smartphone, Diamond, MessageCircle, Heart } from 'lucide-react';
-import { loadElanData, loadAllElanData, ElanData, ElanNumber } from '@/lib/elanData';
-import StatisticsManager from '@/lib/statistics';
+import { Search, Filter, Phone, Smartphone, Diamond } from 'lucide-react';
+import { loadAllElanData, ElanData, ElanNumber } from '@/lib/elanData';
 import './PhonePageTemplate.css';
 
 interface DataFileConfig {
@@ -13,25 +12,15 @@ interface DataFileConfig {
   prefix: string;
 }
 
-interface PhonePageTemplateProps {
-  operator?: string;
-  title?: string;
-  subtitle?: string;
-  icon?: React.ReactNode;
-  color?: string;
-  dataFiles?: DataFileConfig[];
-  showAllNumbers?: boolean;
+interface PhonePageMainTemplateProps {
+  pageTitle: string;
+  dataFiles: DataFileConfig[];
   showProviderFilter?: boolean;
 }
 
-const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({ 
-  operator,
-  title = "Nömrələr",
-  subtitle = "Telefon nömrələri",
-  icon = <Phone size={24} />,
-  color = "#3B82F6",
-  dataFiles = [],
-  showAllNumbers = false,
+const PhonePageMainTemplate: React.FC<PhonePageMainTemplateProps> = ({ 
+  pageTitle,
+  dataFiles,
   showProviderFilter = false
 }) => {
   const [showExpanded, setShowExpanded] = useState(false);
@@ -39,7 +28,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   const [selectedPrice, setSelectedPrice] = useState<string>('');
   const [selectedLength, setSelectedLength] = useState<string>('');
   const [selectedProvider, setSelectedProvider] = useState<string>('');
-  const [elanData, setElanData] = useState<ElanData | null>(null);
+  const [allElanData, setAllElanData] = useState<ElanData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -55,36 +44,31 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   }, []);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadAllData = async () => {
       try {
-        if (showAllNumbers) {
-          const data = await loadAllElanData();
-          setElanData(data);
-        } else if (operator) {
-          const data = await loadElanData(operator);
-          setElanData(data);
-        }
+        const data = await loadAllElanData();
+        setAllElanData(data);
       } catch (error) {
-        console.error('Error loading elan data:', error);
+        console.error('Error loading all elan data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadData();
-  }, [operator, showAllNumbers]);
+    loadAllData();
+  }, []);
 
   // Get unique providers from dataFiles
   const providers = useMemo(() => {
-    if (!showAllNumbers || !dataFiles.length) return [];
     const uniqueProviders = [...new Set(dataFiles.map(file => file.provider))];
     return uniqueProviders;
-  }, [dataFiles, showAllNumbers]);
+  }, [dataFiles]);
 
+  // Filter numbers based on search criteria
   const filteredNumbers = useMemo(() => {
-    if (!elanData?.standard) return [];
+    if (!allElanData?.standard) return [];
     
-    return elanData.standard.filter((number: ElanNumber) => {
+    return allElanData.standard.filter((number: ElanNumber) => {
       const matchesSearch = searchTerm === '' || 
         number.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase());
       
@@ -103,12 +87,13 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
       
       return matchesSearch && matchesPrice && matchesLength && matchesProvider;
     });
-  }, [elanData, searchTerm, selectedPrice, selectedLength, selectedProvider]);
+  }, [allElanData, searchTerm, selectedPrice, selectedLength, selectedProvider]);
 
+  // Filter premium numbers
   const filteredPremiumNumbers = useMemo(() => {
-    if (!elanData?.premium) return [];
+    if (!allElanData?.premium) return [];
     
-    return elanData.premium.filter((number: ElanNumber) => {
+    return allElanData.premium.filter((number: ElanNumber) => {
       const matchesSearch = searchTerm === '' || 
         number.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase());
       
@@ -117,12 +102,13 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
       
       return matchesSearch && matchesProvider;
     });
-  }, [elanData, searchTerm, selectedProvider]);
+  }, [allElanData, searchTerm, selectedProvider]);
 
+  // Filter gold numbers
   const filteredGoldNumbers = useMemo(() => {
-    if (!elanData?.gold) return [];
+    if (!allElanData?.gold) return [];
     
-    return elanData.gold.filter((number: ElanNumber) => {
+    return allElanData.gold.filter((number: ElanNumber) => {
       const matchesSearch = searchTerm === '' || 
         number.phoneNumber.toLowerCase().includes(searchTerm.toLowerCase());
       
@@ -131,7 +117,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
       
       return matchesSearch && matchesProvider;
     });
-  }, [elanData, searchTerm, selectedProvider]);
+  }, [allElanData, searchTerm, selectedProvider]);
 
   const highlightNumber = (number: string) => {
     if (!searchTerm) return number;
@@ -140,9 +126,8 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
     return number.replace(regex, '<span class="phone-highlight">$1</span>');
   };
 
-  const handleOrderClick = (number: string, price: number) => {
-    StatisticsManager.incrementSoldNumbers();
-    const confirmed = confirm(`${number} nömrəsi üçün sifarişiniz qeydə alındı!\nQiymət: ₼${price}\n\nƏn qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (0550 444-44-22)`);
+  const handleOrderClick = (number: string) => {
+    const confirmed = confirm(`${number} nömrəsi üçün sifarişiniz qeydə alındı!\n\nƏn qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (0550 444-44-22)`);
     if (confirmed) {
       window.location.href = 'tel:+994550444422';
     }
@@ -156,10 +141,6 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
       'Naxtel': '🔴'
     };
     return iconMap[provider] || '📱';
-  };
-
-  const handleWhatsAppClick = (number: string) => {
-    window.open(`https://wa.me/994501234567?text=Salam, ${number} nömrəsini sifarış etmək istəyirəm`, '_blank');
   };
 
   if (!isMobile) {
@@ -182,15 +163,17 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   return (
     <div className="phone-page-container">
       <div className="phone-search-section">
-        {/* Page Header - Numbers Page Style */}
+        {/* Page Header */}
         <div className="phone-page-header">
           <div className="phone-page-title-wrapper">
-            <div className="phone-page-icon" data-color={color}>
-              {icon}
+            <div className="phone-page-icon">
+              <Phone size={24} />
             </div>
             <div className="phone-page-title-content">
-              <h1 className="phone-page-title">{title}</h1>
-              <p className="phone-page-subtitle">{subtitle}</p>
+              <h1 className="phone-page-title">{pageTitle}</h1>
+              <p className="phone-page-subtitle">
+                {filteredNumbers.length + filteredPremiumNumbers.length + filteredGoldNumbers.length} nömrə tapıldı
+              </p>
             </div>
           </div>
           <div className="phone-page-stats">
@@ -199,17 +182,17 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
               <span>{filteredPremiumNumbers.length}</span>
             </div>
             <div className="phone-stat-item">
-              <Heart size={16} />
+              <Phone size={16} />
               <span>{filteredGoldNumbers.length}</span>
             </div>
             <div className="phone-stat-item">
-              <Phone size={16} />
+              <Smartphone size={16} />
               <span>{filteredNumbers.length}</span>
             </div>
           </div>
         </div>
 
-        {/* Search Interface - Numbers Page Style */}
+        {/* Search Interface */}
         <div className="phone-search-container">
           <div className="phone-search-input-wrapper">
             <select 
@@ -242,7 +225,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
           <button 
             onClick={() => setShowExpanded(!showExpanded)}
             className="phone-filter-button"
-            aria-label="Axtarış filtrlərini aç"
+            aria-label="Daha çox filtr seçənəyi"
           >
             <Filter size={20} />
           </button>
@@ -263,7 +246,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
             </div>
             
             {/* Provider Filter */}
-            {showProviderFilter && providers.length > 0 && (
+            {showProviderFilter && (
               <div className="phone-search-input-wrapper">
                 <select 
                   value={selectedProvider} 
@@ -283,7 +266,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
           </div>
         )}
 
-        {/* Premium Numbers Section - Numbers Page Style */}
+        {/* Premium Numbers Section */}
         {filteredPremiumNumbers.length > 0 && (
           <div className="phone-premium-section">
             <div className="phone-section-header">
@@ -313,19 +296,11 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
                     
                     <div className="phone-premium-actions">
                       <button 
-                        onClick={() => handleOrderClick(number.phoneNumber, number.price)}
+                        onClick={() => handleOrderClick(number.phoneNumber)}
                         className="phone-premium-order-btn"
                       >
                         <Phone size={16} />
                         Sifariş et
-                      </button>
-                      
-                      <button 
-                        onClick={() => handleWhatsAppClick(number.phoneNumber)}
-                        className="phone-premium-whatsapp-btn"
-                      >
-                        <MessageCircle size={16} />
-                        WhatsApp
                       </button>
                     </div>
                   </div>
@@ -335,11 +310,11 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
           </div>
         )}
 
-        {/* Gold Numbers Section - Numbers Page Style */}
+        {/* Gold Numbers Section */}
         {filteredGoldNumbers.length > 0 && (
           <div className="phone-gold-section">
             <div className="phone-section-header">
-              <Heart size={20} />
+              <Phone size={20} />
               <h2>Gold Nömrələr</h2>
               <span className="phone-section-count">{filteredGoldNumbers.length}</span>
             </div>
@@ -352,7 +327,7 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
                       <span dangerouslySetInnerHTML={{ __html: highlightNumber(number.phoneNumber) }} />
                     </div>
                     <div className="phone-gold-badge">
-                      <Heart size={14} />
+                      <Phone size={14} />
                       <span>Gold</span>
                     </div>
                   </div>
@@ -365,19 +340,11 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
                     
                     <div className="phone-gold-actions">
                       <button 
-                        onClick={() => handleOrderClick(number.phoneNumber, number.price)}
+                        onClick={() => handleOrderClick(number.phoneNumber)}
                         className="phone-gold-order-btn"
                       >
                         <Phone size={16} />
                         Sifariş et
-                      </button>
-                      
-                      <button 
-                        onClick={() => handleWhatsAppClick(number.phoneNumber)}
-                        className="phone-gold-whatsapp-btn"
-                      >
-                        <MessageCircle size={16} />
-                        WhatsApp
                       </button>
                     </div>
                   </div>
@@ -387,11 +354,11 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
           </div>
         )}
 
-        {/* Standard Numbers Section - Numbers Page Style */}
+        {/* Standard Numbers Section */}
         {filteredNumbers.length > 0 && (
           <div className="phone-standard-section">
             <div className="phone-section-header">
-              <Phone size={20} />
+              <Smartphone size={20} />
               <h2>Standart Nömrələr</h2>
               <span className="phone-section-count">{filteredNumbers.length}</span>
             </div>
@@ -411,19 +378,11 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
                   
                   <div className="phone-standard-actions">
                     <button 
-                      onClick={() => handleOrderClick(number.phoneNumber, number.price)}
+                      onClick={() => handleOrderClick(number.phoneNumber)}
                       className="phone-standard-order-btn"
                     >
                       <Phone size={16} />
                       Sifariş et
-                    </button>
-                    
-                    <button 
-                      onClick={() => handleWhatsAppClick(number.phoneNumber)}
-                      className="phone-standard-whatsapp-btn"
-                      aria-label="WhatsApp ilə əlaqə"
-                    >
-                      <MessageCircle size={16} />
                     </button>
                   </div>
                 </div>
@@ -458,4 +417,4 @@ const PhonePageTemplate: React.FC<PhonePageTemplateProps> = ({
   );
 };
 
-export default PhonePageTemplate;
+export default PhonePageMainTemplate;

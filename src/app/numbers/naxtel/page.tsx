@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Phone } from 'lucide-react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
 import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
 
@@ -22,11 +23,14 @@ export default function NaxtelPage() {
       
       {/* Mobile Template */}
       <PhonePageTemplate
-        pageTitle="Naxtel nömrələri"
+        operator="060"
+        title="Naxtel Nömrələri"
+        subtitle="Naxtel operatoru üçün premium və standart nömrələr"
+        icon={<Phone size={24} />}
+        color="#EF4444"
         dataFiles={dataFiles}
-        operatorPrefixes={['060']}
+        showAllNumbers={true}
         showProviderFilter={false}
-        operatorName="naxtel"
       />
     </>
   );

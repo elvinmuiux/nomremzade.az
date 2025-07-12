@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Phone } from 'lucide-react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
 import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
 
@@ -27,11 +28,14 @@ export default function AzercellPage() {
       
       {/* Mobile Template */}
       <PhonePageTemplate
-        pageTitle="Azercell nömrələri"
+        operator="050"
+        title="Azercell Nömrələri"
+        subtitle="Azercell operatoru üçün premium və standart nömrələr"
+        icon={<Phone size={24} />}
+        color="#3B82F6"
         dataFiles={dataFiles}
-        operatorPrefixes={['010', '050', '051']}
+        showAllNumbers={true}
         showProviderFilter={false}
-        operatorName="azercell"
       />
     </>
   );

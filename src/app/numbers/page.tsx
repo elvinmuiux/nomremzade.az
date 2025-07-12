@@ -1,5 +1,5 @@
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
-import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
+import PhonePageMainTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
 
 export default function NumbersPage() {
   const dataFiles = [
@@ -23,7 +23,7 @@ export default function NumbersPage() {
       />
       
       {/* Mobile Template */}
-      <PhonePageTemplate
+      <PhonePageMainTemplate
         pageTitle="Bütün Nömrələr"
         dataFiles={dataFiles}
         showProviderFilter={true}
