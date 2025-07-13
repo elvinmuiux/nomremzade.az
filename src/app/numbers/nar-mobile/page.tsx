@@ -26,13 +26,10 @@ export default function NarMobilePage() {
       
       {/* Mobile Template */}
       <PhonePageTemplate
-        operator="070"
         title="Nar Mobile Nömrələri"
         subtitle="Nar Mobile operatoru üçün premium və standart nömrələr"
         icon={<Phone size={24} />}
-        color="#F59E0B"
         dataFiles={dataFiles}
-        showAllNumbers={true}
         showProviderFilter={false}
       />
     </>

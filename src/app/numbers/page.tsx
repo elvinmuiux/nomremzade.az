@@ -26,7 +26,6 @@ export default function NumbersPage() {
       <PhonePageMainTemplate
         pageTitle="Bütün Nömrələr"
         dataFiles={dataFiles}
-        showProviderFilter={true}
       />
     </>
   );

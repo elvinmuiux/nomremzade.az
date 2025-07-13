@@ -411,62 +411,43 @@ export default function NumbersPageTemplate({
         <div className="count-divider"></div>
 
         <div className="numbers-list">
+            {/* Classic ad list rendering */}
             {isSearching && !hasSearchResults ? (
               <div className="empty-state">
                 <p className="empty-title">Axtarışa uyğun nömrə tapılmadı</p>
                 <p className="empty-subtitle">Axtardığınız nömrə: <span className="bold-text">{searchTerm}</span></p>
               </div>
             ) : filteredAds.length > 0 ? (
-              [...filteredAds]
-                .sort((a, b) => b.price - a.price)
-                .map((ad) => (
-                  <div key={`${ad.provider}-${ad.id}`} className="number-card">
-                    <div className="phone-number">
-                      {highlightSearchTerm(ad.phoneNumber, searchTerm)}
+              filteredAds.sort((a, b) => b.price - a.price).map((ad) => (
+                <div key={`${ad.provider}-${ad.prefix}-${ad.id}`} className="number-card">
+                  <div className="phone-number">{highlightSearchTerm(ad.phoneNumber, searchTerm)}</div>
+                  <div className="price-display"><span>₼</span><span>{ad.price}</span></div>
+                  <Diamond className="diamond-icon" size={25} />
+                  <div className="provider-name">{ad.provider}</div>
+                  <div className="contact-info">
+                    <div className="action-buttons">
+                      <button className="action-button" onClick={() => handleWhatsAppContact(ad.phoneNumber)} aria-label="WhatsApp ilə əlaqə saxla">
+                        <MessageCircle size={20} />
+                      </button>
+                      <a href={`tel:${ad.contactPhone?.replace(/\D/g, '')}`} className="action-button" aria-label="Zəng et">
+                        <Phone size={20} />
+                      </a>
                     </div>
-
-                    <div className="price-display">
-                      <span>₼</span>
-                      <span>{ad.price}</span>
+                    <span className="contact-phone">{ad.contactPhone}</span>
+                    <div className="favorite-buttons">
+                      <button className="favorite-button heart" aria-label="Sevimli olaraq əlavə et">
+                        <Heart size={20} />
+                      </button>
+                      <button className="favorite-button bookmark" aria-label="Əlfəcinlərə əlavə et">
+                        <Bookmark size={20} />
+                      </button>
                     </div>
-
-                    <Diamond className="diamond-icon" size={25} />
-
-                    <div className="provider-name">{ad.provider}</div>
-
-                    <div className="contact-info">
-                      <div className="action-buttons">
-                        <button 
-                          className="action-button"
-                          onClick={() => handleWhatsAppContact(ad.phoneNumber)}
-                          aria-label="WhatsApp ilə əlaqə saxla"
-                        >
-                          <MessageCircle size={20} />
-                        </button>
-                        <a href={`tel:${ad.contactPhone?.replace(/\D/g, '')}`} className="action-button" aria-label="Zəng et">
-                          <Phone size={20} />
-                        </a>
-                      </div>
-                      <span className="contact-phone">{ad.contactPhone}</span>
-                      <div className="favorite-buttons">
-                        <button className="favorite-button heart" aria-label="Sevimli olaraq əlavə et">
-                          <Heart size={20} />
-                        </button>
-                        <button className="favorite-button bookmark" aria-label="Əlfəcinlərə əlavə et">
-                          <Bookmark size={20} />
-                        </button>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleOrderNumber(ad.phoneNumber)}
-                      className="order-button"
-                      aria-label={`${ad.phoneNumber} nömrəsini sifariş et`}
-                    >
-                      Sifariş
-                    </button>
                   </div>
-                ))
+                  <button onClick={() => handleOrderNumber(ad.phoneNumber)} className="order-button" aria-label={`${ad.phoneNumber} nömrəsini sifariş et`}>
+                    Sifariş
+                  </button>
+                </div>
+              ))
             ) : (
               <div className="empty-state">
                 {searchTerm ? (
@@ -478,13 +459,7 @@ export default function NumbersPageTemplate({
                   <p className="empty-title">Hal-hazırda mövcud nömrə yoxdur</p>
                 )}
                 {(searchTerm || selectedProvider || selectedPrefix) && (
-                  <button 
-                    onClick={handleReset}
-                    className="order-button margin-top-16"
-                    aria-label="Bütün filtrləri sıfırla"
-                  >
-                    Filtrləri Sıfırla
-                  </button>
+                  <button onClick={handleReset} className="order-button margin-top-16" aria-label="Bütün filtrləri sıfırla">Filtrləri Sıfırla</button>
                 )}
               </div>
             )}

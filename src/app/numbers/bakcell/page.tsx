@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Smartphone } from 'lucide-react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
-import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
+import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
+import { Phone } from 'lucide-react';
 
 export default function BakcellPage() {
   const dataFiles = [
@@ -23,17 +23,11 @@ export default function BakcellPage() {
         showProviderFilter={false}
         operatorName="bakcell"
       />
-      
+
       {/* Mobile Template */}
       <PhonePageTemplate
-        operator="055"
-        title="Bakcell Nömrələri"
-        subtitle="Bakcell operatoru üçün premium və standart nömrələr"
-        icon={<Smartphone size={24} />}
-        color="#10B981"
+        pageTitle="Bakcell Nömrələri"
         dataFiles={dataFiles}
-        showAllNumbers={true}
-        showProviderFilter={false}
       />
     </>
   );

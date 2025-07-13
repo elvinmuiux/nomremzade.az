@@ -23,13 +23,10 @@ export default function NaxtelPage() {
       
       {/* Mobile Template */}
       <PhonePageTemplate
-        operator="060"
         title="Naxtel Nömrələri"
         subtitle="Naxtel operatoru üçün premium və standart nömrələr"
         icon={<Phone size={24} />}
-        color="#EF4444"
         dataFiles={dataFiles}
-        showAllNumbers={true}
         showProviderFilter={false}
       />
     </>

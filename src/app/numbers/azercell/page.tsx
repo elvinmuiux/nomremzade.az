@@ -3,7 +3,7 @@
 import React from 'react';
 import { Phone } from 'lucide-react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
-import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
+import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
 
 export default function AzercellPage() {
   const dataFiles = [
@@ -28,14 +28,8 @@ export default function AzercellPage() {
       
       {/* Mobile Template */}
       <PhonePageTemplate
-        operator="050"
-        title="Azercell Nömrələri"
-        subtitle="Azercell operatoru üçün premium və standart nömrələr"
-        icon={<Phone size={24} />}
-        color="#3B82F6"
+        pageTitle="Azercell Nömrələri"
         dataFiles={dataFiles}
-        showAllNumbers={true}
-        showProviderFilter={false}
       />
     </>
   );
