@@ -1,8 +1,12 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Search, Phone, MessageCircle, X } from 'lucide-react';
 import './PhonePageMainTemplate.css';
+
+const PremiumElanlar = dynamic(() => import('@/components/PremiumElanlar/PremiumElanlar'), { ssr: false });
+const GoldElanlar = dynamic(() => import('@/components/GoldElanlar/GoldElanlar'), { ssr: false });
 
 interface NumberAd {
   id: number;
@@ -24,12 +28,14 @@ interface PhonePageMainTemplateProps {
   pageTitle: string;
   dataFiles: DataFileConfig[];
   showProviderFilter?: boolean;
+  operatorName?: string;
 }
 
 export default function PhonePageMainTemplate({
   pageTitle,
   dataFiles,
   showProviderFilter = false,
+  operatorName,
 }: PhonePageMainTemplateProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [ads, setAds] = useState<NumberAd[]>([]);
@@ -42,19 +48,23 @@ export default function PhonePageMainTemplate({
       setLoading(true);
       try {
         const allNumbers: NumberAd[] = [];
+        let uniqueIdCounter = 1;
         for (const dataFile of dataFiles) {
           const response = await fetch(`/data/${dataFile.file}`);
           if (response.ok) {
             const data = await response.json();
             const adsArray = data[dataFile.key] || [];
-            const processedAds = adsArray.map((item: any, index: number) => ({
-              id: item.id || index + 1,
-              phoneNumber: String(item.phoneNumber || item.numara || ''),
-              price: Number(item.price || item.fiyat || 0),
-              contactPhone: String(item.contactPhone || '(050) 444-44-22'),
-              provider: dataFile.provider,
-              prefix: String(item.phoneNumber || item.numara || '').replace(/[^0-9]/g, '').slice(0, 3),
-            }));
+            const processedAds = adsArray.map((item: any) => {
+              const phoneNumber = String(item.phoneNumber || item.numara || '');
+              return {
+                id: `${uniqueIdCounter++}-${phoneNumber}`,
+                phoneNumber: phoneNumber,
+                price: Number(item.price || item.fiyat || 0),
+                contactPhone: String(item.contactPhone || '(050) 444-44-22'),
+                provider: dataFile.provider,
+                prefix: phoneNumber.replace(/[^0-9]/g, '').slice(0, 3),
+              };
+            });
             allNumbers.push(...processedAds);
           }
         }
@@ -69,13 +79,26 @@ export default function PhonePageMainTemplate({
   }, [dataFiles]);
 
   const filteredAds = useMemo(() => {
-    return ads.filter(ad => {
-      const phoneDigits = ad.phoneNumber.replace(/[^0-9]/g, '');
-      if (showProviderFilter && selectedProvider && ad.provider !== selectedProvider) return false;
-      if (selectedPrefix && !phoneDigits.startsWith(selectedPrefix)) return false;
-      if (searchTerm && !phoneDigits.includes(searchTerm.replace(/\D/g, ''))) return false;
-      return true;
-    });
+    let filtered = [...ads];
+
+    if (showProviderFilter && selectedProvider) {
+      filtered = filtered.filter(ad => ad.provider === selectedProvider);
+    }
+
+    if (selectedPrefix) {
+      filtered = filtered.filter(ad => ad.prefix === selectedPrefix);
+    }
+
+    if (searchTerm) {
+      const cleanSearchTerm = searchTerm.replace(/[^0-9]/g, '');
+      if (cleanSearchTerm) {
+        filtered = filtered.filter(ad => 
+          ad.phoneNumber.replace(/[^0-9]/g, '').slice(3).startsWith(cleanSearchTerm)
+        );
+      }
+    }
+
+    return filtered;
   }, [ads, searchTerm, selectedPrefix, selectedProvider, showProviderFilter]);
 
   const handleOrderNumber = (phoneNumber: string) => {
@@ -96,38 +119,72 @@ export default function PhonePageMainTemplate({
   };
 
   const getUniquePrefixes = () => {
+    let relevantAds = ads;
     if (showProviderFilter && selectedProvider) {
-      const filteredPrefixes = ads
-        .filter(ad => ad.provider === selectedProvider)
-        .map(ad => ad.prefix);
-      return [...new Set(filteredPrefixes)].sort();
+      relevantAds = ads.filter(ad => ad.provider === selectedProvider);
     }
-    const prefixes = ads.map(ad => ad.prefix);
+    const prefixes = relevantAds.map(ad => ad.prefix);
     return [...new Set(prefixes)].sort();
   };
   
   const highlightSearchTerm = (phoneNumber: string, term: string) => {
-    if (!term) return phoneNumber;
-    const regex = new RegExp(`(${term})`, 'gi');
-    const parts = phoneNumber.split(regex);
-    return (
-      <>
-        {parts.map((part, i) =>
-          regex.test(part) ? (
-            <span key={i} className="highlight">
-              {part}
-            </span>
-          ) : (
-            part
-          )
-        )}
-      </>
-    );
+    const cleanSearchTerm = term.replace(/[^0-9]/g, '');
+    if (!cleanSearchTerm) return phoneNumber;
+
+    const parts = [];
+    let lastIndex = 0;
+    let currentIndex = 0;
+
+    for (let i = 0; i < phoneNumber.length; i++) {
+      if (/[0-9]/.test(phoneNumber[i])) {
+        if (currentIndex < cleanSearchTerm.length && phoneNumber[i] === cleanSearchTerm[currentIndex]) {
+          currentIndex++;
+        } else {
+          currentIndex = 0;
+          if (currentIndex < cleanSearchTerm.length && phoneNumber[i] === cleanSearchTerm[currentIndex]) {
+            currentIndex++;
+          }
+        }
+      } else {
+        if (currentIndex === cleanSearchTerm.length) {
+          break; 
+        }
+      }
+      if (currentIndex === cleanSearchTerm.length) {
+        let startIndex = -1;
+        let tempIndex = i;
+        let digitsFound = 0;
+        while (tempIndex >= 0 && digitsFound < cleanSearchTerm.length) {
+          if (/[0-9]/.test(phoneNumber[tempIndex])) {
+            digitsFound++;
+          }
+          startIndex = tempIndex;
+          tempIndex--;
+        }
+
+        if (startIndex !== -1) {
+          if (startIndex > lastIndex) {
+            parts.push(phoneNumber.substring(lastIndex, startIndex));
+          }
+          const highlightContent = phoneNumber.substring(startIndex, i + 1);
+          parts.push(<span key={`${i}-${highlightContent}`} className="highlight">{highlightContent}</span>);
+          lastIndex = i + 1;
+          currentIndex = 0; 
+        }
+      }
+    }
+
+    if (lastIndex < phoneNumber.length) {
+      parts.push(phoneNumber.substring(lastIndex));
+    }
+
+    return <>{parts}</>;
   };
 
   return (
     <div className="phone-view-container">
       <div className="phone-header">
+        {operatorName && <img src={`/images/operators/${operatorName}.svg`} alt={`${operatorName} logo`} className="phone-operator-logo" />}
         <h1>{pageTitle}</h1>
       </div>
 
@@ -142,8 +199,8 @@ export default function PhonePageMainTemplate({
               }}
             >
               <option value="">Operator</option>
-              {getUniqueProviders().map(provider => (
-                <option key={provider} value={provider}>{provider}</option>
+              {getUniqueProviders().map((provider, index) => (
+                <option key={`${provider}-${index}`} value={provider}>{provider}</option>
               ))}
             </select>
         )}
@@ -153,8 +210,8 @@ export default function PhonePageMainTemplate({
           onChange={(e) => setSelectedPrefix(e.target.value)}
         >
           <option value="">Prefiks</option>
-          {getUniquePrefixes().map(prefix => (
-            <option key={prefix} value={prefix}>{prefix}</option>
+          {getUniquePrefixes().map((prefix, index) => (
+            <option key={`${prefix}-${index}`} value={prefix}>{prefix}</option>
           ))}
         </select>
       </div>
@@ -170,6 +227,13 @@ export default function PhonePageMainTemplate({
         />
         {searchTerm && <X className='phone-clear-icon' size={20} onClick={() => setSearchTerm('')}/>}
       </div>
+
+      {showProviderFilter && (
+        <>
+          <PremiumElanlar />
+          <GoldElanlar />
+        </>
+      )}
 
       {loading ? (
         <div className="phone-loading">Yüklənir...</div>

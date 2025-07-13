@@ -67,6 +67,7 @@ export default function NumbersPageTemplate({
     const loadNumbers = async () => {
       try {
         const allNumbers: NumberAd[] = [];
+        let uniqueIdCounter = 1;
 
         for (const dataFile of dataFiles) {
           try {
@@ -75,13 +76,13 @@ export default function NumbersPageTemplate({
               const data = await response.json();
               const adsArray = data[dataFile.key] || [];
               
-              const processedAds = adsArray.map((item: Record<string, unknown>, index: number) => {
+              const processedAds = adsArray.map((item: Record<string, unknown>) => {
                 const phoneNumber = String(item.phoneNumber || item.numara || '');
                 const phoneDigits = phoneNumber.replace(/[^0-9]/g, '');
                 const actualPrefix = phoneDigits.slice(0, 3); // Extract first 3 digits as prefix
                 
                 return {
-                  id: item.id || index + 1,
+                  id: `${uniqueIdCounter++}-${phoneNumber}`,
                   phoneNumber: phoneNumber,
                   price: (() => {
                     if (item.price) return Number(item.price);
@@ -318,8 +319,8 @@ export default function NumbersPageTemplate({
                       aria-label="Operator seçin"
                     >
                       <option value="">Operator seçin</option>
-                      {getUniqueProviders().map(provider => (
-                        <option key={provider} value={provider}>{provider}</option>
+                      {getUniqueProviders().map((provider, index) => (
+                        <option key={`${provider}-${index}`} value={provider}>{provider}</option>
                       ))}
                     </select>
                   </div>
@@ -337,8 +338,8 @@ export default function NumbersPageTemplate({
                     aria-label="Prefiks seçin"
                   >
                     <option value="">Prefiks seçin</option>
-                    {getUniquePrefixes().map(prefix => (
-                      <option key={prefix} value={prefix}>{prefix}</option>
+                    {getUniquePrefixes().map((prefix, index) => (
+                      <option key={`${prefix}-${index}`} value={prefix}>{prefix}</option>
                     ))}
                   </select>
                 </div>

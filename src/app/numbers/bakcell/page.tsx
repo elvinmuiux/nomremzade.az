@@ -28,6 +28,7 @@ export default function BakcellPage() {
       <PhonePageTemplate
         pageTitle="Bakcell Nömrələri"
         dataFiles={dataFiles}
+        operatorName="bakcell"
       />
     </>
   );

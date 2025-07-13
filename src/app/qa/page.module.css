@@ -95,29 +95,6 @@
   position: relative;
 }
 
-.feedbackType {
-  font-size: 0.85rem;
-  color: var(--color-accent);
-  font-weight: 500;
-  margin-left: 0.5rem;
-}
-
-.feedbackMeta {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  padding-left: 2rem;
-  font-size: 0.85rem;
-  color: #888;
-  flex-wrap: wrap;
-}
-
-.feedbackMeta span {
-  background-color: var(--color-secondary);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-weight: 500;
-}
 
 .answer::before {
   content: 'C:';

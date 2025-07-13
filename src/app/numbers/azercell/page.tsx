@@ -30,6 +30,7 @@ export default function AzercellPage() {
       <PhonePageTemplate
         pageTitle="Azercell Nömrələri"
         dataFiles={dataFiles}
+        operatorName="azercell"
       />
     </>
   );
