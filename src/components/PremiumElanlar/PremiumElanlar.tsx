@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Copy, Share2, Phone } from 'lucide-react';
 import './PremiumElanlar.css';
 
@@ -8,6 +8,7 @@ interface ListingCardProps {
   phone: string;
   price: string;
   location: string;
+  contactPhone: string;
   isActive?: boolean;
 }
 
@@ -15,13 +16,14 @@ const ListingCard: React.FC<ListingCardProps> = ({
   phone, 
   price, 
   location, 
+  contactPhone,
   isActive = false 
 }) => {
-  const handleContact = (phoneNumber: string) => {
-    const confirmed = confirm(`${phoneNumber} nömrəsi üçün əlaqə qurmaq istəyirsiniz?\n\nİndi zəng etmək istəyirsinizmi?`);
+  const handleContact = (contactNumber: string) => {
+    const confirmed = confirm(`${phone} nömrəsi üçün əlaqə qurmaq istəyirsiniz?\n\nİndi zəng etmək istəyirsinizmi?`);
     
     if (confirmed) {
-      window.location.href = `tel:${phoneNumber.replace(/[^0-9]/g, '')}`;
+      window.location.href = `tel:${contactNumber.replace(/[^0-9]/g, '')}`;
     }
   };
 
@@ -57,7 +59,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
       <div className="premium-card-footer">
         <button 
           className="premium-contact-btn"
-          onClick={() => handleContact(phone)}
+          onClick={() => handleContact(contactPhone)}
           aria-label={`${phone} ilə əlaqə saxla`}
         >
           <span>Əlaqə et</span>
@@ -85,67 +87,50 @@ const ListingCard: React.FC<ListingCardProps> = ({
   );
 };
 
+interface Listing {
+  phone: string;
+  price: string;
+  location: string;
+  contactPhone: string;
+  isActive?: boolean;
+}
+
 const PremiumElanlar: React.FC = () => {
-  const listings = [
-    {
-      phone: "055 883 88 88",
-      price: "5000",
-      location: "Sirac, 0504444420",
-      isActive: true
-    },
-    {
-      phone: "051 777 77 74",
-      price: "5000",
-      location: "Elvin, 0504444420"
-    },
-    {
-      phone: "051 999 44 44",
-      price: "4000",
-      location: "Samir, 0504444422"
-    },
-    {
-      phone: "055 685 86 86",
-      price: "3800",
-      location: "Azercell, 0504444422"
-    },
-    {
-      phone: "070 200 85 75",
-      price: "6500",
-      location: "Nomrezade, 0504444422"
-    },
-    {
-      phone: "077 888 77 77",
-      price: "7200",
-      location: "Premium, 0504444420"
-    },
-    {
-      phone: "050 555 55 55",
-      price: "8500",
-      location: "VIP nömrə, 0504444422",
-      isActive: true
-    },
-    {
-      phone: "060 111 11 11",
-      price: "9000",
-      location: "Eksklüziv, 0504444420"
-    },
-    {
-      phone: "099 666 66 66",
-      price: "4500",
-      location: "Özel, 0504444422"
-    },
-    {
-      phone: "010 777 88 99",
-      price: "5500",
-      location: "Premium, 0504444420"
-    }
-  ];
+  const [listings, setListings] = useState<Listing[]>([]);
+
+  useEffect(() => {
+    const prefixes = ['010', '050', '051', '055', '060', '070', '077', '099'];
+    const fetchAllListings = async () => {
+      try {
+        let allListings: Listing[] = [];
+        for (const prefix of prefixes) {
+          const response = await fetch(`/data/elan/${prefix}.json`);
+          if (response.ok) {
+            const data = await response.json();
+            const formattedListings = data.map((item: any) => ({
+              phone: item.phoneNumber,
+              price: item.price.toString(),
+              location: item.type || 'Bakı',
+              contactPhone: item.contactPhone,
+              isActive: item.isVip
+            }));
+            allListings = [...allListings, ...formattedListings];
+          }
+        }
+        setListings(allListings);
+      } catch (error) {
+        console.error('Error fetching premium listings:', error);
+      }
+    };
+
+    fetchAllListings();
+  }, []);
 
   return (
     <div className="premium-container">
       <div className="premium-header">
         <h2 className="premium-title">
-          Premium Elanlar
+          {listings.length > 0 ? `${listings.length} Premium Elanlar` : 'Premium Elanlar'}
           <span className="premium-crown">👑</span>
         </h2>
       </div>
@@ -157,6 +142,7 @@ const PremiumElanlar: React.FC = () => {
               phone={listing.phone}
               price={listing.price}
               location={listing.location}
+              contactPhone={listing.contactPhone}
               isActive={listing.isActive}
             />
           </div>
