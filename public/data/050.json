@@ -1,59 +1,13 @@
 {
   "azercellAds": [
-  
     {
-      "id": 36,
-      "phoneNumber": "050-450-00-73",
-      "price": 135,
-      "contactPhone": null,
-      "type": "Azercell",
+      "id": 1,
+      "phoneNumber": "050-123-45-67",
+      "price": 100,
+      "contactPhone": "050-123-45-67",
+      "type": "premium",
       "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 37,
-      "phoneNumber": "050-450-00-62",
-      "price": 135,
-      "contactPhone": null,
-      "type": "Azercell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 38,
-      "phoneNumber": "050-450-00-96",
-      "price": 135,
-      "contactPhone": null,
-      "type": "Azercell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 39,
-      "phoneNumber": "050-450-00-98",
-      "price": 135,
-      "contactPhone": null,
-      "type": "Azercell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 40,
-      "phoneNumber": "050-692-00-08",
-      "price": 135,
-      "contactPhone": null,
-      "type": "Azercell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 41,
-      "phoneNumber": "050-835-00-04",
-      "price": 135,
-      "contactPhone": null,
-      "type": "Azercell",
-      "isVip": true,
-      "description": "Xüsusi"
+      "description": "VIP nömrə"
     }
   ]
 }

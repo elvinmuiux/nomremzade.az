@@ -15,9 +15,14 @@
   min-width: 350px;
 }
 
-.loginBox h1 {
+.loginBox h1, .header h1 {
   margin-bottom: 20px;
   color: #333;
+}
+
+.adminContainer {
+  padding: 20px;
+  color: #333; /* Bütün konteyner üçün əsas mətn rəngi */
 }
 
 .passwordInput {

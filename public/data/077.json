@@ -1,59 +1,13 @@
 {
   "narMobileAds": [
-  
     {
-      "id": 42,
-      "phoneNumber": "077-450-00-73",
-      "price": 790,
-      "contactPhone": null,
-      "type": "Nar Mobile",
+      "id": 1,
+      "phoneNumber": "077-123-45-67",
+      "price": 100,
+      "contactPhone": "077-123-45-67",
+      "type": "premium",
       "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 43,
-      "phoneNumber": "077-450-00-62",
-      "price": 860,
-      "contactPhone": null,
-      "type": "Nar Mobile",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 44,
-      "phoneNumber": "077-450-00-96",
-      "price": 910,
-      "contactPhone": null,
-      "type": "Nar Mobile",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 45,
-      "phoneNumber": "077-450-00-98",
-      "price": 830,
-      "contactPhone": null,
-      "type": "Nar Mobile",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 46,
-      "phoneNumber": "077-692-00-08",
-      "price": 770,
-      "contactPhone": null,
-      "type": "Nar Mobile",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 47,
-      "phoneNumber": "077-835-00-04",
-      "price": 890,
-      "contactPhone": null,
-      "type": "Nar Mobile",
-      "isVip": true,
-      "description": "Xüsusi"
+      "description": "VIP nömrə"
     }
   ]
 }

@@ -1,3 +1,11 @@
 [
-  { "id": 1, "phoneNumber": "060-606-60-60", "price": 600, "contactPhone": "0502660066", "type": "Sajah", "isVip": true, "description": "Qızıl 060 nömrə" }
+  {
+    "id": 6001,
+    "phoneNumber": "060-123-45-67",
+    "price": 900,
+    "contactPhone": "060-123-45-67",
+    "type": "gold",
+    "isVip": false,
+    "description": "Standart qızıl nömrə"
+  }
 ]

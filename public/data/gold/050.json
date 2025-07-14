@@ -1,4 +1,20 @@
 [
-  { "id": 1, "phoneNumber": "050-505-50-50", "price": 1500, "contactPhone": "0502666366", "type": "Sajah", "isVip": true, "description": "Qızıl 050 nömrə" },
-  { "id": 2, "phoneNumber": "050-222-00-22", "price": 450, "contactPhone": "0502666366", "type": "Sajah", "isVip": false, "description": "Qızıl 050 nömrə" }
+  {
+    "id": 5001,
+    "phoneNumber": "050-555-50-50",
+    "price": 5000,
+    "contactPhone": "050-555-50-50",
+    "type": "gold",
+    "isVip": true,
+    "description": "Super VIP nömrə"
+  },
+  {
+    "id": 5002,
+    "phoneNumber": "050-888-88-88",
+    "price": 8000,
+    "contactPhone": "050-888-88-88",
+    "type": "gold",
+    "isVip": true,
+    "description": "Çox prestijli nömrə"
+  }
 ]

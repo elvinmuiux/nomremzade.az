@@ -34,15 +34,17 @@ const ListingCard: React.FC<ListingCardProps> = ({
     });
   };
 
-  const handleShare = (phoneNumber: string) => {
+  const handleShare = (phoneNumber: string, price: string) => {
     if (navigator.share) {
       navigator.share({
-        title: 'Premium Nömrə',
-        text: `Bu premium nömrəyə baxın: ${phoneNumber}`,
-        url: window.location.href
-      });
+        title: 'Nömrəm.az - Gözəl Nömrə Elanı',
+        text: `Nömrə: ${phoneNumber}\nQiymət: ${price} AZN\n\nElana baxmaq üçün: nomremzade.az`,
+        url: 'https://nomremzade.az' // Saytın linkini bura əlavə edə bilərik
+      }).catch((error) => console.log('Paylaşım zamanı xəta:', error));
     } else {
-      handleCopy(phoneNumber);
+      // Fallback for browsers that don't support Web Share API
+      handleCopy(`${phoneNumber} - ${price} AZN`);
+      alert('Paylaşım funksiyası dəstəklənmir. Məlumat kopyalandı.');
     }
   };
 
@@ -70,7 +72,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         <div className="premium-action-buttons">
           <button 
             className="premium-action-btn"
-            onClick={() => handleShare(phone)}
+            onClick={() => handleShare(phone, price)}
             aria-label="Paylaş"
           >
             <Share2 size={14} />

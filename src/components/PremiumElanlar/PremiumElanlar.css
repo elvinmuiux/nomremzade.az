@@ -63,8 +63,7 @@
   position: relative;
   border-radius: 0.5rem;
   padding: 0.75rem; /* Reduced padding */
-  color: #E4F2F2;
-  font-size: rem;
+  color: #E5E7EB;
   min-height: 128px; /* Updated height to 128px */
   display: flex;
   flex-direction: column;
@@ -108,10 +107,10 @@
 }
 
 .premium-price {
-  font-size: 1.4rem; /* Reduced font size */
-  opacity: 0.8;
+  font-size: 1.1rem; /* Reduced font size */
+  opacity: 0.9;
   color: rgb(251 191 36); /* text-amber-400 */
-  font-weight: 700;
+  font-weight: 500;
 
 }
 

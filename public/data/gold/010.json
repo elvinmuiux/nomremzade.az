@@ -1,4 +1,20 @@
 [
-  { "id": 1, "phoneNumber": "010-111-00-11", "price": 500, "contactPhone": "0502666366", "type": "Sajah", "isVip": true, "description": "Qızıl 010 nömrə" },
-  { "id": 2, "phoneNumber": "010-888-00-88", "price": 750, "contactPhone": "0502666366", "type": "Sajah", "isVip": false, "description": "Qızıl 010 nömrə" }
+  {
+    "id": 1001,
+    "phoneNumber": "010-200-10-10",
+    "price": 2500,
+    "contactPhone": "010-200-10-10",
+    "type": "gold",
+    "isVip": true,
+    "description": "Asan yaddaqalan nömrə"
+  },
+  {
+    "id": 1002,
+    "phoneNumber": "010-300-20-20",
+    "price": 2000,
+    "contactPhone": "010-300-20-20",
+    "type": "gold",
+    "isVip": false,
+    "description": "Gözəl nömrə"
+  }
 ]

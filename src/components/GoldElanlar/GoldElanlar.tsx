@@ -24,24 +24,28 @@ const ListingCard: React.FC<ListingCardProps> = ({
     });
   };
 
-  const handleShare = (phoneNumber: string) => {
+  const handleShare = (phoneNumber: string, price: string) => {
     if (navigator.share) {
       navigator.share({
-        title: 'Gold Nömrə',
-        text: `Bu gold nömrəyə baxın: ${phoneNumber}`,
-        url: window.location.href
-      });
+        title: 'Nömrəm.az - Gold Nömrə Elanı',
+        text: `Nömrə: ${phoneNumber}\nQiymət: ${price} AZN\n\nElana baxmaq üçün: nomremzade.az`,
+        url: 'https://nomremzade.az'
+      }).catch((error) => console.log('Paylaşım zamanı xəta:', error));
     } else {
-      handleCopy(phoneNumber);
+      handleCopy(`${phoneNumber} - ${price} AZN`);
+      alert('Paylaşım funksiyası dəstəklənmir. Məlumat kopyalandı.');
     }
   };
 
   return (
-    <div className={`gold-card ${isActive ? 'gold-card-active' : 'gold-card-default'}`}>
-      <div className="gold-card-header">
-        <div className="gold-card-info">
-          <div className="gold-phone">{phone}</div>
-          <div className="gold-price">₼{price}</div>
+    <div className={`gold-card ${isActive ? 'active-gold' : ''}`}>
+      <div className="gold-card-content">
+        <div className="gold-card-header">
+          {isActive && <Gem size={18} className="gold-badge" />}
+          <span className="gold-phone-number">{phone}</span>
+        </div>
+        <div className="gold-card-price">
+          <span>{price} AZN</span>
         </div>
       </div>
       
@@ -49,7 +53,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         <div className="gold-action-buttons">
           <button 
             className="gold-action-btn"
-            onClick={() => handleShare(phone)}
+            onClick={() => handleShare(phone, price)}
             aria-label="Paylaş"
           >
             <Share2 size={14} />
@@ -84,12 +88,10 @@ const GoldElanlar: React.FC = () => {
         for (const prefix of prefixes) {
           const response = await fetch(`/data/gold/${prefix}.json`);
           if (response.ok) {
-            const data = await response.json();
-                                    const goldListings = data;
-                                    const formattedListings = goldListings.map((item: { phoneNumber: string; price: number; type?: string; contactPhone: string; isVip?: boolean; }) => ({
+            const goldListings = await response.json();
+            const formattedListings = goldListings.map((item: { phoneNumber: string; price: number; isVip?: boolean; }) => ({
               phone: item.phoneNumber,
               price: item.price.toString(),
-              
               isActive: item.isVip
             }));
             allListings = [...allListings, ...formattedListings];

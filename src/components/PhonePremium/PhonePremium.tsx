@@ -121,8 +121,8 @@ const PhonePremium: React.FC = () => {
 
       <div className="phone-list-container">
         {loading ? (
-          <p>Yüklənir...</p>
-        ) : (
+          <div className="loading-state">Yüklənir...</div>
+        ) : filteredListings.length > 0 ? (
           <table className="phone-table">
             <tbody>
               {filteredListings.map((ad) => (
@@ -141,6 +141,10 @@ const PhonePremium: React.FC = () => {
               ))}
             </tbody>
           </table>
+        ) : (
+          <div className="no-listings-message">
+            Hal-hazırda Premium nömrəsi mövcud deyil
+          </div>
         )}
       </div>
     </div>

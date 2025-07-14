@@ -1,3 +1,11 @@
 [
-  { "id": 1, "phoneNumber": "051-515-51-51", "price": 1200, "contactPhone": "0502666366", "type": "Sajah", "isVip": true, "description": "Qızıl 051 nömrə" }
+  {
+    "id": 5101,
+    "phoneNumber": "051-222-33-44",
+    "price": 1500,
+    "contactPhone": "051-222-33-44",
+    "type": "gold",
+    "isVip": false,
+    "description": "Yaxşı nömrə"
+  }
 ]

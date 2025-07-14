@@ -7,12 +7,13 @@ import { StatisticsManager } from '@/lib/statistics';
 import './PhoneGold.css';
 
 interface GoldListing {
-  id: number;
-  prefix: string;
-  number: string;
-  price: string;
+  id: string;
+  phoneNumber: string;
+  price: number;
+  contactPhone: string;
+  type: string;
+  isVip: boolean;
   description: string;
-  contact_phone: string;
 }
 
 export default function PhoneGold() {
@@ -64,7 +65,7 @@ export default function PhoneGold() {
   };
 
   const filteredListings = listings.filter(listing =>
-    (listing.prefix + listing.number).replace(/\D/g, '').includes(searchTerm.replace(/\D/g, ''))
+    listing.phoneNumber.replace(/\D/g, '').includes(searchTerm.replace(/\D/g, ''))
   );
 
   return (
@@ -97,18 +98,24 @@ export default function PhoneGold() {
 
       {loading ? (
         <div className="loading-state">Yüklənir...</div>
-      ) : (
+      ) : filteredListings.length > 0 ? (
         <div className="phone-gold-list">
           {filteredListings.map(listing => (
             <div key={listing.id} className="phone-gold-listing-item">
-              <span className="phone-number">{getHighlightedText(`${listing.prefix} ${listing.number}`, searchTerm)}</span>
+              <div className="phone-number-container">
+                <span className="phone-number">{getHighlightedText(listing.phoneNumber, searchTerm)}</span>
+              </div>
               <span className="price">{listing.price} ₼</span>
-              <button className="call-button" onClick={() => handleCall(listing.contact_phone)} aria-label={`Zəng et ${listing.contact_phone}`}>
+              <button className="call-button" onClick={() => handleCall(listing.contactPhone)} aria-label={`Zəng et ${listing.contactPhone}`}>
                 <Phone size={16} />
                 <span>Əlaqə</span>
               </button>
             </div>
           ))}
+        </div>
+      ) : (
+        <div className="no-listings-message">
+          Hal-hazırda Gold nömrəsi mövcud deyil
         </div>
       )}
     </div>

@@ -1,3 +1,11 @@
 [
-  { "id": 1, "phoneNumber": "077-777-77-77", "price": 7777, "contactPhone": "0502666366", "type": "Sajah", "isVip": true, "description": "Qızıl 077 nömrə" }
+  {
+    "id": 7701,
+    "phoneNumber": "077-777-77-77",
+    "price": 10000,
+    "contactPhone": "077-777-77-77",
+    "type": "gold",
+    "isVip": true,
+    "description": "Ən prestijli nömrə"
+  }
 ]

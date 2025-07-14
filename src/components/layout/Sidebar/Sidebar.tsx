@@ -13,6 +13,10 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
     <aside className={`${styles.sidebar} ${className}`}>
       <Logo />
 
+      <div className={styles.siteTitle}>
+        nomrezade.az
+      </div>
+
       <Navigation />
 
       <OperatorSection />

@@ -1,59 +1,13 @@
 {
   "bakcellAds": [
-  
     {
-      "id": 36,
-      "phoneNumber": "055-450-00-73",
-      "price": 760,
-      "contactPhone": null,
-      "type": "Bakcell",
+      "id": 1,
+      "phoneNumber": "055-123-45-67",
+      "price": 100,
+      "contactPhone": "055-123-45-67",
+      "type": "premium",
       "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 37,
-      "phoneNumber": "055-450-00-62",
-      "price": 840,
-      "contactPhone": null,
-      "type": "Bakcell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 38,
-      "phoneNumber": "055-450-00-96",
-      "price": 920,
-      "contactPhone": null,
-      "type": "Bakcell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 39,
-      "phoneNumber": "055-450-00-98",
-      "price": 870,
-      "contactPhone": null,
-      "type": "Bakcell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 40,
-      "phoneNumber": "055-692-00-08",
-      "price": 800,
-      "contactPhone": null,
-      "type": "Bakcell",
-      "isVip": true,
-      "description": "Xüsusi"
-    },
-    {
-      "id": 41,
-      "phoneNumber": "055-835-00-04",
-      "price": 950,
-      "contactPhone": null,
-      "type": "Bakcell",
-      "isVip": true,
-      "description": "Xüsusi"
+      "description": "VIP nömrə"
     }
   ]
 }

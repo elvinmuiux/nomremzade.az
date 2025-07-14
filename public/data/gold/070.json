@@ -1,4 +1,20 @@
 [
-  { "id": 1, "phoneNumber": "070-707-70-70", "price": 7000, "contactPhone": "0502666366", "type": "Sajah", "isVip": true, "description": "Qızıl 070 nömrə" },
-  { "id": 2, "phoneNumber": "070-333-00-33", "price": 650, "contactPhone": "0502666366", "type": "Sajah", "isVip": false, "description": "Qızıl 070 nömrə" }
+  {
+    "id": 7001,
+    "phoneNumber": "070-333-30-30",
+    "price": 3000,
+    "contactPhone": "070-333-30-30",
+    "type": "gold",
+    "isVip": true,
+    "description": "Gözəl nömrə"
+  },
+  {
+    "id": 7002,
+    "phoneNumber": "070-444-40-40",
+    "price": 4000,
+    "contactPhone": "070-444-40-40",
+    "type": "gold",
+    "isVip": true,
+    "description": "Asan nömrə"
+  }
 ]

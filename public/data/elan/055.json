@@ -1,29 +1,11 @@
 [
-  {
-    "id": 1,
-    "phoneNumber": "055-999-99-99",
-    "price": 900,
-    "contactPhone": "0504444422",
-    "type": "Sirac",
-    "isVip": true,
-    "description": "Premium 055 nömrə"
-  },
-  {
-    "id": 2,
-    "phoneNumber": "055-888-88-88",
-    "price": 390,
-    "contactPhone": "0504444422",
-    "type": "Sajah",
-    "isVip": false,
-    "description": "Qızıl 055 nömrə"
-  },
-  {
-    "id": 3,
-    "phoneNumber": "055-123-45-67",
-    "price": 33,
-    "contactPhone": "0504444422",
-    "type": "Sajah",
-    "isVip": false,
-    "description": "Standart 055 nömrə"
-  }
+    {
+        "id": 1,
+        "phoneNumber": "055-123-45-67",
+        "price": 100,
+        "contactPhone": "055-123-45-67",
+        "type": "premium",
+        "isVip": true,
+        "description": "VIP nömrə"
+    }
 ]
