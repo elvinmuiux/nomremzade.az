@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { Search, Phone, MessageCircle, X } from 'lucide-react';
 import './PhonePageMainTemplate.css';
 
@@ -15,6 +16,14 @@ interface NumberAd {
   contactPhone?: string;
   provider: string;
   prefix: string;
+}
+
+interface RawAd {
+  phoneNumber?: string;
+  numara?: string;
+  price?: number;
+  fiyat?: number;
+  contactPhone?: string;
 }
 
 interface DataFileConfig {
@@ -54,7 +63,7 @@ export default function PhonePageMainTemplate({
           if (response.ok) {
             const data = await response.json();
             const adsArray = data[dataFile.key] || [];
-            const processedAds = adsArray.map((item: any) => {
+            const processedAds = adsArray.map((item: RawAd) => {
               const phoneNumber = String(item.phoneNumber || item.numara || '');
               return {
                 id: `${uniqueIdCounter++}-${phoneNumber}`,
@@ -184,7 +193,7 @@ export default function PhonePageMainTemplate({
   return (
     <div className="phone-view-container">
       <div className="phone-header">
-        {operatorName && <img src={`/images/operators/${operatorName}.svg`} alt={`${operatorName} logo`} className="phone-operator-logo" />}
+        {operatorName && <Image src={`/images/operators/${operatorName}.svg`} alt={`${operatorName} logo`} className="phone-operator-logo" width={24} height={24} />}
         <h1>{pageTitle}</h1>
       </div>
 

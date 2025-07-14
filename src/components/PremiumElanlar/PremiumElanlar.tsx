@@ -87,6 +87,14 @@ const ListingCard: React.FC<ListingCardProps> = ({
   );
 };
 
+interface RawListing {
+  phoneNumber: string;
+  price: number;
+  contactPhone: string;
+  type: string;
+  isVip: boolean;
+}
+
 interface Listing {
   phone: string;
   price: string;
@@ -107,7 +115,7 @@ const PremiumElanlar: React.FC = () => {
           const response = await fetch(`/data/elan/${prefix}.json`);
           if (response.ok) {
             const data = await response.json();
-            const formattedListings = data.map((item: any) => ({
+                        const formattedListings = data.map((item: RawListing) => ({
               phone: item.phoneNumber,
               price: item.price.toString(),
               location: item.type || 'Bakı',

@@ -3,7 +3,6 @@
 import React from 'react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
 import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
-import { Phone } from 'lucide-react';
 
 export default function BakcellPage() {
   const dataFiles = [

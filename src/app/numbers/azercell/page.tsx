@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Phone } from 'lucide-react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
 import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
 

@@ -28,7 +28,7 @@ const PhonePremium: React.FC = () => {
           const response = await fetch(`/data/elan/${prefix}.json`);
           if (response.ok) {
             const data = await response.json();
-            const formattedListings = data.map((item: any, index: number) => ({
+            const formattedListings = data.map((item: Omit<PremiumListing, 'id'>, index: number) => ({
               id: `${prefix}-${index}`,
               phoneNumber: item.phoneNumber,
               price: Number(item.price),
@@ -54,12 +54,14 @@ const PhonePremium: React.FC = () => {
     if (!searchTerm) {
       return listings;
     }
-    const cleanSearchTerm = searchTerm.replace(/[^\d*]/g, '');
-    const regex = new RegExp(cleanSearchTerm.replace(/\*/g, '\d'), 'g');
+    const cleanSearchTerm = searchTerm.replace(/[^0-9*]/g, '');
+    if (!cleanSearchTerm) return listings;
 
-    return listings.filter(listing => 
-      listing.phoneNumber.replace(/[^0-9]/g, '').includes(cleanSearchTerm.replace(/\*/g, ''))
-    );
+    return listings.filter(listing => {
+      const phoneNumberDigits = listing.phoneNumber.replace(/[^0-9]/g, '');
+      const searchTermDigits = cleanSearchTerm.replace(/\*/g, '');
+      return phoneNumberDigits.includes(searchTermDigits);
+    });
   }, [listings, searchTerm]);
 
   const handleContact = (contactNumber: string, phoneNumber: string) => {

@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Phone } from 'lucide-react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
-import PhonePageTemplate from '@/components/PhonePageTemplate/PhonePageTemplate';
+import PhonePageMainTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
 
 export default function NarMobilePage() {
   const dataFiles = [
@@ -25,12 +24,11 @@ export default function NarMobilePage() {
       />
       
       {/* Mobile Template */}
-      <PhonePageTemplate
-        title="Nar Mobile Nömrələri"
-        subtitle="Nar Mobile operatoru üçün premium və standart nömrələr"
-        icon={<Phone size={24} />}
+      <PhonePageMainTemplate
+        pageTitle="Nar Mobile Nömrələri"
         dataFiles={dataFiles}
         showProviderFilter={false}
+        operatorName="nar-mobile"
       />
     </>
   );
