@@ -1,50 +1,29 @@
-{
-  "premium": [
-    {
-      "id": 14,
-      "phoneNumber": "070-444-44-44",
-      "price": 780,
-      "contactPhone": "(070) 444-44-22",
-      "type": "premium",
-      "isVip": true,
-      "description": "Premium 070 nömrə",
-      "provider": "070",
-      "prefix": "070",
-      "status": "active",
-      "dateAdded": "2024-01-17T13:15:00Z",
-      "category": "premium"
-    }
-  ],
-  "gold": [
-    {
-      "id": 15,
-      "phoneNumber": "070-777-77-77",
-      "price": 365,
-      "contactPhone": "(070) 444-44-22",
-      "type": "gold",
-      "isVip": false,
-      "description": "Qızıl 070 nömrə",
-      "provider": "070",
-      "prefix": "070",
-      "status": "active",
-      "dateAdded": "2024-01-23T16:50:00Z",
-      "category": "gold"
-    }
-  ],
-  "standard": [
-    {
-      "id": 16,
-      "phoneNumber": "070-234-56-78",
-      "price": 31,
-      "contactPhone": "(070) 444-44-22",
-      "type": "standard",
-      "isVip": false,
-      "description": "Standart 070 nömrə",
-      "provider": "070",
-      "prefix": "070",
-      "status": "active",
-      "dateAdded": "2024-02-05T09:30:00Z",
-      "category": "standard"
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "phoneNumber": "070-444-44-44",
+    "price": 780,
+    "contactPhone": "0504444422",
+    "type": "Sirac",
+    "isVip": true,
+    "description": "Premium 070 nömrə"
+  },
+  {
+    "id": 2,
+    "phoneNumber": "070-777-77-77",
+    "price": 365,
+    "contactPhone": "0504444422",
+    "type": "Sajah",
+    "isVip": false,
+    "description": "Qızıl 070 nömrə"
+  },
+  {
+    "id": 3,
+    "phoneNumber": "070-234-56-78",
+    "price": 31,
+    "contactPhone": "0504444422",
+    "type": "Sajah",
+    "isVip": false,
+    "description": "Standart 070 nömrə"
+  }
+]
