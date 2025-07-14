@@ -7,14 +7,5 @@
     "type": "gold",
     "isVip": true,
     "description": "Super VIP nömrə"
-  },
-  {
-    "id": 5002,
-    "phoneNumber": "050-888-88-88",
-    "price": 8000,
-    "contactPhone": "050-888-88-88",
-    "type": "gold",
-    "isVip": true,
-    "description": "Çox prestijli nömrə"
   }
 ]

@@ -7,14 +7,5 @@
     "type": "gold",
     "isVip": true,
     "description": "Asan yaddaqalan nömrə"
-  },
-  {
-    "id": 1002,
-    "phoneNumber": "010-300-20-20",
-    "price": 2000,
-    "contactPhone": "010-300-20-20",
-    "type": "gold",
-    "isVip": false,
-    "description": "Gözəl nömrə"
   }
 ]

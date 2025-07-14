@@ -43,13 +43,16 @@ export async function GET() {
           if (file.endsWith('.json')) {
             const filePath = path.join(direntPath, file);
             const fileContent = await fs.readFile(filePath, 'utf-8');
-            allListings.push(...JSON.parse(fileContent));
+            try {
+              const listings = JSON.parse(fileContent);
+              if (Array.isArray(listings)) {
+                allListings.push(...listings);
+              }
+            } catch (e) {
+              console.error(`Error parsing JSON from ${filePath}:`, e);
+            }
           }
         }
-      } else if (dirent.name.endsWith('.json')) {
-        const filePath = path.join(dataDir, dirent.name);
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        allListings.push(...JSON.parse(fileContent));
       }
     }
 
@@ -100,7 +103,7 @@ export async function POST(request: NextRequest) {
       const fileContent = await fs.readFile(filePath, 'utf-8');
       listings = JSON.parse(fileContent);
     } catch {
-      // File doesn't exist, it will be created
+      // File doesn't exist or is empty, it will be created/overwritten
     }
 
     listings.push(newListing);

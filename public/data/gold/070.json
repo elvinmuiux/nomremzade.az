@@ -7,14 +7,5 @@
     "type": "gold",
     "isVip": true,
     "description": "Gözəl nömrə"
-  },
-  {
-    "id": 7002,
-    "phoneNumber": "070-444-40-40",
-    "price": 4000,
-    "contactPhone": "070-444-40-40",
-    "type": "gold",
-    "isVip": true,
-    "description": "Asan nömrə"
   }
 ]

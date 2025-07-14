@@ -17,10 +17,10 @@ interface Listing {
 
 // Zod schema for validating the PUT request body
 const updateListingSchema = z.object({
-  prefix: z.string().min(1, 'Prefix is required'),
-  number: z.string().min(1, 'Number is required'),
-  price: z.number().positive('Price must be a positive number'),
-  type: z.enum(['standard', 'gold', 'premium']),
+  prefix: z.string().min(1).optional(),
+  number: z.string().min(1).optional(),
+  price: z.number().positive().optional(),
+  type: z.enum(['standard', 'gold', 'premium']).optional(),
   contact_phone: z.string().optional(),
   description: z.string().optional(),
   is_sold: z.boolean().optional(),
@@ -46,47 +46,49 @@ async function findListing(id: string): Promise<FindResult | null> {
 
         if (stat.isDirectory()) {
           const result = await searchInDirectory(filePath);
-          if (result) return result; // Found in subdirectory, exit early
-        } else if (file.endsWith('.json')) {
-          const fileContent = await fs.readFile(filePath, 'utf-8');
-          const listings: Listing[] = JSON.parse(fileContent);
-          const index = listings.findIndex(l => l.id === id);
-
+          if (result) return result;
+        } else if (path.extname(file) === '.json') {
+          const content = await fs.readFile(filePath, 'utf-8');
+          const listings: Listing[] = JSON.parse(content);
+          const index = listings.findIndex((l) => String(l.id) === id);
           if (index !== -1) {
-            // Found it!
             return {
-              listing: listings[index],
-              listings,
-              index,
               filePath,
+              listings,
+              listing: listings[index],
+              index,
             };
           }
         }
       }
-      return null; // Not found in this directory
+      return null;
     };
 
     return await searchInDirectory(dataDir);
-
   } catch (error) {
-    console.error('Error finding listing:', error);
-    return null;
+    console.error(`Error finding listing ${id}:`, error);
+    throw new Error('Failed to search for listing.');
   }
 }
 
 // Get a single listing by ID
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params;
-  const result = await findListing(id);
-  if (!result) {
-    return NextResponse.json({ error: `Listing with ID ${id} not found.` }, { status: 404 });
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
+  try {
+    const result = await findListing(id);
+    if (!result) {
+      return NextResponse.json({ error: `Listing with ID ${id} not found.` }, { status: 404 });
+    }
+    return NextResponse.json(result.listing);
+  } catch (error) {
+     console.error(`Error fetching listing ${id}:`, error);
+     return NextResponse.json({ error: 'An error occurred while fetching the listing.' }, { status: 500 });
   }
-  return NextResponse.json(result.listing);
 }
 
 // Update a listing by ID
-export async function PUT(request: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   try {
     const result = await findListing(id);
     if (!result) {
@@ -113,8 +115,8 @@ export async function PUT(request: NextRequest, context: { params: { id: string 
 }
 
 // Delete a listing by ID
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   try {
     const result = await findListing(id);
     if (!result) {
@@ -124,7 +126,7 @@ export async function DELETE(request: NextRequest, context: { params: { id: stri
     result.listings.splice(result.index, 1);
     await fs.writeFile(result.filePath, JSON.stringify(result.listings, null, 2));
 
-    return new NextResponse(null, { status: 204 }); // No Content
+    return new NextResponse(null, { status: 204 });
   } catch (error) {
     console.error(`Error deleting listing ${id}:`, error);
     return NextResponse.json({ error: 'An error occurred while deleting the listing.' }, { status: 500 });
