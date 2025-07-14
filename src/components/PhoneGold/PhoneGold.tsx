@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Phone, ArrowLeft, Gem } from 'lucide-react';
-import { StatisticsManager } from '@/lib/statistics';
+
 import './PhoneGold.css';
 
 interface GoldListing {
@@ -57,7 +57,9 @@ export default function PhoneGold() {
     fetchAllListings();
   }, []);
 
-  const handleCall = (phoneNumber: string) => {
+  const handleCall = async (phoneNumber: string) => {
+    // Dynamically import the StatisticsManager only on the client-side
+    const { StatisticsManager } = await import('@/lib/statistics');
     // Increment the sold numbers count
     StatisticsManager.incrementSoldNumbers();
     // Proceed with the call
