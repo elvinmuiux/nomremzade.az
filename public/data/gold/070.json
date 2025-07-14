@@ -1,0 +1,4 @@
+[
+  { "id": 1, "phoneNumber": "070-707-70-70", "price": 7000, "contactPhone": "0502666366", "type": "Sajah", "isVip": true, "description": "Qızıl 070 nömrə" },
+  { "id": 2, "phoneNumber": "070-333-00-33", "price": 650, "contactPhone": "0502666366", "type": "Sajah", "isVip": false, "description": "Qızıl 070 nömrə" }
+]

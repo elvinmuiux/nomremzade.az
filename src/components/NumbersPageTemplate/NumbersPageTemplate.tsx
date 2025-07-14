@@ -385,13 +385,8 @@ export default function NumbersPageTemplate({
             </div>
           </div>
 
-        {/* Premium Elanlar - Show only on main page */}
-        {showProviderFilter && (
-          <>
-            <PremiumElanlar />
-            <GoldElanlar />
-          </>
-        )}
+        <PremiumElanlar />
+        <GoldElanlar />
 
         {/* Total Count Display - Left Aligned */}
         <div className="total-count-left">

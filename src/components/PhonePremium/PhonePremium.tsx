@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, X, ArrowLeft, Phone } from 'lucide-react';
 import Link from 'next/link';
+import { StatisticsManager } from '@/lib/statistics';
 import './PhonePremium.css';
 
 interface PremiumListing {
@@ -68,6 +69,9 @@ const PhonePremium: React.FC = () => {
   const handleContact = (contactNumber: string, phoneNumber: string) => {
     const confirmed = confirm(`${phoneNumber} nömrəsi üçün əlaqə qurmaq istəyirsiniz?\n\nİndi zəng etmək istəyirsinizmi?`);
     if (confirmed) {
+      // Increment the sold numbers count
+      StatisticsManager.incrementSoldNumbers();
+      // Proceed with the call
       window.location.href = `tel:${contactNumber.replace(/[^0-9]/g, '')}`;
     }
   };

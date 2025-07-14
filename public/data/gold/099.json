@@ -1,0 +1,4 @@
+[
+  { "id": 1, "phoneNumber": "099-999-99-99", "price": 9999, "contactPhone": "0502666366", "type": "Sajah", "isVip": true, "description": "Qızıl 099 nömrə" },
+  { "id": 2, "phoneNumber": "099-123-45-67", "price": 150, "contactPhone": "0502666366", "type": "Sajah", "isVip": false, "description": "Qızıl 099 nömrə" }
+]

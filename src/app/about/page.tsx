@@ -6,21 +6,13 @@ import StatisticsManager, { Statistics } from '@/lib/statistics';
 import styles from './page.module.css';
 
 export default function AboutPage() {
-  const [stats, setStats] = useState<Statistics>({
-    activeUsers: 10000,
-    soldNumbers: 50000,
-    lastUpdated: new Date().toISOString()
-  });
+  // Initialize state directly from localStorage for immediate display
+  const [stats, setStats] = useState<Statistics>(StatisticsManager.getStats());
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    // Load current statistics
-    const currentStats = StatisticsManager.getStats();
-    setStats(currentStats);
-
-    // Increment active users count on page visit
-    const updatedStats = StatisticsManager.incrementActiveUsers();
-    setStats(updatedStats);
+    // The component now initializes state from getStats(), so no need to call it again here.
+    // The global StatisticsTracker component handles incrementing users, so the local call is removed.
 
     // Listen for storage changes to update statistics in real-time (cross-tab)
     const handleStorageChange = (e: StorageEvent) => {
