@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Phone, X } from 'lucide-react';
+import { Search, X, ArrowLeft, Phone } from 'lucide-react';
+import Link from 'next/link';
 import './PhonePremium.css';
 
 interface PremiumListing {
@@ -92,14 +93,22 @@ const PhonePremium: React.FC = () => {
   return (
     <div className="phone-premium-container">
       <div className="phone-header">
-        <h1>Premium Nömrələr</h1>
+        <Link href="/" className="back-button">
+          <ArrowLeft size={20} />
+          <span>Geri</span>
+        </Link>
+        <h1>
+          Premium Nömrələr
+          {listings.length > 0 && <span className="listing-count">({listings.length})</span>}
+        </h1>
+        <div className="header-placeholder"></div>
       </div>
 
       <div className="phone-search-bar">
         <Search className="search-icon" />
         <input
           type="text"
-          placeholder="Nömrədə axtar... (məs: 555, *77*)"
+          placeholder="Nömrə axtar..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

@@ -237,12 +237,10 @@ export default function PhonePageMainTemplate({
         {searchTerm && <X className='phone-clear-icon' size={20} onClick={() => setSearchTerm('')}/>}
       </div>
 
-      {showProviderFilter && (
-        <>
-          <PremiumElanlar />
-          <GoldElanlar />
-        </>
-      )}
+      <>
+        <PremiumElanlar />
+        <GoldElanlar />
+      </>
 
       {loading ? (
         <div className="phone-loading">Yüklənir...</div>

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Copy, Share2, Phone } from 'lucide-react';
 import './PremiumElanlar.css';
 
@@ -87,14 +88,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
   );
 };
 
-interface RawListing {
-  phoneNumber: string;
-  price: number;
-  contactPhone: string;
-  type: string;
-  isVip: boolean;
-}
-
 interface Listing {
   phone: string;
   price: string;
@@ -115,7 +108,7 @@ const PremiumElanlar: React.FC = () => {
           const response = await fetch(`/data/elan/${prefix}.json`);
           if (response.ok) {
             const data = await response.json();
-                        const formattedListings = data.map((item: RawListing) => ({
+                                    const formattedListings = data.map((item: { phoneNumber: string; price: number; type?: string; contactPhone: string; isVip?: boolean; }) => ({
               phone: item.phoneNumber,
               price: item.price.toString(),
               location: item.type || 'Bakı',
@@ -141,6 +134,9 @@ const PremiumElanlar: React.FC = () => {
           {listings.length > 0 ? `${listings.length} Premium Elanlar` : 'Premium Elanlar'}
           <span className="premium-crown">👑</span>
         </h2>
+        <Link href="/premium-elanlar" className="see-all-btn">
+          Hamısına bax
+        </Link>
       </div>
 
       <div className="premium-cards-container">

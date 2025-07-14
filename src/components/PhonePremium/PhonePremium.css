@@ -1,12 +1,47 @@
-.phone-premium-container {
-  padding: 1rem;
-  background-color: #f8f9fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
+
 
 .phone-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4B5563;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #F3F4F6;
+}
+
+.phone-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1F2937;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.listing-count {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.header-placeholder {
+  width: 80px; /* Eyni ölçüdə yer tutaraq başlığı mərkəzdə saxlayır */
+  flex-shrink: 0;
 }
 
 .phone-header h1 {
@@ -28,6 +63,11 @@
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.phone-search-bar input::placeholder {
+  color: #787878;
+  opacity: 1; /* Firefox üçün lazımdır */
 }
 
 .phone-search-bar input:focus {
@@ -65,7 +105,7 @@
 }
 
 .phone-table tr {
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 0.5px solid #000000;
 }
 
 .phone-table tr:last-child {

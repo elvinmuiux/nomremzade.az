@@ -1,12 +1,14 @@
 
 
 /* Premium Header */
+/* Premium Header */
 .premium-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex !important; /* Yan-yana düzülməni məcburi edir */
+  flex-direction: row !important; /* İstiqaməti üfüqi olaraq təyin edir */
+  justify-content: space-between !important; /* Birini sola, digərini sağa çəkir */
+  align-items: center !important; /* Vertikal olaraq mərkəzləyir */
+  width: 100%; /* Konteynerin tam enini tutmasını təmin edir */
   margin-bottom: 1.5rem;
-  gap: 1rem;
 }
 
 .premium-title {
@@ -61,7 +63,8 @@
   position: relative;
   border-radius: 0.5rem;
   padding: 0.75rem; /* Reduced padding */
-  color: white;
+  color: #E4F2F2;
+  font-size: rem;
   min-height: 128px; /* Updated height to 128px */
   display: flex;
   flex-direction: column;
@@ -176,6 +179,23 @@
 
 
 
+.see-all-btn {
+
+  background-color: #F3F4F6;
+  color: #425C5B;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+  border: 1px solid #E5E7EB;
+}
+
+.see-all-btn:hover {
+  background-color: #E5E7EB;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .premium-container {
@@ -184,8 +204,8 @@
   }
 
   .premium-header {
-    flex-direction: column;
-    align-items: flex-start;
+    /* flex-direction: column; -> Bu sətir problemi yaradırdı, ləğv edildi */
+    align-items: center; /* Başlıq və düyməni hizalamaq üçün saxlanıldı */
     gap: 1rem;
   }
 
