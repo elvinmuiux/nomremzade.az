@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import path from 'path';
@@ -72,8 +73,9 @@ async function findListing(id: string): Promise<FindResult | null> {
 }
 
 // Get a single listing by ID
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(request: NextRequest) {
+  // Extract ID from URL path
+  const id = request.nextUrl.pathname.split('/').pop() || '';
   try {
     const result = await findListing(id);
     if (!result) {
@@ -87,8 +89,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // Update a listing by ID
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(request: NextRequest) {
+  // Extract ID from URL path
+  const id = request.nextUrl.pathname.split('/').pop() || '';
   try {
     const result = await findListing(id);
     if (!result) {
@@ -115,8 +118,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // Delete a listing by ID
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(request: NextRequest) {
+  // Extract ID from URL path
+  const id = request.nextUrl.pathname.split('/').pop() || '';
   try {
     const result = await findListing(id);
     if (!result) {

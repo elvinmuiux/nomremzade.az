@@ -85,6 +85,19 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigationRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
+  
+  // Initialize openDropdowns based on active path
+  useEffect(() => {
+    // Find any parent items that should have their dropdown open based on current path
+    const activeParents = navigationItems
+      .filter(item => item.hasDropdown && item.children && 
+        item.children.some(child => pathname === child.href))
+      .map(item => item.id);
+    
+    if (activeParents.length > 0) {
+      setOpenDropdowns(activeParents);
+    }
+  }, [pathname]);
 
   // Function to check if a menu item is active
   const isItemActive = (item: NavigationItem): boolean => {
@@ -190,8 +203,8 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
               )}
             </a>
 
-            {item.hasDropdown && item.children && openDropdowns.includes(item.id) && (
-              <ul className={styles.dropdown}>
+            {item.hasDropdown && item.children && (
+              <ul className={`${styles.dropdown} ${openDropdowns.includes(item.id) ? styles.open : styles.closed}`}>
                 {item.children.map((child) => (
                   <li key={child.id}>
                     <a

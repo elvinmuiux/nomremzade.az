@@ -98,6 +98,14 @@
   margin-left: 0.5rem;
 }
 
+.dropdown.open {
+  display: block;
+}
+
+.dropdown.closed {
+  display: none;
+}
+
 .dropdownLink {
   display: block;
   padding: 0.5rem 0.875rem 0.5rem 2.5rem;
@@ -315,11 +323,18 @@
   }
 
   .dropdown {
-    display: block;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     margin-top: 0.25rem;
     padding: 0.25rem;
+  }
+  
+  .dropdown.open {
+    display: block;
+  }
+  
+  .dropdown.closed {
+    display: none;
   }
 
   .dropdownLink {
