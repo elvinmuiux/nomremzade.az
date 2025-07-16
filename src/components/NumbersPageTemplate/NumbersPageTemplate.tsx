@@ -172,9 +172,9 @@ export default function NumbersPageTemplate({
     }
   };
 
-  const handleWhatsAppContact = (phoneNumber: string) => {
+  const handleWhatsAppContact = (phoneNumber: string, contactPhone: string) => {
     const message = encodeURIComponent(`Salam! ${phoneNumber} nömrəsi barədə məlumat almaq istərdim.`);
-    window.open(`https://wa.me/994${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
+    window.open(`https://wa.me/994${contactPhone.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
   };
 
   const isSearching = searchTerm.trim() !== '';
@@ -422,7 +422,7 @@ export default function NumbersPageTemplate({
                   <div className="provider-name">{ad.provider}</div>
                   <div className="contact-info">
                     <div className="action-buttons">
-                      <button className="action-button" onClick={() => handleWhatsAppContact(ad.phoneNumber)} aria-label="WhatsApp ilə əlaqə saxla">
+                      <button className="action-button" onClick={() => handleWhatsAppContact(ad.phoneNumber, ad.contactPhone || "0504444422")} aria-label="WhatsApp ilə əlaqə saxla">
                         <MessageCircle size={20} />
                       </button>
                       <a href={`tel:${ad.contactPhone?.replace(/\D/g, '')}`} className="action-button" aria-label="Zəng et">

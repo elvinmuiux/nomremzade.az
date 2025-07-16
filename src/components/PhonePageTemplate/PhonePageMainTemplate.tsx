@@ -117,9 +117,9 @@ export default function PhonePageMainTemplate({
     }
   };
 
-  const handleWhatsAppContact = (phoneNumber: string) => {
+  const handleWhatsAppContact = (phoneNumber: string, contactPhone: string) => {
     const message = encodeURIComponent(`Salam! ${phoneNumber} nömrəsi barədə məlumat almaq istərdim.`);
-    window.open(`https://wa.me/994${phoneNumber.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
+    window.open(`https://wa.me/994${contactPhone.replace(/[^0-9]/g, '')}?text=${message}`, '_blank');
   };
 
   const getUniqueProviders = () => {
@@ -258,7 +258,7 @@ export default function PhonePageMainTemplate({
                 <span className="phone-price-text">{ad.price} AZN</span>
               </div>
               <div className="phone-card-actions">
-                <button className="phone-action-btn whatsapp" onClick={() => handleWhatsAppContact(ad.phoneNumber)}>
+                <button className="phone-action-btn whatsapp" onClick={() => handleWhatsAppContact(ad.phoneNumber, ad.contactPhone || "0504444422")}>
                   <MessageCircle size={18} />
                   <span>WhatsApp</span>
                 </button>
