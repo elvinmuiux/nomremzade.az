@@ -1,13 +1,5 @@
 {
   "narMobileAds": [
-    {
-      "id": 1,
-      "phoneNumber": "077-123-45-67",
-      "price": 100,
-      "contactPhone": "077-123-45-67",
-      "type": "premium",
-      "isVip": true,
-      "description": "VIP nömrə"
-    }
+ 
   ]
 }

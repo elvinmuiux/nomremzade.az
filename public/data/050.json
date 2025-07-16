@@ -2,9 +2,45 @@
   "azercellAds": [
     {
       "id": 1,
-      "phoneNumber": "050-123-45-67",
-      "price": 100,
-      "contactPhone": "050-123-45-67",
+      "phoneNumber": "050-999-33-77",
+      "price": 1500,
+      "contactPhone": "050-444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə"
+    },
+    {
+      "id": 2,
+      "phoneNumber": "050-999-88-33",
+      "price": 1500,
+      "contactPhone": "050-444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə"
+    },
+    {
+      "id": 3,
+      "phoneNumber": "050-244-70-70",
+      "price": 1500,
+      "contactPhone": "050-444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə"
+    },
+    {
+      "id": 4,
+      "phoneNumber": "050-557-55-57",
+      "price": 1500,
+      "contactPhone": "050-444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə"
+    },
+    {
+      "id": 5,
+      "phoneNumber": "050-712-10-10",
+      "price": 1500,
+      "contactPhone": "050-444-44-22",
       "type": "premium",
       "isVip": true,
       "description": "VIP nömrə"

@@ -39,7 +39,7 @@ export default function PostAdPage() {
                 <span className={styles.comingSoon}>TEZLİKLƏ</span>
               </div>
               <ul className={styles.featuresList}>
-                <li>20 gün aktiv olacaq</li>
+                <li>30 gün aktiv olacaq</li>
                 <li>Orta hissədə göstəriləcək</li>
                 <li>Gold vurğu</li>
                 <li>WhatsApp dəstəyi</li>
@@ -55,7 +55,7 @@ export default function PostAdPage() {
                 <span className={styles.comingSoon}>TEZLİKLƏ</span>
               </div>
               <ul className={styles.featuresList}>
-                <li>10 gün aktiv olacaq</li>
+                <li>30 gün aktiv olacaq</li>
                 <li>Standart göstərim</li>
                 <li>Əsas xüsusiyyətlər</li>
               </ul>
@@ -70,20 +70,16 @@ export default function PostAdPage() {
           <h2 className={styles.sectionTitle}>Elan Vermə Qaydaları</h2>
           <div className={styles.rulesContainer}>
             <div className={styles.rule}>
-              <h4>1. Nömrə Məlumatları</h4>
+              <h4>1. Nömrə məlumatları</h4>
               <p>Nömrənizin tam və düzgün məlumatlarını daxil edin.</p>
             </div>
             <div className={styles.rule}>
-              <h4>2. Qiymət Təyin Etmə</h4>
+              <h4>2. Qiymət təyin etmə</h4>
               <p>Bazar qiymətinə uyğun qiymət təyin edin.</p>
             </div>
             <div className={styles.rule}>
-              <h4>3. Əlaqə Məlumatları</h4>
+              <h4>3. Əlaqə məlumatları</h4>
               <p>Aktiv telefon nömrəsi və ya WhatsApp əlaqəsi təmin edin.</p>
-            </div>
-            <div className={styles.rule}>
-              <h4>4. Foto və Təsvir</h4>
-              <p>Nömrənizin görünüşünü əks etdirən foto əlavə edin.</p>
             </div>
           </div>
         </section>

@@ -1,13 +1,5 @@
 {
   "narMobileAds": [
-    {
-      "id": 1,
-      "phoneNumber": "070-123-45-67",
-      "price": 100,
-      "contactPhone": "070-123-45-67",
-      "type": "premium",
-      "isVip": true,
-      "description": "VIP nömrə"
-    }
+
   ]
 }

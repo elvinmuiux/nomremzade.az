@@ -36,7 +36,7 @@ const navigationItems: NavigationItem[] = [
     icon: Phone,
     hasDropdown: true,
     children: [
-      { id: 'azercell', label: 'Azərcell', href: '/numbers/azercell' },
+      { id: 'azercell', label: 'Azercell', href: '/numbers/azercell' },
       { id: 'bakcell', label: 'Bakcell', href: '/numbers/bakcell' },
       { id: 'nar-mobile', label: 'Nar Mobile', href: '/numbers/nar-mobile' },
       { id: 'naxtel', label: 'Naxtel', href: '/numbers/naxtel' }

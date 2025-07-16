@@ -111,7 +111,7 @@ export default function PhonePageMainTemplate({
   }, [ads, searchTerm, selectedPrefix, selectedProvider, showProviderFilter]);
 
   const handleOrderNumber = (phoneNumber: string) => {
-    const confirmed = confirm(`${phoneNumber} nömrəsi üçün sifarişiniz qeydə alındı! Ən qısa zamanda sizinlə əlaqə saxlanacaq.\n\nİndi zəng etmək istəyirsiniz? (050) 444-44-22`);
+    const confirmed = confirm(`${phoneNumber} nömrəsini sifariş etmək istədiyinizə əminsiniz?\n\nİndi zəng edin! (050) 444-44-22`);
     if (confirmed) {
       window.location.href = 'tel:+994504444422';
     }

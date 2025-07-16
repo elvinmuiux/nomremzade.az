@@ -1,11 +1,3 @@
 [
-    {
-        "id": 1,
-        "phoneNumber": "060-123-45-67",
-        "price": 100,
-        "contactPhone": "060-123-45-67",
-        "type": "premium",
-        "isVip": true,
-        "description": "VIP nömrə"
-    }
+
 ]
