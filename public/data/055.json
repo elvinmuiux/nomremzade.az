@@ -3770,7 +3770,8 @@
                   "type": "premium",
                   "isVip": true,
                   "description": "VIP nömrə"
-                },{
+                },
+                {
                   "id": 2,
                   "phoneNumber": "055-883-88-88",
                   "price": 5000,

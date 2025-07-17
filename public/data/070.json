@@ -1,5 +1,13 @@
 {
   "narMobileAds": [
-
+    {
+      "id": 1,
+      "phoneNumber": "070-276-99-99",
+      "price": 700,
+      "contactPhone": "050-444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə"
+    }
   ]
 }
