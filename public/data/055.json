@@ -3779,6 +3779,14 @@
                   "type": "premium",
                   "isVip": true,
                   "description": "VIP nömrə"
-                }
-      ]
+                }, {
+      "id": 1,
+      "phoneNumber": "055-222-51-21",
+      "price": 250,
+      "contactPhone": "055-444-44-22",
+      "type": "premium",
+      "isVip": true,
+      "description": "VIP nömrə"
+    }
+    ]
 }
