@@ -1198,6 +1198,65 @@
   color: white;
 }
 
+.phoneActionBtn.resell {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Modal enhancements for sold status */
+.phoneModalTitle {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.phoneSoldBadge {
+  background-color: #dc3545;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.phoneSoldStatusGroup {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+.phoneSoldCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.phoneSoldCheckbox:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.phoneSoldInput {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.phoneCheckboxText {
+  font-weight: 600;
+  color: #495057;
+}
+
 .phoneActionBtn:hover {
   opacity: 0.9;
   transform: translateY(-1px);
@@ -1456,4 +1515,113 @@
   .phoneStatsGrid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* Enhanced Admin Features */
+.phoneActionButtons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.phoneRefreshButton {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.phoneRefreshButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.phoneRefreshButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.phoneSummaryStats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.phoneSummaryStats span {
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #495057;
+  border: 1px solid #e9ecef;
+}
+
+.phoneSummaryStats span strong {
+  color: #007bff;
+  font-weight: 700;
+}
+
+.soldCard {
+  opacity: 0.7;
+  position: relative;
+}
+
+.soldCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(108, 117, 125, 0.1);
+  border-radius: 15px;
+  pointer-events: none;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .phoneActionButtons {
+    flex-direction: column;
+  }
+  
+  .phoneAddButton,
+  .phoneRefreshButton {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .phoneSummaryStats {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .phoneSummaryStats span {
+    text-align: center;
+  }
+}
+
+/* Provider Info Styling */
+.phoneProviderInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6c757d;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.phoneProviderInfo svg {
+  color: #007bff;
 }

@@ -34,7 +34,18 @@ interface Listing {
   createdAt: string;
 }
 
-
+interface NumberAd {
+  id: number | string;
+  phoneNumber: string;
+  price: number;
+  contactPhone?: string;
+  type?: string;
+  isVip?: boolean;
+  description?: string;
+  provider?: string;
+  prefix?: string;
+  is_sold?: boolean;
+}
 
 interface DashboardStats {
   totalListings: number;
@@ -63,6 +74,7 @@ export default function AdminPage() {
   
   // Data
   const [listings, setListings] = useState<Listing[]>([]);
+  // const [numberAds, setNumberAds] = useState<NumberAd[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     totalListings: 0,
     soldListings: 0,
@@ -82,7 +94,17 @@ export default function AdminPage() {
   // const [showFilters, setShowFilters] = useState(false);
   const [activeSection, setActiveSection] = useState<'dashboard' | 'listings' | 'analytics'>('dashboard');
 
-
+  // Data file configurations
+  const dataFiles = [
+    { file: '010.json', key: 'azercellAds', provider: 'Azercell', prefix: '010' },
+    { file: '050.json', key: 'azercellAds', provider: 'Azercell', prefix: '050' },
+    { file: '051.json', key: 'azercellAds', provider: 'Azercell', prefix: '051' },
+    { file: '055.json', key: 'azercellAds', provider: 'Azercell', prefix: '055' },
+    { file: '060.json', key: 'narAds', provider: 'Nar Mobile', prefix: '060' },
+    { file: '070.json', key: 'narAds', provider: 'Nar Mobile', prefix: '070' },
+    { file: '077.json', key: 'narAds', provider: 'Nar Mobile', prefix: '077' },
+    { file: '099.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '099' }
+  ];
 
   // Authentication check
   useEffect(() => {
@@ -96,6 +118,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (isAuthenticated) {
       fetchListings();
+      // fetchAllNumbers(); // Not needed since we load all data in fetchListings
     }
   }, [isAuthenticated]);
 
@@ -222,7 +245,38 @@ export default function AdminPage() {
     }
   };
 
-
+  const fetchAllNumbers = async () => {
+    setIsLoading(true);
+    try {
+      const allNumbers: NumberAd[] = [];
+      
+      for (const config of dataFiles) {
+        try {
+          const response = await fetch(`/data/${config.file}`);
+          if (response.ok) {
+            const data = await response.json();
+            const numbers = data[config.key] || [];
+            const processedNumbers = numbers.map((num: Record<string, unknown>) => ({
+              ...num,
+              provider: config.provider,
+              prefix: config.prefix,
+              id: `${config.prefix}-${num.id || Math.random()}`
+            }));
+            allNumbers.push(...processedNumbers);
+          }
+        } catch (error) {
+          console.error('Error loading numbers:', error);
+        }
+      }
+      
+      // setNumberAds(allNumbers); // Commented out since numberAds state is not used
+    } catch (error) {
+      console.error('Error in fetchAllNumbers:', error);
+      setError('Nömrələr yüklənərkən xəta baş verdi');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!currentListing) return;
@@ -425,9 +479,8 @@ export default function AdminPage() {
   }
 
   return (
-    <PageTemplate>
+    <div>
       <div className={styles.phoneContainer}>
-        {/* Header */}
         <div className={styles.phoneHeader}>
           <h1>Admin Dashboard</h1>
           <button onClick={handleLogout} className={styles.phoneLogoutButton}>
@@ -503,22 +556,35 @@ export default function AdminPage() {
                   <p className={styles.phoneStatNumber}>{stats.premiumListings}</p>
                 </div>
               </div>
-            </div>
 
             <div className={styles.phoneRecentActivity}>
               <h3>Son Fəaliyyətlər</h3>
               <div className={styles.phoneActivityList}>
                 {listings.slice(0, 5).map(listing => (
-                  <div key={listing.id} className={styles.phoneActivityItem}>
+                  <div key={listing.id} className={`${styles.phoneActivityItem} ${listing.is_sold ? styles.soldActivityItem : ''}`}>
                     <div className={styles.phoneActivityIcon}>
                       {getTypeIcon(listing.type)}
                     </div>
                     <div className={styles.phoneActivityContent}>
-                      <p>{listing.prefix}-{listing.number}</p>
-                      <span>{listing.price} AZN</span>
+                      <div className={styles.phoneActivityDetails}>
+                        <p>{listing.prefix}-{listing.number}</p>
+                        <span>{listing.price} AZN</span>
+                        {listing.provider && (
+                          <small className={styles.phoneActivityProvider}>{listing.provider}</small>
+                        )}
+                      </div>
                     </div>
-                    <div className={styles.phoneActivityStatus}>
-                      {listing.is_sold ? 'Satıldı' : 'Aktiv'}
+                    <div className={styles.phoneActivityActions}>
+                      <div className={styles.phoneActivityStatus}>
+                        {listing.is_sold ? 'Satıldı' : 'Aktiv'}
+                      </div>
+                      <button 
+                        className={styles.phoneActivityEditBtn}
+                        onClick={() => openModal(listing)}
+                        title="Redaktə et"
+                      >
+                        <Edit size={14} />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -832,6 +898,6 @@ export default function AdminPage() {
           </div>
         )}
       </div>
-    </PageTemplate>
+    </div>
   );
 }

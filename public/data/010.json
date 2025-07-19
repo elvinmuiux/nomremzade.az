@@ -3,11 +3,12 @@
     {
       "id": 1,
       "phoneNumber": "010-406-06-06",
-      "price": 3500,
+      "price": 6500,
       "contactPhone": "050-444-44-22",
       "type": "premium",
       "isVip": true,
-      "description": "VIP nömrə"
+      "description": "Azercell - Azercell - Azercell - Azercell - VIP nömrə",
+      "is_sold": true
     },
     {
       "id": 2,
