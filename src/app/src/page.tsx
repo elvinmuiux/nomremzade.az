@@ -79,7 +79,7 @@ export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('');
   const [selectedProvider, setSelectedProvider] = useState<string>('');
-  // const [showFilters, setShowFilters] = useState(false);
+  const [selectedListings, setSelectedListings] = useState<string[]>([]);
   const [activeSection, setActiveSection] = useState<'dashboard' | 'listings' | 'analytics'>('dashboard');
 
 
@@ -361,10 +361,140 @@ export default function AdminPage() {
 
   const handleModalChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    setCurrentListing(prev => ({
-      ...prev,
+    
+    let updatedListing = {
+      ...currentListing,
       [name]: type === 'number' ? Number(value) : value
+    };
+    
+    // Auto-set provider based on prefix
+    if (name === 'prefix') {
+      const prefixToProvider: { [key: string]: string } = {
+        '010': 'Azercell',
+        '050': 'Azercell', 
+        '051': 'Azercell',
+        '055': 'Bakcell',
+        '060': 'Naxtel',
+        '070': 'Nar Mobile',
+        '077': 'Nar Mobile',
+        '099': 'Bakcell'
+      };
+      
+      updatedListing = { ...updatedListing, provider: prefixToProvider[value] || '' };
+    }
+    
+    setCurrentListing(updatedListing);
+  };
+
+  // Bulk operations
+  const handleSelectListing = (id: string) => {
+    setSelectedListings(prev => 
+      prev.includes(id) 
+        ? prev.filter(listingId => listingId !== id)
+        : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedListings.length === filteredListings.length) {
+      setSelectedListings([]);
+    } else {
+      setSelectedListings(filteredListings.map(l => l.id));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedListings.length === 0) return;
+    
+    if (!confirm(`${selectedListings.length} elanı silmək istədiyinizə əminsiniz?`)) return;
+    
+    setIsLoading(true);
+    try {
+      const deletePromises = selectedListings.map(id => 
+        fetch(`/api/listings?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
+      );
+      
+      await Promise.all(deletePromises);
+      
+      // Update local state
+      setListings(prev => prev.filter(l => !selectedListings.includes(l.id)));
+      setSelectedListings([]);
+      alert(`${selectedListings.length} elan uğurla silindi!`);
+      
+      // Refresh data
+      await fetchListings();
+    } catch (err) {
+      console.error('Bulk delete error:', err);
+      setError('Toplu silmə zamanı xəta baş verdi');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBulkMarkAsSold = async () => {
+    if (selectedListings.length === 0) return;
+    
+    if (!confirm(`${selectedListings.length} elanı satıldı olaraq işarələmək istədiyinizə əminsiniz?`)) return;
+    
+    setIsLoading(true);
+    try {
+      const updatePromises = selectedListings.map(id => {
+        const listing = listings.find(l => l.id === id);
+        if (listing) {
+          return fetch('/api/listings', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...listing, is_sold: true })
+          });
+        }
+        return Promise.resolve();
+      });
+      
+      await Promise.all(updatePromises);
+      
+      // Update local state
+      setListings(prev => prev.map(l => 
+        selectedListings.includes(l.id) ? { ...l, is_sold: true } : l
+      ));
+      setSelectedListings([]);
+      alert(`${selectedListings.length} elan satıldı olaraq işarələndi!`);
+      
+      // Refresh data
+      await fetchListings();
+    } catch (err) {
+      console.error('Bulk mark as sold error:', err);
+      setError('Toplu yeniləmə zamanı xəta baş verdi');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleExportData = () => {
+    const dataToExport = filteredListings.map(listing => ({
+      'Nömrə': `${listing.prefix}-${listing.number}`,
+      'Qiymət': `${listing.price} AZN`,
+      'Tip': listing.type,
+      'Operator': listing.provider,
+      'Əlaqə': listing.contact_phone,
+      'Təsvir': listing.description,
+      'Status': listing.is_sold ? 'Satıldı' : 'Aktiv',
+      'Yaradılma Tarixi': new Date(listing.createdAt).toLocaleDateString('az-AZ')
     }));
+    
+    const csv = [
+      Object.keys(dataToExport[0] || {}).join(','),
+      ...dataToExport.map(row => Object.values(row).join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `elanlar-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   // Filter listings
@@ -591,10 +721,54 @@ export default function AdminPage() {
                 <RefreshCw size={20} />
                 Yenilə
               </button>
+              
+              <button 
+                className={styles.phoneExportButton}
+                onClick={handleExportData}
+                disabled={filteredListings.length === 0}
+              >
+                <TrendingUp size={20} />
+                Export CSV
+              </button>
+              
+              {selectedListings.length > 0 && (
+                <div className={styles.phoneBulkActions}>
+                  <span className={styles.phoneSelectedCount}>
+                    {selectedListings.length} seçildi
+                  </span>
+                  <button 
+                    className={styles.phoneBulkDeleteButton}
+                    onClick={handleBulkDelete}
+                    disabled={isLoading}
+                  >
+                    <Trash2 size={16} />
+                    Seçilənləri Sil
+                  </button>
+                  <button 
+                    className={styles.phoneBulkSoldButton}
+                    onClick={handleBulkMarkAsSold}
+                    disabled={isLoading}
+                  >
+                    <Users size={16} />
+                    Satıldı İşarələ
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Listings Summary */}
             <div className={styles.phoneListSummary}>
+              <div className={styles.phoneSelectAllSection}>
+                <label className={styles.phoneSelectAllLabel}>
+                  <input
+                    type="checkbox"
+                    checked={selectedListings.length === filteredListings.length && filteredListings.length > 0}
+                    onChange={handleSelectAll}
+                    className={styles.phoneSelectAllCheckbox}
+                  />
+                  <span>Hamısını seç</span>
+                </label>
+              </div>
               <div className={styles.phoneSummaryStats}>
                 <span><strong>{filteredListings.length}</strong> elan tapıldı</span>
                 <span><strong>{filteredListings.filter(l => !l.is_sold).length}</strong> aktiv</span>
@@ -609,8 +783,16 @@ export default function AdminPage() {
             ) : (
               <div className={styles.phoneNumbersList}>
                 {filteredListings.map(listing => (
-                  <div key={listing.id} className={`${styles.phoneNumberCard} ${listing.is_sold ? styles.soldCard : ''}`}>
+                  <div key={listing.id} className={`${styles.phoneNumberCard} ${listing.is_sold ? styles.soldCard : ''} ${selectedListings.includes(listing.id) ? styles.selectedCard : ''}`}>
                     <div className={styles.phoneCardMain}>
+                      <div className={styles.phoneCardCheckbox}>
+                        <input
+                          type="checkbox"
+                          checked={selectedListings.includes(listing.id)}
+                          onChange={() => handleSelectListing(listing.id)}
+                          className={styles.phoneListingCheckbox}
+                        />
+                      </div>
                       <div className={styles.phoneNumberInfo}>
                         <div className={styles.phoneNumberText}>
                           {listing.prefix}-{listing.number}
@@ -714,13 +896,22 @@ export default function AdminPage() {
               <div className={styles.phoneModalContent}>
                 <div className={styles.phoneFormGroup}>
                   <label>Prefix:</label>
-                  <input
-                    type="text"
+                  <select
                     name="prefix"
                     value={currentListing.prefix}
                     onChange={handleModalChange}
-                    className={styles.phoneInput}
-                  />
+                    className={styles.phoneSelect}
+                  >
+                    <option value="">Prefix seçin</option>
+                    <option value="010">010 - Azercell</option>
+                    <option value="050">050 - Azercell</option>
+                    <option value="051">051 - Azercell</option>
+                    <option value="055">055 - Bakcell</option>
+                    <option value="060">060 - Naxtel</option>
+                    <option value="070">070 - Nar Mobile</option>
+                    <option value="077">077 - Nar Mobile</option>
+                    <option value="099">099 - Bakcell</option>
+                  </select>
                 </div>
                 
                 <div className={styles.phoneFormGroup}>
@@ -772,18 +963,15 @@ export default function AdminPage() {
                 
                 <div className={styles.phoneFormGroup}>
                   <label>Operator:</label>
-                  <select
+                  <input
+                    type="text"
                     name="provider"
-                    value={currentListing.provider || ''}
-                    onChange={handleModalChange}
-                    className={styles.phoneSelect}
-                  >
-                    <option value="">Operator seçin</option>
-                    <option value="Azercell">Azercell</option>
-                    <option value="Bakcell">Bakcell</option>
-                    <option value="Nar Mobile">Nar Mobile</option>
-                    <option value="Naxtel">Naxtel</option>
-                  </select>
+                    value={currentListing.provider || 'Prefix seçin'}
+                    readOnly
+                    className={`${styles.phoneInput} ${styles.phoneReadOnlyInput}`}
+                    style={{ backgroundColor: '#f8f9fa', cursor: 'not-allowed' }}
+                  />
+                  <small style={{ color: '#6c757d', fontSize: '12px' }}>Operator prefix-ə görə avtomatik seçilir</small>
                 </div>
                 
                 <div className={styles.phoneFormGroup}>

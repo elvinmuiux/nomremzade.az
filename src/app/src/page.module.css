@@ -1262,6 +1262,135 @@
   transform: translateY(-1px);
 }
 
+/* Bulk Operations Styles */
+.phoneBulkActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.phoneSelectedCount {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  margin-right: 10px;
+}
+
+.phoneBulkDeleteButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.phoneBulkDeleteButton:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.phoneBulkSoldButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.phoneBulkSoldButton:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.phoneExportButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.phoneExportButton:hover {
+  background: #138496;
+  transform: translateY(-1px);
+}
+
+.phoneExportButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Select All Section */
+.phoneSelectAllSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.phoneSelectAllLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #495057;
+}
+
+.phoneSelectAllCheckbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Listing Card Checkbox */
+.phoneCardCheckbox {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+}
+
+.phoneListingCheckbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.selectedCard {
+  border-color: #007bff !important;
+  background: #f8f9ff !important;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15) !important;
+}
+
+.phoneCardMain {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .phoneSoldOverlay {
   position: absolute;
   top: 0;

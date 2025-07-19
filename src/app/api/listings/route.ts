@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import path from 'path';
 import { promises as fs } from 'fs';
-import crypto from 'crypto';
 
 // Define the structure of a listing
 interface Listing {
@@ -81,35 +80,90 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid input', issues: validation.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    const { prefix, ...rest } = validation.data;
+    const { prefix, number, price, type, contact_phone, description } = validation.data;
 
-    const newListing: Listing = {
-      id: crypto.randomUUID(),
-      prefix,
-      ...rest,
-      is_sold: false,
-      createdAt: new Date().toISOString(),
+    // Create the new listing in the format expected by JSON files
+    const newListingForJson = {
+      id: Date.now(), // Use timestamp as ID for JSON files
+      phoneNumber: `${prefix}-${number}`,
+      price: price,
+      contactPhone: contact_phone || '050-444-44-22',
+      type: type,
+      isVip: type === 'premium',
+      description: description || `${type} nömrə`,
+      is_sold: false
     };
 
-    // Determine the file path based on the listing type or prefix
-    const folder = newListing.type === 'gold' ? 'gold' : 'elan';
-    const targetDir = path.join(dataDir, folder);
-    const filePath = path.join(targetDir, `${prefix}.json`);
+    // Determine which JSON file to update based on prefix
+    const prefixToFileMap: { [key: string]: { file: string, key: string } } = {
+      '010': { file: '010.json', key: 'azercellAds' },
+      '050': { file: '050.json', key: 'azercellAds' },
+      '051': { file: '051.json', key: 'azercellAds' },
+      '055': { file: '055.json', key: 'bakcellAds' },
+      '060': { file: '060.json', key: 'naxtelAds' },
+      '070': { file: '070.json', key: 'narmobileAds' },
+      '077': { file: '077.json', key: 'narmobileAds' },
+      '099': { file: '099.json', key: 'bakcellAds' }
+    };
 
-    await fs.mkdir(targetDir, { recursive: true });
-
-    let listings: Listing[] = [];
-    try {
-      const fileContent = await fs.readFile(filePath, 'utf-8');
-      listings = JSON.parse(fileContent);
-    } catch {
-      // File doesn't exist or is empty, it will be created/overwritten
+    const fileConfig = prefixToFileMap[prefix];
+    if (!fileConfig) {
+      return NextResponse.json({ error: `Unsupported prefix: ${prefix}` }, { status: 400 });
     }
 
-    listings.push(newListing);
-    await fs.writeFile(filePath, JSON.stringify(listings, null, 2));
+    // Determine the folder based on type
+    let targetFolder = '';
+    if (type === 'premium') {
+      targetFolder = 'elan';
+    } else if (type === 'gold') {
+      targetFolder = 'gold';
+    }
+    // For standard type, use root data folder
 
-    return NextResponse.json(newListing, { status: 201 });
+    const filePath = targetFolder 
+      ? path.join(dataDir, targetFolder, fileConfig.file)
+      : path.join(dataDir, fileConfig.file);
+
+    // Ensure directory exists
+    if (targetFolder) {
+      await fs.mkdir(path.join(dataDir, targetFolder), { recursive: true });
+    }
+
+    // Read existing data
+    let data: Record<string, unknown[]> = {};
+    try {
+      const fileContent = await fs.readFile(filePath, 'utf-8');
+      data = JSON.parse(fileContent);
+    } catch {
+      // File doesn't exist, create new structure
+      data = { [fileConfig.key]: [] };
+    }
+
+    // Ensure the key exists
+    if (!data[fileConfig.key]) {
+      data[fileConfig.key] = [];
+    }
+
+    // Add the new listing
+    data[fileConfig.key].push(newListingForJson);
+
+    // Write back to file
+    await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+
+    // Return the listing in the format expected by the frontend
+    const responseListingData: Listing = {
+      id: `${Date.now()}-${prefix}${number}`,
+      prefix,
+      number,
+      price,
+      type,
+      contact_phone,
+      description,
+      is_sold: false,
+      createdAt: new Date().toISOString()
+    };
+
+    return NextResponse.json(responseListingData, { status: 201 });
   } catch (error) {
     console.error('Error creating listing:', error);
     return NextResponse.json({ error: 'An error occurred while creating the listing.' }, { status: 500 });
