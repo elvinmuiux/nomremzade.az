@@ -1,11 +1,11 @@
 [
     {
         "id": "4",
-        "prefix": "010",
+        "prefix": "050",
         "number": "2262222",
         "price": 750,
         "contact_phone": "050-444-44-22",
-        "type": "gold",
+        "type": "premium",
         "is_sold": false,
         "description": "VIP nömrə",
         "created_at": "2025-07-21T21:00:00.000Z"

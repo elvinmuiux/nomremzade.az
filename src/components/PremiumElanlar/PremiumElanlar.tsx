@@ -102,31 +102,42 @@ const PremiumElanlar: React.FC = () => {
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
-    const prefixes = ['010', '050', '051', '055', '060', '070', '077', '099'];
-    const fetchAllListings = async () => {
+    const fetchPremiumListings = async () => {
       try {
-        let allListings: Listing[] = [];
+        // Fetch directly from JSON files with cache busting
+        const timestamp = new Date().getTime();
+        const prefixes = ['010', '050', '051', '055', '060', '070', '077', '099'];
+        const allListings: Listing[] = [];
+        
+        // Fetch from premium directory
         for (const prefix of prefixes) {
-          const response = await fetch(`/data/elan/${prefix}.json`);
-          if (response.ok) {
-            const data = await response.json();
-                                    const formattedListings = data.map((item: { phoneNumber: string; price: number; type?: string; contactPhone: string; isVip?: boolean; }) => ({
-              phone: item.phoneNumber,
-              price: item.price.toString(),
-              location: item.type || 'Bakı',
-              contactPhone: item.contactPhone,
-              isActive: item.isVip
-            }));
-            allListings = [...allListings, ...formattedListings];
+          try {
+            const response = await fetch(`/data/premium/${prefix}.json?t=${timestamp}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (Array.isArray(data) && data.length > 0) {
+                const formattedListings = data.map((item: Record<string, unknown>) => ({
+                  phone: (item.phoneNumber as string) || `${prefix}-${item.number as string}`,
+                  price: (item.price as number)?.toString() || '0',
+                  location: (item.type as string) || 'Premium',
+                  contactPhone: (item.contactPhone as string) || '050-444-44-22',
+                  isActive: !(item.is_sold as boolean) && !(item.isSold as boolean)
+                }));
+                allListings.push(...formattedListings);
+              }
+            }
+          } catch (error) {
+            console.log(`No premium data for prefix ${prefix}:`, error);
           }
         }
+        
         setListings(allListings);
       } catch (error) {
         console.error('Error fetching premium listings:', error);
       }
     };
 
-    fetchAllListings();
+    fetchPremiumListings();
   }, []);
 
   return (
@@ -143,7 +154,7 @@ const PremiumElanlar: React.FC = () => {
 
       <div className="premium-cards-container">
         {listings.map((listing, index) => (
-          <div key={index} className="premium-card-wrapper">
+          <div key={`premium-${listing.phone}-${index}`} className="premium-card-wrapper">
             <ListingCard
               phone={listing.phone}
               price={listing.price}

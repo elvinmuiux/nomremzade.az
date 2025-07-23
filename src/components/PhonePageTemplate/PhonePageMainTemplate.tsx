@@ -9,6 +9,18 @@ import './PhonePageMainTemplate.css';
 const PremiumElanlar = dynamic(() => import('@/components/PremiumElanlar/PremiumElanlar'), { ssr: false });
 const GoldElanlar = dynamic(() => import('@/components/GoldElanlar/GoldElanlar'), { ssr: false });
 
+interface ApiListing {
+  id: string;
+  prefix: string;
+  number: string;
+  price: number;
+  type: 'standard' | 'gold' | 'premium';
+  contact_phone?: string;
+  description?: string;
+  provider?: string;
+  createdAt: string;
+}
+
 interface NumberAd {
   id: number;
   phoneNumber: string;
@@ -16,14 +28,6 @@ interface NumberAd {
   contactPhone?: string;
   provider: string;
   prefix: string;
-}
-
-interface RawAd {
-  phoneNumber?: string;
-  numara?: string;
-  price?: number;
-  fiyat?: number;
-  contactPhone?: string;
 }
 
 interface DataFileConfig {
@@ -35,7 +39,7 @@ interface DataFileConfig {
 
 interface PhonePageMainTemplateProps {
   pageTitle: string;
-  dataFiles: DataFileConfig[];
+  dataFiles?: DataFileConfig[]; // Make optional
   showProviderFilter?: boolean;
   operatorName?: string;
 }
@@ -54,36 +58,80 @@ export default function PhonePageMainTemplate({
 
   useEffect(() => {
     const loadNumbers = async () => {
-      setLoading(true);
       try {
-        const allNumbers: NumberAd[] = [];
-        let uniqueIdCounter = 1;
-        for (const dataFile of dataFiles) {
-          const response = await fetch(`/data/${dataFile.file}`);
-          if (response.ok) {
-            const data = await response.json();
-            const adsArray = data[dataFile.key] || [];
-            const processedAds = adsArray.map((item: RawAd) => {
-              const phoneNumber = String(item.phoneNumber || item.numara || '');
+        // Call API to get all listings
+        const response = await fetch('/api/listings');
+        if (response.ok) {
+          const allListings = await response.json();
+          
+          // Process all listings
+          const allNumbers: NumberAd[] = [];
+          
+          if (dataFiles && dataFiles.length > 0) {
+            // If dataFiles provided, filter by those prefixes
+            for (const dataFile of dataFiles) {
+              const adsArray = allListings.filter((listing: ApiListing) => listing.prefix === dataFile.prefix);
+              
+              const processedAds = adsArray.map((listing: ApiListing) => {
+                // Format phone number properly: prefix + number
+                const phoneNumber = listing.number ? `${listing.prefix}-${listing.number.replace(/^0+/, '')}` : '';
+                
+                return {
+                  id: listing.id,
+                  phoneNumber: phoneNumber,
+                  price: listing.price || 0,
+                  contactPhone: listing.contact_phone || '(050) 444-44-22',
+                  provider: dataFile.provider,
+                  prefix: listing.prefix
+                };
+              });
+
+              allNumbers.push(...processedAds);
+            }
+          } else {
+            // If no dataFiles, show all listings
+            const processedAds = allListings.map((listing: ApiListing) => {
+              // Format phone number properly: prefix + number
+              const phoneNumber = listing.number ? `${listing.prefix}-${listing.number.replace(/^0+/, '')}` : '';
+              
+              // Map prefix to provider
+              const getProviderByPrefix = (prefix: string) => {
+                if (['010', '050', '051'].includes(prefix)) return 'Azercell';
+                if (['055', '099'].includes(prefix)) return 'Bakcell';
+                if (['070', '077'].includes(prefix)) return 'Nar Mobile';
+                if (['060'].includes(prefix)) return 'Naxtel';
+                return 'Unknown';
+              };
+              
               return {
-                id: `${uniqueIdCounter++}-${phoneNumber}`,
+                id: listing.id,
                 phoneNumber: phoneNumber,
-                price: Number(item.price || item.fiyat || 0),
-                contactPhone: String(item.contactPhone || '(050) 444-44-22'),
-                provider: dataFile.provider,
-                prefix: phoneNumber.replace(/[^0-9]/g, '').slice(0, 3),
+                price: listing.price || 0,
+                contactPhone: listing.contact_phone || '(050) 444-44-22',
+                provider: getProviderByPrefix(listing.prefix),
+                prefix: listing.prefix
               };
             });
+
             allNumbers.push(...processedAds);
           }
+          
+          // Remove duplicates based on phone number and provider
+          const uniqueNumbers = allNumbers.filter((ad, index, self) => 
+            index === self.findIndex(item => 
+              item.phoneNumber === ad.phoneNumber && item.provider === ad.provider
+            )
+          );
+          
+          setAds(uniqueNumbers);
         }
-        setAds(allNumbers);
       } catch (err) {
         console.error('Error loading numbers:', err);
       } finally {
         setLoading(false);
       }
     };
+
     loadNumbers();
   }, [dataFiles]);
 
@@ -209,7 +257,7 @@ export default function PhonePageMainTemplate({
             >
               <option value="">Operator</option>
               {getUniqueProviders().map((provider, index) => (
-                <option key={`${provider}-${index}`} value={provider}>{provider}</option>
+                <option key={`mobile-provider-${provider}-${index}`} value={provider}>{provider}</option>
               ))}
             </select>
         )}
@@ -220,7 +268,7 @@ export default function PhonePageMainTemplate({
         >
           <option value="">Prefiks</option>
           {getUniquePrefixes().map((prefix, index) => (
-            <option key={`${prefix}-${index}`} value={prefix}>{prefix}</option>
+            <option key={`mobile-prefix-${prefix}-${index}`} value={prefix}>{prefix}</option>
           ))}
         </select>
       </div>
@@ -249,8 +297,8 @@ export default function PhonePageMainTemplate({
           <div className="phone-list-summary">
             {filteredAds.length} nömrə tapıldı
           </div>
-          {filteredAds.map(ad => (
-            <div key={ad.id} className="phone-number-card">
+          {filteredAds.map((ad, index) => (
+            <div key={`mobile-${ad.id}-${ad.prefix}-${ad.phoneNumber}-${index}`} className="phone-number-card">
               <div className="phone-card-main">
                 <span className="phone-number-text">
                   {highlightSearchTerm(ad.phoneNumber, searchTerm)}

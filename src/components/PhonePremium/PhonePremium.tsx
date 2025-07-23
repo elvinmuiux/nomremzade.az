@@ -6,6 +6,18 @@ import Link from 'next/link';
 import { StatisticsManager } from '@/lib/statistics';
 import './PhonePremium.css';
 
+interface ApiListing {
+  id: string;
+  prefix: string;
+  number: string;
+  price: number;
+  type: 'standard' | 'gold' | 'premium';
+  contact_phone?: string;
+  description?: string;
+  provider?: string;
+  createdAt: string;
+}
+
 interface PremiumListing {
   id: string;
   phoneNumber: string;
@@ -21,27 +33,31 @@ const PhonePremium: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const prefixes = ['010', '050', '051', '055', '060', '070', '077', '099'];
     const fetchAllListings = async () => {
       setLoading(true);
       try {
-        let allListings: PremiumListing[] = [];
-        for (const prefix of prefixes) {
-          const response = await fetch(`/data/elan/${prefix}.json`);
-          if (response.ok) {
-            const data = await response.json();
-            const formattedListings = data.map((item: Omit<PremiumListing, 'id'>, index: number) => ({
-              id: `${prefix}-${index}`,
-              phoneNumber: item.phoneNumber,
-              price: Number(item.price),
-              contactPhone: item.contactPhone,
-              type: item.type,
-              isVip: item.isVip,
-            }));
-            allListings = [...allListings, ...formattedListings];
-          }
+        // Fetch all listings from API endpoint
+        const response = await fetch('/api/listings');
+        if (response.ok) {
+          const allApiListings = await response.json();
+          
+          // Filter only premium type listings
+          const premiumListings = allApiListings.filter((listing: ApiListing) => listing.type === 'premium');
+          
+          // Format for PhonePremium component
+          const formattedListings = premiumListings.map((listing: ApiListing) => ({
+            id: listing.id,
+            phoneNumber: `${listing.prefix}-${listing.number}`,
+            price: Number(listing.price),
+            contactPhone: listing.contact_phone || '050-444-44-22',
+            type: listing.type,
+            isVip: listing.type === 'premium',
+          }));
+          
+          setListings(formattedListings);
+        } else {
+          console.error('Failed to fetch listings from API');
         }
-        setListings(allListings);
       } catch (error) {
         console.error('Error fetching premium listings:', error);
       } finally {

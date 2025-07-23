@@ -2,31 +2,27 @@
 
 import React from 'react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
-import PhonePageMainTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
+import dynamic from 'next/dynamic';
+
+// Dynamic import to avoid SSR issues
+const PhonePageMainTemplate = dynamic(() => import('@/components/PhonePageTemplate/PhonePageMainTemplate'), { ssr: false });
 
 export default function NaxtelPage() {
-  const dataFiles = [
-    { file: '060.json', key: 'naxtelAds', provider: 'Naxtel', prefix: '060' }
-  ];
-
   return (
     <>
       {/* Desktop Template */}
-      <NumbersPageTemplate
-        pageTitle="Naxtel nömrələri"
-        dataFiles={dataFiles}
-        operatorPrefixes={['060']}
-        showProviderFilter={false}
-        operatorName="naxtel"
-      />
+      <div key="naxtel-desktop" className="hidden md:block">
+        <NumbersPageTemplate
+          showProviderFilter={false}
+        />
+      </div>
       
       {/* Mobile Template */}
-      <PhonePageMainTemplate
-        pageTitle="Naxtel Nömrələri"
-        dataFiles={dataFiles}
-        showProviderFilter={false}
-        operatorName="naxtel"
-      />
+      <div key="naxtel-mobile" className="block md:hidden">
+        <PhonePageMainTemplate
+          pageTitle="Naxtel Nömrələri"
+        />
+      </div>
     </>
   );
 }

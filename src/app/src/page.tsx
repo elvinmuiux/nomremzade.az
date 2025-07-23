@@ -11,7 +11,6 @@ import {
   Phone, 
   X, 
   BarChart3,
-  Users,
   TrendingUp,
   Settings,
   Star,
@@ -29,16 +28,36 @@ interface Listing {
   type: 'standard' | 'gold' | 'premium';
   contact_phone?: string;
   description: string | null;
-  is_sold: boolean;
   provider?: string;
   createdAt: string;
 }
 
+interface ParsedNumber {
+  phoneNumber: string;
+  operator: string;
+  price: number;
+  type: string;
+  error?: string;
+}
 
+interface UploadResults {
+  success: ParsedNumber[];
+  totalNumbers: number;
+  validNumbers: string[];
+  invalidNumbers: string[];
+  duplicateNumbers: string[];
+  duplicates: ParsedNumber[];
+  errors: ParsedNumber[];
+  summary: {
+    total: number;
+    valid: number;
+    invalid: number;
+    duplicates: number;
+  };
+}
 
 interface DashboardStats {
   totalListings: number;
-  soldListings: number;
   totalRevenue: number;
   premiumListings: number;
 }
@@ -51,7 +70,6 @@ const EMPTY_LISTING: Listing = {
   type: 'standard',
   contact_phone: '',
   description: null,
-  is_sold: false,
   provider: '',
   createdAt: new Date().toISOString()
 };
@@ -65,7 +83,6 @@ export default function AdminPage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     totalListings: 0,
-    soldListings: 0,
     totalRevenue: 0,
     premiumListings: 0
   });
@@ -80,7 +97,16 @@ export default function AdminPage() {
   const [selectedType, setSelectedType] = useState<string>('');
   const [selectedProvider, setSelectedProvider] = useState<string>('');
   const [selectedListings, setSelectedListings] = useState<string[]>([]);
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'listings' | 'analytics'>('dashboard');
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'listings' | 'analytics' | 'bulk-upload'>('dashboard');
+  
+  // Bulk upload states
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [bulkUploadSettings, setBulkUploadSettings] = useState({
+    defaultType: 'standard' as 'standard' | 'gold' | 'premium',
+    defaultPrice: 50,
+    contactPhone: '050-444-44-22'
+  });
+  const [uploadResults, setUploadResults] = useState<UploadResults | null>(null);
 
 
 
@@ -103,13 +129,11 @@ export default function AdminPage() {
   useEffect(() => {
     if (listings.length > 0) {
       const totalListings = listings.length;
-      const soldListings = listings.filter(l => l.is_sold).length;
-      const totalRevenue = listings.filter(l => l.is_sold).reduce((sum, l) => sum + l.price, 0);
+      const totalRevenue = listings.reduce((sum, l) => sum + l.price, 0);
       const premiumListings = listings.filter(l => l.type === 'premium').length;
       
       setStats({
         totalListings,
-        soldListings,
         totalRevenue,
         premiumListings
       });
@@ -135,84 +159,13 @@ export default function AdminPage() {
   const fetchListings = async () => {
     setIsLoading(true);
     try {
-      // Load real data from JSON files
-      const dataFiles = [
-        { file: '010.json', key: 'azercellAds', provider: 'Azercell', prefix: '010' },
-        { file: '050.json', key: 'azercellAds', provider: 'Azercell', prefix: '050' },
-        { file: '051.json', key: 'azercellAds', provider: 'Azercell', prefix: '051' },
-        { file: '055.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '055' },
-        { file: '060.json', key: 'naxtelAds', provider: 'Naxtel', prefix: '060' },
-        { file: '070.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '070' },
-        { file: '077.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '077' },
-        { file: '099.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '099' },
-        // Gold numbers
-        { file: 'gold/010.json', key: 'azercellAds', provider: 'Azercell', prefix: '010' },
-        { file: 'gold/050.json', key: 'azercellAds', provider: 'Azercell', prefix: '050' },
-        { file: 'gold/051.json', key: 'azercellAds', provider: 'Azercell', prefix: '051' },
-        { file: 'gold/055.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '055' },
-        { file: 'gold/06.json', key: 'naxtelAds', provider: 'Naxtel', prefix: '060' },
-        { file: 'gold/070.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '070' },
-        { file: 'gold/077.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '077' },
-        { file: 'gold/099.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '099' },
-        // Premium numbers (elan)
-        { file: 'elan/010.json', key: 'azercellAds', provider: 'Azercell', prefix: '010' },
-        { file: 'elan/050.json', key: 'azercellAds', provider: 'Azercell', prefix: '050' },
-        { file: 'elan/051.json', key: 'azercellAds', provider: 'Azercell', prefix: '051' },
-        { file: 'elan/055.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '055' },
-        { file: 'elan/060.json', key: 'naxtelAds', provider: 'Naxtel', prefix: '060' },
-        { file: 'elan/070.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '070' },
-        { file: 'elan/077.json', key: 'narmobileAds', provider: 'Nar Mobile', prefix: '077' },
-        { file: 'elan/099.json', key: 'bakcellAds', provider: 'Bakcell', prefix: '099' }
-      ];
-
-      const allListings: Listing[] = [];
-      let uniqueIdCounter = 1;
-
-      for (const dataFile of dataFiles) {
-        try {
-          const response = await fetch(`/data/${dataFile.file}`);
-          if (response.ok) {
-            const data = await response.json();
-            const adsArray = data[dataFile.key] || [];
-            
-            const processedListings = adsArray.map((item: Record<string, unknown>) => {
-              const phoneNumber = String(item.phoneNumber || '');
-              const phoneDigits = phoneNumber.replace(/[^0-9]/g, '');
-              const actualPrefix = phoneDigits.slice(0, 3);
-              const actualNumber = phoneDigits.slice(3);
-              
-              // Determine type based on folder and price
-              let type: 'standard' | 'gold' | 'premium' = 'standard';
-              if (dataFile.file.includes('elan/')) {
-                type = 'premium';
-              } else if (dataFile.file.includes('gold/')) {
-                type = 'gold';
-              } else if (item.type === 'premium' || item.isVip || (item.price && Number(item.price) > 1000)) {
-                type = 'premium';
-              } else if (item.type === 'gold' || (item.price && Number(item.price) > 100)) {
-                type = 'gold';
-              }
-              
-              return {
-                id: `${uniqueIdCounter++}-${phoneNumber}`,
-                prefix: actualPrefix,
-                number: actualNumber,
-                price: Number(item.price || 0),
-                type: type,
-                contact_phone: String(item.contactPhone || '050-444-44-22'),
-                description: `${dataFile.provider} - ${item.description || type + ' nömrə'}`,
-                is_sold: Boolean(item.is_sold || false),
-                provider: dataFile.provider,
-                createdAt: new Date().toISOString()
-              };
-            });
-
-            allListings.push(...processedListings);
-          }
-        } catch (error) {
-          console.error(`Error loading ${dataFile.file}:`, error);
-        }
+      // Use unified API endpoint
+      const response = await fetch('/api/listings');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
+      const allListings = await response.json();
       setListings(allListings);
     } catch (error) {
       console.error('Error in fetchListings:', error);
@@ -298,49 +251,7 @@ export default function AdminPage() {
     }
   };
 
-  const handleResell = async (id: string) => {
-    if (!confirm('Bu elanı yenidən satışa çıxarmaq istədiyinizə əminsiniz?')) return;
-    
-    setIsLoading(true);
-    try {
-      // Find the listing to update
-      const listingToUpdate = listings.find(l => l.id === id);
-      if (!listingToUpdate) {
-        throw new Error('Elan tapılmadı');
-      }
 
-      // Update the listing to mark as not sold
-      const updatedListing = {
-        ...listingToUpdate,
-        is_sold: false
-      };
-
-      const response = await fetch('/api/listings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedListing),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Yenidən satışa çıxarma zamanı xəta baş verdi');
-      }
-
-      // Update local state
-      setListings(prev => prev.map(l => l.id === id ? updatedListing : l));
-      alert('Elan uğurla yenidən satışa çıxarıldı! Dəyişiklik Numbers səhifəsində də tətbiq olundu.');
-      
-      // Refresh the listings to show updated data
-      await fetchListings();
-    } catch (err) {
-      console.error('Resell error:', err);
-      setError(err instanceof Error ? err.message : 'Yenidən satışa çıxarma zamanı xəta baş verdi');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const openModal = (listing: Listing | null = null) => {
     if (listing) {
@@ -431,43 +342,7 @@ export default function AdminPage() {
     }
   };
 
-  const handleBulkMarkAsSold = async () => {
-    if (selectedListings.length === 0) return;
-    
-    if (!confirm(`${selectedListings.length} elanı satıldı olaraq işarələmək istədiyinizə əminsiniz?`)) return;
-    
-    setIsLoading(true);
-    try {
-      const updatePromises = selectedListings.map(id => {
-        const listing = listings.find(l => l.id === id);
-        if (listing) {
-          return fetch('/api/listings', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...listing, is_sold: true })
-          });
-        }
-        return Promise.resolve();
-      });
-      
-      await Promise.all(updatePromises);
-      
-      // Update local state
-      setListings(prev => prev.map(l => 
-        selectedListings.includes(l.id) ? { ...l, is_sold: true } : l
-      ));
-      setSelectedListings([]);
-      alert(`${selectedListings.length} elan satıldı olaraq işarələndi!`);
-      
-      // Refresh data
-      await fetchListings();
-    } catch (err) {
-      console.error('Bulk mark as sold error:', err);
-      setError('Toplu yeniləmə zamanı xəta baş verdi');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   const handleExportData = () => {
     const dataToExport = filteredListings.map(listing => ({
@@ -477,7 +352,6 @@ export default function AdminPage() {
       'Operator': listing.provider,
       'Əlaqə': listing.contact_phone,
       'Təsvir': listing.description,
-      'Status': listing.is_sold ? 'Satıldı' : 'Aktiv',
       'Yaradılma Tarixi': new Date(listing.createdAt).toLocaleDateString('az-AZ')
     }));
     
@@ -495,6 +369,100 @@ export default function AdminPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Bulk upload functions
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setUploadResults(null); // Clear previous results
+    }
+  };
+
+  const handleBulkUpload = async () => {
+    if (!selectedFile) return;
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('defaultType', bulkUploadSettings.defaultType);
+      formData.append('defaultPrice', bulkUploadSettings.defaultPrice.toString());
+      formData.append('contactPhone', bulkUploadSettings.contactPhone);
+      
+      const response = await fetch('/api/bulk-upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Fayl yükləmə zamanı xəta baş verdi');
+      }
+      
+      const results = await response.json();
+      setUploadResults(results);
+      
+      if (results.summary.valid > 0) {
+        alert(`Fayl uğurla analiz edildi! ${results.summary.valid} keçərli nömrə tapıldı.`);
+      } else {
+        alert('Faylda keçərli nömrə tapılmadı.');
+      }
+      
+    } catch (err) {
+      console.error('Bulk upload error:', err);
+      setError(err instanceof Error ? err.message : 'Fayl yükləmə zamanı xəta baş verdi');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmBulkUpload = async () => {
+    if (!uploadResults || uploadResults.success.length === 0) return;
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch('/api/bulk-upload', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          numbers: uploadResults.success,
+          contactPhone: bulkUploadSettings.contactPhone
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Nömrələri saxlama zamanı xəta baş verdi');
+      }
+      
+      const result = await response.json();
+      alert(`${result.count} nömrə uğurla əlavə edildi! Bütün səhifələrdə görünəcək.`);
+      
+      // Clear the upload results and refresh listings
+      setUploadResults(null);
+      setSelectedFile(null);
+      await fetchListings();
+      
+      // Reset file input
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      
+    } catch (err) {
+      console.error('Bulk save error:', err);
+      setError(err instanceof Error ? err.message : 'Nömrələri saxlama zamanı xəta baş verdi');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Filter listings
@@ -588,6 +556,13 @@ export default function AdminPage() {
             <TrendingUp size={20} />
             Analitika
           </button>
+          <button 
+            className={`${styles.phoneNavButton} ${activeSection === 'bulk-upload' ? styles.active : ''}`}
+            onClick={() => setActiveSection('bulk-upload')}
+          >
+            <Plus size={20} />
+            Toplu Yüklə
+          </button>
         </div>
 
         {/* Dashboard Section */}
@@ -604,15 +579,7 @@ export default function AdminPage() {
                 </div>
               </div>
               
-              <div className={styles.phoneStatCard}>
-                <div className={styles.phoneStatIcon}>
-                  <Users size={24} />
-                </div>
-                <div className={styles.phoneStatContent}>
-                  <h3>Satılan Elanlar</h3>
-                  <p className={styles.phoneStatNumber}>{stats.soldListings}</p>
-                </div>
-              </div>
+
               
               <div className={styles.phoneStatCard}>
                 <div className={styles.phoneStatIcon}>
@@ -639,7 +606,7 @@ export default function AdminPage() {
               <h3>Son Fəaliyyətlər</h3>
               <div className={styles.phoneActivityList}>
                 {listings.slice(0, 5).map(listing => (
-                  <div key={listing.id} className={styles.phoneActivityItem}>
+                  <div key={`activity-${listing.prefix}-${listing.number}-${listing.id}`} className={styles.phoneActivityItem}>
                     <div className={styles.phoneActivityIcon}>
                       {getTypeIcon(listing.type)}
                     </div>
@@ -648,7 +615,7 @@ export default function AdminPage() {
                       <span>{listing.price} AZN</span>
                     </div>
                     <div className={styles.phoneActivityStatus}>
-                      {listing.is_sold ? 'Satıldı' : 'Aktiv'}
+                      Aktiv
                     </div>
                   </div>
                 ))}
@@ -744,14 +711,7 @@ export default function AdminPage() {
                     <Trash2 size={16} />
                     Seçilənləri Sil
                   </button>
-                  <button 
-                    className={styles.phoneBulkSoldButton}
-                    onClick={handleBulkMarkAsSold}
-                    disabled={isLoading}
-                  >
-                    <Users size={16} />
-                    Satıldı İşarələ
-                  </button>
+
                 </div>
               )}
             </div>
@@ -771,8 +731,6 @@ export default function AdminPage() {
               </div>
               <div className={styles.phoneSummaryStats}>
                 <span><strong>{filteredListings.length}</strong> elan tapıldı</span>
-                <span><strong>{filteredListings.filter(l => !l.is_sold).length}</strong> aktiv</span>
-                <span><strong>{filteredListings.filter(l => l.is_sold).length}</strong> satıldı</span>
                 <span><strong>{filteredListings.reduce((sum, l) => sum + l.price, 0)}</strong> AZN ümumi dəyər</span>
               </div>
             </div>
@@ -783,7 +741,7 @@ export default function AdminPage() {
             ) : (
               <div className={styles.phoneNumbersList}>
                 {filteredListings.map(listing => (
-                  <div key={listing.id} className={`${styles.phoneNumberCard} ${listing.is_sold ? styles.soldCard : ''} ${selectedListings.includes(listing.id) ? styles.selectedCard : ''}`}>
+                  <div key={`listing-${listing.prefix}-${listing.number}-${listing.id}`} className={`${styles.phoneNumberCard} ${selectedListings.includes(listing.id) ? styles.selectedCard : ''}`}>
                     <div className={styles.phoneCardMain}>
                       <div className={styles.phoneCardCheckbox}>
                         <input
@@ -838,30 +796,16 @@ export default function AdminPage() {
                         <Edit size={16} />
                         Redaktə
                       </button>
-                      {listing.is_sold ? (
-                        <button 
-                          className={`${styles.phoneActionBtn} ${styles.resell}`}
-                          onClick={() => handleResell(listing.id)}
-                        >
-                          <RefreshCw size={16} />
-                          Yenidən Sat
-                        </button>
-                      ) : (
-                        <button 
-                          className={`${styles.phoneActionBtn} ${styles.delete}`}
-                          onClick={() => handleDelete(listing.id)}
-                        >
-                          <Trash2 size={16} />
-                          Sil
-                        </button>
-                      )}
+                      <button 
+                        className={`${styles.phoneActionBtn} ${styles.delete}`}
+                        onClick={() => handleDelete(listing.id)}
+                      >
+                        <Trash2 size={16} />
+                        Sil
+                      </button>
                     </div>
                     
-                    {listing.is_sold && (
-                      <div className={styles.phoneSoldOverlay}>
-                        SATILDI
-                      </div>
-                    )}
+
                   </div>
                 ))}
               </div>
@@ -877,6 +821,151 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* Bulk Upload Section */}
+        {activeSection === 'bulk-upload' && (
+          <div className={styles.phoneBulkUpload}>
+            <h3>Toplu Nömrə Yükləmə</h3>
+            <div className={styles.phoneBulkUploadCard}>
+              <div className={styles.phoneBulkUploadForm}>
+                <div className={styles.phoneFormGroup}>
+                  <label>Fayl Seçin (PDF, Excel, Word):</label>
+                  <input
+                    type="file"
+                    accept=".pdf,.xlsx,.xls,.docx,.txt"
+                    onChange={handleFileSelect}
+                    className={styles.phoneFileInput}
+                  />
+                </div>
+                
+                <div className={styles.phoneFormGroup}>
+                  <label>Standart Tip:</label>
+                  <select
+                    value={bulkUploadSettings.defaultType}
+                    onChange={(e) => setBulkUploadSettings(prev => ({...prev, defaultType: e.target.value as 'standard' | 'gold' | 'premium'}))}
+                    className={styles.phoneSelect}
+                  >
+                    <option value="standard">Standard</option>
+                    <option value="gold">Gold</option>
+                    <option value="premium">Premium</option>
+                  </select>
+                </div>
+                
+                <div className={styles.phoneFormGroup}>
+                  <label>Standart Qiymət (AZN):</label>
+                  <input
+                    type="number"
+                    value={bulkUploadSettings.defaultPrice}
+                    onChange={(e) => setBulkUploadSettings(prev => ({...prev, defaultPrice: Number(e.target.value)}))}
+                    className={styles.phoneInput}
+                    placeholder="50"
+                  />
+                </div>
+                
+                <div className={styles.phoneFormGroup}>
+                  <label>Əlaqə Nömrəsi:</label>
+                  <input
+                    type="text"
+                    value={bulkUploadSettings.contactPhone}
+                    onChange={(e) => setBulkUploadSettings(prev => ({...prev, contactPhone: e.target.value}))}
+                    className={styles.phoneInput}
+                    placeholder="050-444-44-22"
+                  />
+                </div>
+                
+                <button
+                  onClick={handleBulkUpload}
+                  disabled={!selectedFile || isLoading}
+                  className={styles.phoneBulkUploadButton}
+                >
+                  {isLoading ? 'Yüklənir...' : 'Faylı Analiz Et'}
+                </button>
+              </div>
+            </div>
+            
+            {/* Upload Results */}
+            {uploadResults && (
+              <div className={styles.phoneBulkResults}>
+                <h4>Analiz Nəticələri</h4>
+                <div className={styles.phoneResultsStats}>
+                  <div className={styles.phoneResultStat}>
+                    <span>Ümumi: {uploadResults.summary.total}</span>
+                  </div>
+                  <div className={styles.phoneResultStat}>
+                    <span>Keçərli: {uploadResults.summary.valid}</span>
+                  </div>
+                  <div className={styles.phoneResultStat}>
+                    <span>Səhv: {uploadResults.summary.invalid}</span>
+                  </div>
+                  <div className={styles.phoneResultStat}>
+                    <span>Təkrar: {uploadResults.summary.duplicates}</span>
+                  </div>
+                </div>
+                
+                {uploadResults.success.length > 0 && (
+                  <div className={styles.phoneResultsSection}>
+                    <h5>Keçərli Nömrələr ({uploadResults.success.length})</h5>
+                    <div className={styles.phoneResultsList}>
+                      {uploadResults.success.slice(0, 10).map((number: ParsedNumber, index: number) => (
+                        <div key={index} className={styles.phoneResultItem}>
+                          <span>{number.phoneNumber}</span>
+                          <span>{number.operator}</span>
+                          <span>{number.price} AZN</span>
+                          <span>{number.type}</span>
+                        </div>
+                      ))}
+                      {uploadResults.success.length > 10 && (
+                        <p>... və daha {uploadResults.success.length - 10} nömrə</p>
+                      )}
+                    </div>
+                    
+                    <button
+                      onClick={handleConfirmBulkUpload}
+                      disabled={isLoading}
+                      className={styles.phoneConfirmButton}
+                    >
+                      {isLoading ? 'Saxlanılır...' : `${uploadResults.success.length} Nömrəni Saxla`}
+                    </button>
+                  </div>
+                )}
+                
+                {uploadResults.errors.length > 0 && (
+                  <div className={styles.phoneResultsSection}>
+                    <h5>Səhvli Nömrələr ({uploadResults.errors.length})</h5>
+                    <div className={styles.phoneResultsList}>
+                      {uploadResults.errors.slice(0, 5).map((number: ParsedNumber, index: number) => (
+                        <div key={index} className={styles.phoneResultItem + ' ' + styles.error}>
+                          <span>{number.phoneNumber}</span>
+                          <span>{number.error}</span>
+                        </div>
+                      ))}
+                      {uploadResults.errors.length > 5 && (
+                        <p>... və daha {uploadResults.errors.length - 5} səhv</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                {uploadResults.duplicates.length > 0 && (
+                  <div className={styles.phoneResultsSection}>
+                    <h5>Təkrar Nömrələr ({uploadResults.duplicates.length})</h5>
+                    <div className={styles.phoneResultsList}>
+                      {uploadResults.duplicates.slice(0, 5).map((number: ParsedNumber, index: number) => (
+                        <div key={index} className={styles.phoneResultItem + ' ' + styles.duplicate}>
+                          <span>{number.phoneNumber}</span>
+                          <span>Artıq mövcuddur</span>
+                        </div>
+                      ))}
+                      {uploadResults.duplicates.length > 5 && (
+                        <p>... və daha {uploadResults.duplicates.length - 5} təkrar</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Modal */}
         {isModalOpen && (
           <div className={styles.phoneModalOverlay}>
@@ -884,9 +973,7 @@ export default function AdminPage() {
               <div className={styles.phoneModalHeader}>
                 <div className={styles.phoneModalTitle}>
                   <h3>{isEditing ? 'Elanı Redaktə Et' : 'Yeni Elan Yarat'}</h3>
-                  {isEditing && currentListing.is_sold && (
-                    <span className={styles.phoneSoldBadge}>SATILDI</span>
-                  )}
+
                 </div>
                 <button onClick={closeModal} className={styles.phoneModalClose}>
                   <X size={20} />
@@ -983,21 +1070,6 @@ export default function AdminPage() {
                     className={styles.phoneTextarea}
                     rows={3}
                   />
-                </div>
-                
-                <div className={`${styles.phoneFormGroup} ${styles.phoneSoldStatusGroup}`}>
-                  <label>Satış Statusu:</label>
-                  <label className={`${styles.phoneCheckboxLabel} ${styles.phoneSoldCheckbox}`}>
-                    <input
-                      type="checkbox"
-                      checked={currentListing.is_sold}
-                      onChange={(e) => setCurrentListing(prev => ({ ...prev, is_sold: e.target.checked }))}
-                      className={styles.phoneSoldInput}
-                    />
-                    <span className={styles.phoneCheckboxText}>
-                      {currentListing.is_sold ? 'Satıldı' : 'Aktiv'}
-                    </span>
-                  </label>
                 </div>
               </div>
               

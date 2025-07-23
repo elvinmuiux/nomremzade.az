@@ -2,34 +2,27 @@
 
 import React from 'react';
 import NumbersPageTemplate from '@/components/NumbersPageTemplate/NumbersPageTemplate';
-import PhonePageMainTemplate from '@/components/PhonePageTemplate/PhonePageMainTemplate';
+import dynamic from 'next/dynamic';
+
+// Dynamic import to avoid SSR issues
+const PhonePageMainTemplate = dynamic(() => import('@/components/PhonePageTemplate/PhonePageMainTemplate'), { ssr: false });
 
 export default function NarMobilePage() {
-  const dataFiles = [
-    { file: '070.json', key: 'narMobileAds', provider: 'Nar Mobile', prefix: '070' },
-    { file: '077.json', key: 'narMobileAds', provider: 'Nar Mobile', prefix: '077' },
-    // Uncomment the following lines if you want to include more prefixes
-    
-  ];
-
   return (
     <>
       {/* Desktop Template */}
-      <NumbersPageTemplate
-        pageTitle="Nar Mobile nömrələri"
-        dataFiles={dataFiles}
-        operatorPrefixes={['070', '077']}
-        showProviderFilter={false}
-        operatorName="nar-mobile"
-      />
+      <div key="nar-desktop" className="hidden md:block">
+        <NumbersPageTemplate
+          showProviderFilter={false}
+        />
+      </div>
       
       {/* Mobile Template */}
-      <PhonePageMainTemplate
-        pageTitle="Nar Mobile Nömrələri"
-        dataFiles={dataFiles}
-        showProviderFilter={false}
-        operatorName="nar-mobile"
-      />
+      <div key="nar-mobile" className="block md:hidden">
+        <PhonePageMainTemplate
+          pageTitle="Nar Mobile Nömrələri"
+        />
+      </div>
     </>
   );
 }

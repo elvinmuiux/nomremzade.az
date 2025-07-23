@@ -6,6 +6,18 @@ import { Search, Phone, ArrowLeft, Gem } from 'lucide-react';
 
 import './PhoneGold.css';
 
+interface ApiListing {
+  id: string;
+  prefix: string;
+  number: string;
+  price: number;
+  type: 'standard' | 'gold' | 'premium';
+  contact_phone?: string;
+  description?: string;
+  provider?: string;
+  createdAt: string;
+}
+
 interface GoldListing {
   id: string;
   phoneNumber: string;
@@ -37,17 +49,31 @@ export default function PhoneGold() {
   };
 
   useEffect(() => {
-    const prefixes = ['010', '050', '051', '055', '06', '070', '077', '099'];
     const fetchAllListings = async () => {
       setLoading(true);
       try {
-        const allListings = (await Promise.all(prefixes.map(async (prefix) => {
-          const response = await fetch(`/data/gold/${prefix}.json`);
-          if (!response.ok) return [];
-          const data = await response.json();
-          return Array.isArray(data) ? data.map((item, index) => ({ ...item, id: `${prefix}-${index}` })) : [];
-        }))).flat();
-        setListings(allListings);
+        // Fetch all listings from API endpoint
+        const response = await fetch('/api/listings');
+        if (response.ok) {
+          const allApiListings = await response.json();
+          
+          // Filter only gold type listings
+          const goldListings = allApiListings.filter((listing: ApiListing) => listing.type === 'gold');
+          
+          // Format for PhoneGold component
+          const formattedListings = goldListings.map((listing: ApiListing) => ({
+            id: listing.id,
+            phoneNumber: `${listing.prefix}-${listing.number}`,
+            price: listing.price,
+            contactPhone: listing.contact_phone || '050-444-44-22',
+            type: listing.type,
+            description: listing.description || ''
+          }));
+          
+          setListings(formattedListings);
+        } else {
+          console.error('Failed to fetch listings from API');
+        }
       } catch (error) {
         console.error('Error fetching gold listings:', error);
       } finally {

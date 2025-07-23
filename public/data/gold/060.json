@@ -1,24 +1,5 @@
 {
   "naxtelAds": [
-    {
-      "id": 1752938430431,
-      "phoneNumber": "060-8494787",
-      "price": 9875,
-      "contactPhone": "050-444-44-22",
-      "type": "gold",
-      "isVip": false,
-      "description": "gold elan",
-      "is_sold": false
-    },
-    {
-      "id": 1752939094555,
-      "phoneNumber": "060-8494787",
-      "price": 68787,
-      "contactPhone": "0502666366",
-      "type": "gold",
-      "isVip": false,
-      "description": "gold",
-      "is_sold": false
-    }
+
   ]
 }

@@ -74,6 +74,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
 interface Listing {
   phone: string;
   price: string;
+  location: string;
+  contactPhone: string;
   isActive?: boolean;
 }
 
@@ -81,29 +83,43 @@ const GoldElanlar: React.FC = () => {
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
-    const prefixes = ['010', '050', '051', '055', '06', '070', '077', '099'];
-    const fetchAllListings = async () => {
+    const fetchGoldListings = async () => {
       try {
-        let allListings: Listing[] = [];
+        // Fetch directly from JSON files with cache busting
+        const timestamp = new Date().getTime();
+        const prefixes = ['010', '050', '051', '055', '060', '070', '077', '099'];
+        const allListings: Listing[] = [];
+        
+        // Fetch from gold directory
         for (const prefix of prefixes) {
-          const response = await fetch(`/data/gold/${prefix}.json`);
-          if (response.ok) {
-            const goldListings = await response.json();
-            const formattedListings = goldListings.map((item: { phoneNumber: string; price: number; isVip?: boolean; }) => ({
-              phone: item.phoneNumber,
-              price: item.price.toString(),
-              isActive: item.isVip
-            }));
-            allListings = [...allListings, ...formattedListings];
+          try {
+            const response = await fetch(`/data/gold/${prefix}.json?t=${timestamp}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (Array.isArray(data) && data.length > 0) {
+                const formattedListings = data.map((item: Record<string, unknown>) => ({
+                  phone: (item.phoneNumber as string) || `${prefix}-${item.number as string}`,
+                  price: (item.price as number)?.toString() || '0',
+                  location: (item.type as string) || 'Gold',
+                  contactPhone: (item.contactPhone as string) || '050-444-44-22',
+                  isActive: !(item.is_sold as boolean) && !(item.isSold as boolean)
+                }));
+                allListings.push(...formattedListings);
+              }
+            }
+          } catch (error) {
+            console.log(`No gold data for prefix ${prefix}:`, error);
           }
         }
+        
         setListings(allListings);
+        console.log('Gold listings loaded:', allListings);
       } catch (error) {
         console.error('Error fetching gold listings:', error);
       }
     };
 
-    fetchAllListings();
+    fetchGoldListings();
   }, []);
 
   return (
@@ -120,7 +136,7 @@ const GoldElanlar: React.FC = () => {
 
       <div className="gold-cards-container">
         {listings.map((listing, index) => (
-          <div key={index} className="gold-card-wrapper">
+          <div key={`gold-${listing.phone}-${index}`} className="gold-card-wrapper">
             <ListingCard
               phone={listing.phone}
               price={listing.price}
